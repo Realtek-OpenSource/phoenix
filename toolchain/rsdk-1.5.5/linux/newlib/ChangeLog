@@ -1,0 +1,62 @@
+version 1.5.5
+
+    * Upgrade to GCC 4.4.5
+    * Upgrade uClibc to uClibc 0.9.30.3
+    * Enable TLS for uClibc toolchain
+    * Disable TLS for libstdc++
+    * libmath wrapper to libstdc++_pic.a
+    * Fix binutils opcode bug
+    * Fix gcc 20090518-1.c
+    * Fix profiling bug in GCC (1.5.5p1)
+    * Add mips16 profiling support (1.5.5p1)
+    * Fix branch delay slot filling (1.5.5p1)
+    * Add -fix-bdsl to work around Taroko pre-v1.3 bug (1.5.5p1)
+    * Fix LOAD-USE and BACK-to-BACK DMP CEI warning bug (1.5.5p2)
+    * Add LXC0 register names for Taroko (1.5.5p2)
+    * Fix error LXCP0 TLPTR ID $29 -> $8 (1.5.5p2)
+    * Fix bugs in TLS support (1.5.5p2)
+    * Fix BFD debug section bug (1.5.5p2)
+    * CEF - compilation option collection (1.5.5p2)
+    * Add -pg support (1.5.5p2)
+    * Add -Wpossible-load-use to detect possible load-use in branch delay slot (1.5.5p3)
+
+version 1.5.4
+
+    * Support CEF (Compilation Engineering Framework)
+    * Enable customer enginer instructions on RLX5181
+    * Fix gcc mipscop-3.c
+    * Fix gcc $ra problem (1.5.4p1)
+    * Add back-to-back warning for DMP CEI (1.5.4p2)
+    * Fix stp/swp/shp/sbp load-use detection (1.5.4p2)
+    * Fix tcl/tk bugs under cygwin 1.7.x (1.5.4p2)
+
+version 1.5.3
+
+    * Add load-use detection for RLX processors
+    * Sync mcount/ecount processing with the original MIPS porting
+    * Fix gcc pr42559 (1.5.3p1)
+    * Fix sim/mips configuration for RLX (1.5.3p1)
+
+version 1.5.2
+
+    * Update to GCC 4.4.4
+    * Fix mmd register sp offset 
+    * Fix RLX4081 load delay slot use in strlen
+    * Fix depcreated contraint "h" (1.5.2p1)
+    * Fix -fuse-uls control (1.5.2p2)
+    * Disable -fstrict-overflow by default (1.5.2p3)
+    * Remove the usage of ctc3 instruction in -pg (1.5.2p4)
+
+version 1.5.1
+
+    * Add RLX4081 support
+    * Disable progolue/epilogue scheduling
+
+version 1.5.0
+
+    * Initial version of RSDK toolchain branch 1.5
+    * Update gcc from 4.1.2 to 4.4.2
+    * Upgrade binutils from 2.17 to 2.19
+    * Upgrade uclibc from 0.9.28 to 0.9.30
+    * Upgrade newlib from 1.15.0 to 1.17.0
+    * Upgrade insight/gdb from 6.4 to 6.6

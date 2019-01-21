@@ -1,0 +1,5 @@
+0xd63644a2	rtw_disable_gpio_interrupt	/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189es/8189es	EXPORT_SYMBOL
+0x5ccae16c	rtw_register_gpio_interrupt	/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189es/8189es	EXPORT_SYMBOL
+0xb6cb9654	rtw_config_gpio	/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189es/8189es	EXPORT_SYMBOL
+0x94f643fb	rtw_get_gpio	/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189es/8189es	EXPORT_SYMBOL
+0xf57c7b17	rtw_set_gpio_output_value	/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189es/8189es	EXPORT_SYMBOL

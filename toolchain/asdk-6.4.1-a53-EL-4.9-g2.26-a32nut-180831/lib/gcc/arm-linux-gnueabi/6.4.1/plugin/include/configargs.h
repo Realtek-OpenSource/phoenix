@@ -1,0 +1,7 @@
+/* Generated automatically. */
+static const char configuration_arguments[] = "/home/RTDOMAIN/jenkins/workspace/sdk-builder/gcc-6/configure --prefix=/tmp/builder-jenkins/asdk-6.4.1-2778/release/asdk-6.4.1/linux/eglibc --build=i686-pc-linux --host=i686-pc-linux --target=arm-linux-gnueabi --enable-languages=c,c++ --enable-threads --enable-shared --enable-lto --enable-multilib --enable-target-optspace --enable-__cxa_atexit --enable-linker-build-id --disable-sjlj-exceptions --disable-decimal-float --enable-tls --disable-nls --disable-libatomic --disable-libssp --disable-libgomp --disable-libmudflap --disable-libquadmath --disable-libffi --disable-libitm --disable-libstdc__-v3 --disable-libsanitizer --disable-fixed-point --with-arch=armv5te --with-gnu-ld --with-gnu-as --with-dwarf2 --with-headers=yes --enable-symvers=gnu --with-sdk=asdk --with-sysroot='/tmp/builder-jenkins/asdk-6.4.1-2778/release/asdk-6.4.1/linux/eglibc' --with-build-sysroot=/tmp/builder-jenkins/asdk-6.4.1-2778/release/asdk-6.4.1/linux/eglibc --with-pkgversion='Realtek ASDK-6.4.1 Build 2778' --with-mpfr=/tmp/builder-jenkins/asdk-6.4.1-2778/stage/asdk-6.4.1/eglibc/mpfr-build/out --with-gmp=/tmp/builder-jenkins/asdk-6.4.1-2778/stage/asdk-6.4.1/eglibc/gmp-build/out --with-mpc=/tmp/builder-jenkins/asdk-6.4.1-2778/stage/asdk-6.4.1/eglibc/mpc-build/out --with-abi=aapcs-linux --enable-multiarch";
+static const char thread_model[] = "posix";
+
+static const struct {
+  const char *name, *value;
+} configure_default_options[] = { { "abi", "aapcs-linux" }, { "arch", "armv5te" }, { "tls", "gnu" } };

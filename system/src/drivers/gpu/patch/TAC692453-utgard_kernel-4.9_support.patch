@@ -1,0 +1,2402 @@
+commit 1b921af8d5b44a0798b6aa30b7cfb1bc5901d6b4
+Author: cylee12 <cylee12@realtek.com>
+Date:   Thu Jun 1 12:55:43 2017 +0800
+
+    [DEV_FIX] apply TAC692453-utgard_kernel-4.9_support.patch
+    
+    Change-Id: If2644df2506be6175e8c501cf9a62dc87c59d148
+
+diff --git a/driver/src/devicedrv/mali/Kbuild b/driver/src/devicedrv/mali/Kbuild
+index 37cdeb9..02c3f3d 100755
+--- a/driver/src/devicedrv/mali/Kbuild
++++ b/driver/src/devicedrv/mali/Kbuild
+@@ -155,8 +155,12 @@ ccflags-$(CONFIG_MALI400_INTERNAL_PROFILING) += -I$(src)/timestamp-$(TIMESTAMP)
+ mali-$(CONFIG_DMA_SHARED_BUFFER) += linux/mali_memory_dma_buf.o
+ mali-$(CONFIG_DMA_SHARED_BUFFER) += linux/mali_memory_secure.o
+ mali-$(CONFIG_SYNC) += linux/mali_sync.o
++mali-$(CONFIG_SYNC) += linux/mali_internal_sync.o
++mali-$(CONFIG_SYNC_FILE) += linux/mali_sync.o
++mali-$(CONFIG_SYNC_FILE) += linux/mali_internal_sync.o
+ mali-$(CONFIG_MALI_DMA_BUF_FENCE) += linux/mali_dma_fence.o
+ ccflags-$(CONFIG_SYNC) += -Idrivers/staging/android
++ccflags-$(CONFIG_SYNC_FILE) += -Idrivers/staging/android
+ 
+ mali-$(CONFIG_MALI400_UMP) += linux/mali_memory_ump.o
+ 
+diff --git a/driver/src/devicedrv/mali/common/mali_timeline.c b/driver/src/devicedrv/mali/common/mali_timeline.c
+index 5ff604b..63282c3 100755
+--- a/driver/src/devicedrv/mali/common/mali_timeline.c
++++ b/driver/src/devicedrv/mali/common/mali_timeline.c
+@@ -7,7 +7,7 @@
+  * A copy of the licence is included with the program, and can also be obtained from Free Software
+  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  */
+-
++#include <linux/file.h>
+ #include "mali_timeline.h"
+ #include "mali_kernel_common.h"
+ #include "mali_scheduler.h"
+@@ -32,7 +32,7 @@ _mali_osk_atomic_t virt_pp_tracker_count;
+ static mali_scheduler_mask mali_timeline_system_release_waiter(struct mali_timeline_system *system,
+ 		struct mali_timeline_waiter *waiter);
+ 
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
+ #include <linux/version.h>
+ #if LINUX_VERSION_CODE < KERNEL_VERSION(3,5,0)
+ #include <linux/list.h>
+@@ -68,7 +68,11 @@ static DECLARE_DELAYED_WORK(delayed_sync_fence_put, put_sync_fences);
+ #endif /* LINUX_VERSION_CODE < KERNEL_VERSION(3,5,0) */
+ 
+ /* Callback that is called when a sync fence a tracker is waiting on is signaled. */
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ static void mali_timeline_sync_fence_callback(struct sync_fence *sync_fence, struct sync_fence_waiter *sync_fence_waiter)
++#else
++static void mali_timeline_sync_fence_callback(struct mali_internal_sync_fence *sync_fence, struct mali_internal_sync_fence_waiter *sync_fence_waiter)
++#endif
+ {
+ 	struct mali_timeline_system  *system;
+ 	struct mali_timeline_waiter  *waiter;
+@@ -142,14 +146,18 @@ static void mali_timeline_sync_fence_callback(struct sync_fence *sync_fence, str
+ 		}
+ 	}
+ #else
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ 	sync_fence_put(sync_fence);
++#else
++	fput(sync_fence->file);
++#endif
+ #endif /* LINUX_VERSION_CODE < KERNEL_VERSION(3,5,0) */
+ 
+ 	if (!is_aborting) {
+ 		mali_executor_schedule_from_mask(schedule_mask, MALI_TRUE);
+ 	}
+ }
+-#endif /* defined(CONFIG_SYNC) */
++#endif /* defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE) */
+ 
+ static mali_scheduler_mask mali_timeline_tracker_time_out(struct mali_timeline_tracker *tracker)
+ {
+@@ -242,15 +250,17 @@ static void mali_timeline_destroy(struct mali_timeline *timeline)
+ 			_mali_osk_wq_delayed_delete_work_nonflush(timeline->delayed_work);
+ 		}
+ 
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
+ 		if (NULL != timeline->sync_tl) {
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ 			sync_timeline_destroy(timeline->sync_tl);
++#else
++			mali_internal_sync_timeline_destroy(timeline->sync_tl);
++#endif
+ 		}
+-#endif /* defined(CONFIG_SYNC) */
+-
+-#ifndef CONFIG_SYNC
++#else
+ 		_mali_osk_free(timeline);
+-#endif
++#endif /* defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE) */
+ 	}
+ }
+ 
+@@ -288,7 +298,7 @@ static struct mali_timeline *mali_timeline_create(struct mali_timeline_system *s
+ 
+ 	timeline->timer_active = MALI_FALSE;
+ 
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
+ 	{
+ 		char timeline_name[32];
+ 
+@@ -322,7 +332,7 @@ static struct mali_timeline *mali_timeline_create(struct mali_timeline_system *s
+ 			return NULL;
+ 		}
+ 	}
+-#endif /* defined(CONFIG_SYNC) */
++#endif /* defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE) */
+ 
+ 	return timeline;
+ }
+@@ -679,11 +689,11 @@ static mali_scheduler_mask mali_timeline_tracker_activate(struct mali_timeline_t
+ 		mali_timeline_fence_wait_activate((struct mali_timeline_fence_wait_tracker *) tracker->job);
+ 		break;
+ 	case MALI_TIMELINE_TRACKER_SYNC:
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
+ 		mali_timeline_sync_fence_activate((struct mali_timeline_sync_fence_tracker *) tracker->job);
+ #else
+ 		MALI_PRINT_ERROR(("Mali Timeline: sync tracker not supported\n", tracker->type));
+-#endif /* defined(CONFIG_SYNC) */
++#endif /* defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE) */
+ 		break;
+ 	default:
+ 		MALI_PRINT_ERROR(("Mali Timeline - Illegal tracker type: %d\n", tracker->type));
+@@ -774,13 +784,13 @@ struct mali_timeline_system *mali_timeline_system_create(struct mali_session_dat
+ 		}
+ 	}
+ 
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
+ 	system->signaled_sync_tl = mali_sync_timeline_create(NULL, "mali-always-signaled");
+ 	if (NULL == system->signaled_sync_tl) {
+ 		mali_timeline_system_destroy(system);
+ 		return NULL;
+ 	}
+-#endif /* defined(CONFIG_SYNC) */
++#endif /* defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE) */
+ 
+ 	system->waiter_empty_list = NULL;
+ 	system->session = session;
+@@ -795,7 +805,7 @@ struct mali_timeline_system *mali_timeline_system_create(struct mali_session_dat
+ 	return system;
+ }
+ 
+-#if defined(CONFIG_MALI_DMA_BUF_FENCE) ||defined(CONFIG_SYNC)
++#if defined(CONFIG_MALI_DMA_BUF_FENCE) ||defined(CONFIG_SYNC) ||defined(CONFIG_SYNC_FILE)
+ /**
+  * Check if there are any trackers left on timeline.
+  *
+@@ -812,7 +822,7 @@ static mali_bool mali_timeline_has_no_trackers(void *data)
+ 
+ 	return mali_timeline_is_empty(timeline);
+ }
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) ||defined(CONFIG_SYNC_FILE)
+ /**
+  * Cancel sync fence waiters waited upon by trackers on all timelines.
+  *
+@@ -849,7 +859,11 @@ static void mali_timeline_cancel_sync_fence_waiters(struct mali_timeline_system
+ 			MALI_DEBUG_PRINT(3, ("Mali Timeline: Cancelling sync fence wait for tracker 0x%08X.\n", tracker));
+ 
+ 			/* Cancel sync fence waiter. */
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ 			if (0 == sync_fence_cancel_async(tracker->sync_fence, &tracker->sync_fence_waiter)) {
++#else
++			if (0 == mali_internal_sync_fence_cancel_async(tracker->sync_fence, &tracker->sync_fence_waiter)) {
++#endif
+ 				/* Callback was not called, move tracker to local list. */
+ 				_mali_osk_list_add(&tracker->sync_fence_cancel_list, &tracker_list);
+ 			}
+@@ -873,7 +887,7 @@ static void mali_timeline_cancel_sync_fence_waiters(struct mali_timeline_system
+ 	}
+ }
+ 
+-#endif /* defined(CONFIG_SYNC) */
++#endif /* defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE) */
+ 
+ #if defined(CONFIG_MALI_DMA_BUF_FENCE)
+ static void mali_timeline_cancel_dma_fence_waiters(struct mali_timeline_system *system)
+@@ -952,9 +966,9 @@ void mali_timeline_system_abort(struct mali_timeline_system *system)
+ 
+ 	MALI_DEBUG_PRINT(3, ("Mali Timeline: Aborting timeline system for session 0x%08X.\n", system->session));
+ 
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
+ 	mali_timeline_cancel_sync_fence_waiters(system);
+-#endif /* defined(CONFIG_SYNC) */
++#endif /* defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE) */
+ 
+ #if defined(CONFIG_MALI_DMA_BUF_FENCE)
+ 	mali_timeline_cancel_dma_fence_waiters(system);
+@@ -982,7 +996,7 @@ void mali_timeline_system_destroy(struct mali_timeline_system *system)
+ {
+ 	u32 i;
+ 	struct mali_timeline_waiter *waiter, *next;
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
+ 	u32 tid = _mali_osk_get_tid();
+ #endif
+ 
+@@ -1007,9 +1021,13 @@ void mali_timeline_system_destroy(struct mali_timeline_system *system)
+ 			waiter = next;
+ 		}
+ 
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
+ 		if (NULL != system->signaled_sync_tl) {
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ 			sync_timeline_destroy(system->signaled_sync_tl);
++#else
++			mali_internal_sync_timeline_destroy(system->signaled_sync_tl);
++#endif
+ 		}
+ 
+ 		for (i = 0; i < MALI_TIMELINE_MAX; ++i) {
+@@ -1019,7 +1037,7 @@ void mali_timeline_system_destroy(struct mali_timeline_system *system)
+ 				mali_spinlock_reentrant_signal(system->timelines[i]->spinlock, tid);
+ 			}
+ 		}
+-#endif /* defined(CONFIG_SYNC) */
++#endif /* defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE) */
+ 
+ 		for (i = 0; i < MALI_TIMELINE_MAX; ++i) {
+ 			if (NULL != system->timelines[i]) {
+@@ -1053,9 +1071,9 @@ static u32 mali_timeline_fence_num_waiters(struct mali_timeline_fence *fence)
+ 		}
+ 	}
+ 
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
+ 	if (-1 != fence->sync_fd) ++num_waiters;
+-#endif /* defined(CONFIG_SYNC) */
++#endif /* defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE) */
+ 
+ 	return num_waiters;
+ }
+@@ -1140,9 +1158,13 @@ static void mali_timeline_system_create_waiters_and_unlock(struct mali_timeline_
+ 	int i;
+ 	u32 tid = _mali_osk_get_tid();
+ 	mali_scheduler_mask schedule_mask = MALI_SCHEDULER_MASK_EMPTY;
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ 	struct sync_fence *sync_fence = NULL;
+-#endif /* defined(CONFIG_SYNC) */
++#else
++	struct mali_internal_sync_fence *sync_fence = NULL;
++#endif
++#endif /* defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE) */
+ 
+ 	MALI_DEBUG_ASSERT_POINTER(system);
+ 	MALI_DEBUG_ASSERT_POINTER(tracker);
+@@ -1214,12 +1236,15 @@ static void mali_timeline_system_create_waiters_and_unlock(struct mali_timeline_
+ 		/* Add waiter to timeline. */
+ 		mali_timeline_insert_waiter(timeline, waiter);
+ 	}
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
+ 	if (-1 != tracker->fence.sync_fd) {
+ 		int ret;
+ 		struct mali_timeline_waiter *waiter;
+-
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ 		sync_fence = sync_fence_fdget(tracker->fence.sync_fd);
++#else
++		sync_fence = mali_internal_sync_fence_fdget(tracker->fence.sync_fd);
++#endif
+ 		if (unlikely(NULL == sync_fence)) {
+ 			MALI_PRINT_ERROR(("Mali Timeline: failed to get sync fence from fd %d\n", tracker->fence.sync_fd));
+ 			goto exit;
+@@ -1232,8 +1257,13 @@ static void mali_timeline_system_create_waiters_and_unlock(struct mali_timeline_
+ 		}
+ 
+ 		/* Start asynchronous wait that will release waiter when the fence is signaled. */
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ 		sync_fence_waiter_init(&tracker->sync_fence_waiter, mali_timeline_sync_fence_callback);
+ 		ret = sync_fence_wait_async(sync_fence, &tracker->sync_fence_waiter);
++#else
++		mali_internal_sync_fence_waiter_init(&tracker->sync_fence_waiter, mali_timeline_sync_fence_callback);
++		ret = mali_internal_sync_fence_wait_async(sync_fence, &tracker->sync_fence_waiter);
++#endif
+ 		if (1 == ret) {
+ 			/* Fence already signaled, no waiter needed. */
+ 			tracker->fence.sync_fd = -1;
+@@ -1272,7 +1302,7 @@ static void mali_timeline_system_create_waiters_and_unlock(struct mali_timeline_
+ 
+ 		sync_fence = NULL;
+ 	}
+-#endif /* defined(CONFIG_SYNC)*/
++#endif /* defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)*/
+ #if defined(CONFIG_MALI_DMA_BUF_FENCE)
+ 	if ((NULL != tracker->timeline) && (MALI_TIMELINE_PP == tracker->timeline->id)) {
+ 
+@@ -1312,9 +1342,9 @@ static void mali_timeline_system_create_waiters_and_unlock(struct mali_timeline_
+ 	}
+ #endif /* defined(CONFIG_MALI_DMA_BUF_FENCE)*/
+ 
+-#if defined(CONFIG_MALI_DMA_BUF_FENCE) ||defined(CONFIG_SYNC)
++#if defined(CONFIG_MALI_DMA_BUF_FENCE) ||defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
+ exit:
+-#endif /* defined(CONFIG_MALI_DMA_BUF_FENCE) || defined(CONFIG_SYNC) */
++#endif /* defined(CONFIG_MALI_DMA_BUF_FENCE) || defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE) */
+ 
+ 	if (NULL != waiter_tail) {
+ 		mali_timeline_system_release_waiter_list(system, waiter_tail, waiter_head);
+@@ -1330,11 +1360,15 @@ exit:
+ 
+ 	mali_spinlock_reentrant_signal(system->spinlock, tid);
+ 
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
+ 	if (NULL != sync_fence) {
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ 		sync_fence_put(sync_fence);
++#else
++		fput(sync_fence->file);
++#endif
+ 	}
+-#endif /* defined(CONFIG_SYNC) */
++#endif /* defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE) */
+ 
+ 	mali_executor_schedule_from_mask(schedule_mask, MALI_FALSE);
+ }
+@@ -1573,31 +1607,59 @@ void mali_timeline_debug_print_tracker(struct mali_timeline_tracker *tracker, _m
+ 	state_char = *(tracker_state + mali_timeline_debug_get_tracker_state(tracker));
+ 	_mali_osk_snprintf(tracker_type, sizeof(tracker_type), "%s", timeline_tracker_type_to_string(tracker->type));
+ 
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
+ 	if (0 != tracker->trigger_ref_count) {
+-		_mali_osk_ctxprintf(print_ctx, "TL:  %s %u %c - ref_wait:%u [%s(%u),%s(%u),%s(%u), fd:%d, fence:(0x%08X)]  job:(0x%08X)\n",
+-				    tracker_type, tracker->point, state_char, tracker->trigger_ref_count,
+-				    is_waiting_on_timeline(tracker, MALI_TIMELINE_GP) ? "WaitGP" : " ", tracker->fence.points[0],
+-				    is_waiting_on_timeline(tracker, MALI_TIMELINE_PP) ? "WaitPP" : " ", tracker->fence.points[1],
+-				    is_waiting_on_timeline(tracker, MALI_TIMELINE_SOFT) ? "WaitSOFT" : " ", tracker->fence.points[2],
+-				    tracker->fence.sync_fd, (unsigned int)(uintptr_t)(tracker->sync_fence), (unsigned int)(uintptr_t)(tracker->job));
++		if (print_ctx)
++			_mali_osk_ctxprintf(print_ctx, "TL:  %s %u %c - ref_wait:%u [%s(%u),%s(%u),%s(%u), fd:%d, fence:(0x%08X)]  job:(0x%08X)\n",
++					    tracker_type, tracker->point, state_char, tracker->trigger_ref_count,
++					    is_waiting_on_timeline(tracker, MALI_TIMELINE_GP) ? "WaitGP" : " ", tracker->fence.points[0],
++					    is_waiting_on_timeline(tracker, MALI_TIMELINE_PP) ? "WaitPP" : " ", tracker->fence.points[1],
++					    is_waiting_on_timeline(tracker, MALI_TIMELINE_SOFT) ? "WaitSOFT" : " ", tracker->fence.points[2],
++					    tracker->fence.sync_fd, (unsigned int)(uintptr_t)(tracker->sync_fence), (unsigned int)(uintptr_t)(tracker->job));
++		else
++			MALI_DEBUG_PRINT(2, ("TL:  %s %u %c - ref_wait:%u [%s(%u),%s(%u),%s(%u), fd:%d, fence:(0x%08X)]  job:(0x%08X)\n",
++					    tracker_type, tracker->point, state_char, tracker->trigger_ref_count,
++					    is_waiting_on_timeline(tracker, MALI_TIMELINE_GP) ? "WaitGP" : " ", tracker->fence.points[0],
++					    is_waiting_on_timeline(tracker, MALI_TIMELINE_PP) ? "WaitPP" : " ", tracker->fence.points[1],
++					    is_waiting_on_timeline(tracker, MALI_TIMELINE_SOFT) ? "WaitSOFT" : " ", tracker->fence.points[2],
++					    tracker->fence.sync_fd, (unsigned int)(uintptr_t)(tracker->sync_fence), (unsigned int)(uintptr_t)(tracker->job)));
+ 	} else {
+-		_mali_osk_ctxprintf(print_ctx, "TL:  %s %u %c  fd:%d  fence:(0x%08X)  job:(0x%08X)\n",
+-				    tracker_type, tracker->point, state_char,
+-				    tracker->fence.sync_fd, (unsigned int)(uintptr_t)(tracker->sync_fence), (unsigned int)(uintptr_t)(tracker->job));
++		if(print_ctx)
++			_mali_osk_ctxprintf(print_ctx, "TL:  %s %u %c  fd:%d  fence:(0x%08X)  job:(0x%08X)\n",
++					    tracker_type, tracker->point, state_char,
++					    tracker->fence.sync_fd, (unsigned int)(uintptr_t)(tracker->sync_fence), (unsigned int)(uintptr_t)(tracker->job));
++		else
++			MALI_DEBUG_PRINT(2, ("TL:  %s %u %c  fd:%d  fence:(0x%08X)  job:(0x%08X)\n",
++					    tracker_type, tracker->point, state_char,
++					    tracker->fence.sync_fd, (unsigned int)(uintptr_t)(tracker->sync_fence), (unsigned int)(uintptr_t)(tracker->job)));
++			
+ 	}
+ #else
+ 	if (0 != tracker->trigger_ref_count) {
+-		_mali_osk_ctxprintf(print_ctx, "TL:  %s %u %c - ref_wait:%u [%s(%u),%s(%u),%s(%u)]  job:(0x%08X)\n",
+-				    tracker_type, tracker->point, state_char, tracker->trigger_ref_count,
+-				    is_waiting_on_timeline(tracker, MALI_TIMELINE_GP) ? "WaitGP" : " ", tracker->fence.points[0],
+-				    is_waiting_on_timeline(tracker, MALI_TIMELINE_PP) ? "WaitPP" : " ", tracker->fence.points[1],
+-				    is_waiting_on_timeline(tracker, MALI_TIMELINE_SOFT) ? "WaitSOFT" : " ", tracker->fence.points[2],
+-				    (unsigned int)(uintptr_t)(tracker->job));
++		if (print_ctx)
++			_mali_osk_ctxprintf(print_ctx, "TL:  %s %u %c - ref_wait:%u [%s(%u),%s(%u),%s(%u)]  job:(0x%08X)\n",
++					    tracker_type, tracker->point, state_char, tracker->trigger_ref_count,
++					    is_waiting_on_timeline(tracker, MALI_TIMELINE_GP) ? "WaitGP" : " ", tracker->fence.points[0],
++					    is_waiting_on_timeline(tracker, MALI_TIMELINE_PP) ? "WaitPP" : " ", tracker->fence.points[1],
++					    is_waiting_on_timeline(tracker, MALI_TIMELINE_SOFT) ? "WaitSOFT" : " ", tracker->fence.points[2],
++					    (unsigned int)(uintptr_t)(tracker->job));
++		else
++			MALI_DEBUG_PRINT(2, ("TL:  %s %u %c - ref_wait:%u [%s(%u),%s(%u),%s(%u)]  job:(0x%08X)\n",
++					    tracker_type, tracker->point, state_char, tracker->trigger_ref_count,
++					    is_waiting_on_timeline(tracker, MALI_TIMELINE_GP) ? "WaitGP" : " ", tracker->fence.points[0],
++					    is_waiting_on_timeline(tracker, MALI_TIMELINE_PP) ? "WaitPP" : " ", tracker->fence.points[1],
++					    is_waiting_on_timeline(tracker, MALI_TIMELINE_SOFT) ? "WaitSOFT" : " ", tracker->fence.points[2],
++					    (unsigned int)(uintptr_t)(tracker->job)));
+ 	} else {
+-		_mali_osk_ctxprintf(print_ctx, "TL:  %s %u %c  job:(0x%08X)\n",
+-				    tracker_type, tracker->point, state_char,
+-				    (unsigned int)(uintptr_t)(tracker->job));
++		if (print_ctx)
++			_mali_osk_ctxprintf(print_ctx, "TL:  %s %u %c  job:(0x%08X)\n",
++					    tracker_type, tracker->point, state_char,
++					    (unsigned int)(uintptr_t)(tracker->job));
++		else
++			MALI_DEBUG_PRINT(2, ("TL:  %s %u %c  job:(0x%08X)\n",
++					    tracker_type, tracker->point, state_char,
++					    (unsigned int)(uintptr_t)(tracker->job)));
++			
+ 	}
+ #endif
+ }
+@@ -1627,7 +1689,7 @@ void mali_timeline_debug_direct_print_tracker(struct mali_timeline_tracker *trac
+ 	state_char = *(tracker_state + mali_timeline_debug_get_tracker_state(tracker));
+ 	_mali_osk_snprintf(tracker_type, sizeof(tracker_type), "%s", timeline_tracker_type_to_string(tracker->type));
+ 
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
+ 	if (0 != tracker->trigger_ref_count) {
+ 		MALI_PRINT(("TL:  %s %u %c - ref_wait:%u [%s(%u),%s(%u),%s(%u), fd:%d, fence:(0x%08X)]  job:(0x%08X)\n",
+ 			    tracker_type, tracker->point, state_char, tracker->trigger_ref_count,
+@@ -1688,16 +1750,22 @@ void mali_timeline_debug_print_system(struct mali_timeline_system *system, _mali
+ 		MALI_DEBUG_ASSERT_POINTER(timeline);
+ 
+ 		if (NULL == timeline->tracker_head) continue;
+-
+-		_mali_osk_ctxprintf(print_ctx, "TL: Timeline %s:\n",
+-				    timeline_id_to_string((enum mali_timeline_id)i));
+-
++		if (print_ctx)
++			_mali_osk_ctxprintf(print_ctx, "TL: Timeline %s:\n",
++					    timeline_id_to_string((enum mali_timeline_id)i));
++		else
++			MALI_DEBUG_PRINT(2, ("TL: Timeline %s: oldest (%u) next(%u)\n",
++					    timeline_id_to_string((enum mali_timeline_id)i), timeline->point_oldest, timeline->point_next));
++		
+ 		mali_timeline_debug_print_timeline(timeline, print_ctx);
+ 		num_printed++;
+ 	}
+ 
+ 	if (0 == num_printed) {
+-		_mali_osk_ctxprintf(print_ctx, "TL: All timelines empty\n");
++		if (print_ctx)
++			_mali_osk_ctxprintf(print_ctx, "TL: All timelines empty\n");
++		else
++			MALI_DEBUG_PRINT(2, ("TL: All timelines empty\n"));
+ 	}
+ 
+ 	mali_spinlock_reentrant_signal(system->spinlock, tid);
+diff --git a/driver/src/devicedrv/mali/common/mali_timeline.h b/driver/src/devicedrv/mali/common/mali_timeline.h
+index 60cf280..ba515c3 100755
+--- a/driver/src/devicedrv/mali/common/mali_timeline.h
++++ b/driver/src/devicedrv/mali/common/mali_timeline.h
+@@ -114,9 +114,13 @@ struct mali_timeline_system {
+ 
+ 	_mali_osk_wait_queue_t         *wait_queue; /**< Wait queue. */
+ 
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ 	struct sync_timeline           *signaled_sync_tl; /**< Special sync timeline used to create pre-signaled sync fences */
+-#endif /* defined(CONFIG_SYNC) */
++#else
++	struct mali_internal_sync_timeline           *signaled_sync_tl; /**< Special sync timeline used to create pre-signaled sync fences */
++#endif
++#endif /* defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE) */
+ };
+ 
+ /**
+@@ -139,11 +143,15 @@ struct mali_timeline {
+ 	struct mali_timeline_system  *system;       /**< Timeline system this timeline belongs to. */
+ 	enum mali_timeline_id         id;           /**< Timeline type. */
+ 
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ 	struct sync_timeline         *sync_tl;      /**< Sync timeline that corresponds to this timeline. */
++#else
++	struct mali_internal_sync_timeline *sync_tl;
++#endif
+ 	mali_bool destroyed;
+ 	struct mali_spinlock_reentrant *spinlock;       /**< Spin lock protecting the timeline system */
+-#endif /* defined(CONFIG_SYNC) */
++#endif /* defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE) */
+ 
+ 	/* The following fields are used to time out soft job trackers. */
+ 	_mali_osk_wq_delayed_work_t  *delayed_work;
+@@ -183,13 +191,18 @@ struct mali_timeline_tracker {
+ 	struct mali_timeline_waiter   *waiter_head;
+ 	struct mali_timeline_waiter   *waiter_tail;
+ 
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
+ 	/* These are only used if the tracker is waiting on a sync fence. */
+ 	struct mali_timeline_waiter   *waiter_sync; /**< A direct pointer to timeline waiter representing sync fence. */
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ 	struct sync_fence_waiter       sync_fence_waiter; /**< Used to connect sync fence and tracker in sync fence wait callback. */
+ 	struct sync_fence             *sync_fence;   /**< The sync fence this tracker is waiting on. */
++#else
++	struct mali_internal_sync_fence_waiter       sync_fence_waiter; /**< Used to connect sync fence and tracker in sync fence wait callback. */
++	struct mali_internal_sync_fence             *sync_fence;   /**< The sync fence this tracker is waiting on. */
++#endif
+ 	_mali_osk_list_t               sync_fence_cancel_list; /**< List node used to cancel sync fence waiters. */
+-#endif /* defined(CONFIG_SYNC) */
++#endif /* defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE) */
+ 
+ #if defined(CONFIG_MALI_DMA_BUF_FENCE)
+ 	struct mali_timeline_waiter   *waiter_dma_fence; /**< A direct pointer to timeline waiter representing dma fence. */
+diff --git a/driver/src/devicedrv/mali/common/mali_timeline_fence_wait.c b/driver/src/devicedrv/mali/common/mali_timeline_fence_wait.c
+index f640fca..9c82354 100755
+--- a/driver/src/devicedrv/mali/common/mali_timeline_fence_wait.c
++++ b/driver/src/devicedrv/mali/common/mali_timeline_fence_wait.c
+@@ -7,9 +7,8 @@
+  * A copy of the licence is included with the program, and can also be obtained from Free Software
+  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  */
+-
++#include <linux/file.h>
+ #include "mali_timeline_fence_wait.h"
+-
+ #include "mali_osk.h"
+ #include "mali_kernel_common.h"
+ #include "mali_spinlock_reentrant.h"
+@@ -64,8 +63,12 @@ static mali_bool mali_timeline_fence_wait_check_status(struct mali_timeline_syst
+ 	int i;
+ 	u32 tid = _mali_osk_get_tid();
+ 	mali_bool ret = MALI_TRUE;
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ 	struct sync_fence *sync_fence = NULL;
++#else
++	struct mali_internal_sync_fence *sync_fence = NULL;
++#endif
+ #endif
+ 
+ 	MALI_DEBUG_ASSERT_POINTER(system);
+@@ -97,9 +100,13 @@ static mali_bool mali_timeline_fence_wait_check_status(struct mali_timeline_syst
+ 		}
+ 	}
+ 
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
+ 	if (-1 != fence->sync_fd) {
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ 		sync_fence = sync_fence_fdget(fence->sync_fd);
++#else
++		sync_fence = mali_internal_sync_fence_fdget(fence->sync_fd);
++#endif
+ 		if (likely(NULL != sync_fence)) {
+ #if LINUX_VERSION_CODE < KERNEL_VERSION(3, 17, 0)
+ 			if (0 == sync_fence->status) {
+@@ -112,16 +119,20 @@ static mali_bool mali_timeline_fence_wait_check_status(struct mali_timeline_syst
+ 			MALI_PRINT_ERROR(("Mali Timeline: failed to get sync fence from fd %d\n", fence->sync_fd));
+ 		}
+ 	}
+-#endif /* defined(CONFIG_SYNC) */
++#endif /* defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE) */
+ 
+ exit:
+ 	mali_spinlock_reentrant_signal(system->spinlock, tid);
+ 
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
+ 	if (NULL != sync_fence) {
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ 		sync_fence_put(sync_fence);
++#else
++		fput(sync_fence->file);
++#endif
+ 	}
+-#endif /* defined(CONFIG_SYNC) */
++#endif /* defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE) */
+ 
+ 	return ret;
+ }
+diff --git a/driver/src/devicedrv/mali/common/mali_timeline_sync_fence.c b/driver/src/devicedrv/mali/common/mali_timeline_sync_fence.c
+index 604b435..91e1c7f 100755
+--- a/driver/src/devicedrv/mali/common/mali_timeline_sync_fence.c
++++ b/driver/src/devicedrv/mali/common/mali_timeline_sync_fence.c
+@@ -7,15 +7,14 @@
+  * A copy of the licence is included with the program, and can also be obtained from Free Software
+  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  */
+-
++#include <linux/file.h>
+ #include "mali_timeline_sync_fence.h"
+ 
+ #include "mali_osk.h"
+ #include "mali_kernel_common.h"
+ #include "mali_sync.h"
+ 
+-#if defined(CONFIG_SYNC)
+-
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
+ /**
+  * Creates a sync fence tracker and a sync fence.  Adds sync fence tracker to Timeline system and
+  * returns sync fence.  The sync fence will be signaled when the sync fence tracker is activated.
+@@ -24,10 +23,18 @@
+  * @param point Point on timeline.
+  * @return Sync fence that will be signaled when tracker is activated.
+  */
++ #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ static struct sync_fence *mali_timeline_sync_fence_create_and_add_tracker(struct mali_timeline *timeline, mali_timeline_point point)
++#else
++static struct mali_internal_sync_fence *mali_timeline_sync_fence_create_and_add_tracker(struct mali_timeline *timeline, mali_timeline_point point)
++#endif
+ {
+ 	struct mali_timeline_sync_fence_tracker *sync_fence_tracker;
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ 	struct sync_fence                       *sync_fence;
++#else
++	struct mali_internal_sync_fence                       *sync_fence;
++#endif
+ 	struct mali_timeline_fence               fence;
+ 
+ 	MALI_DEBUG_ASSERT_POINTER(timeline);
+@@ -74,15 +81,21 @@ static struct sync_fence *mali_timeline_sync_fence_create_and_add_tracker(struct
+ s32 mali_timeline_sync_fence_create(struct mali_timeline_system *system, struct mali_timeline_fence *fence)
+ {
+ 	u32 i;
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ 	struct sync_fence *sync_fence_acc = NULL;
+-
++#else
++	struct mali_internal_sync_fence *sync_fence_acc = NULL;
++#endif
+ 	MALI_DEBUG_ASSERT_POINTER(system);
+ 	MALI_DEBUG_ASSERT_POINTER(fence);
+ 
+ 	for (i = 0; i < MALI_TIMELINE_MAX; ++i) {
+ 		struct mali_timeline *timeline;
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ 		struct sync_fence *sync_fence;
+-
++#else
++		struct mali_internal_sync_fence *sync_fence;
++#endif
+ 		if (MALI_TIMELINE_NO_POINT == fence->points[i]) continue;
+ 
+ 		timeline = system->timelines[i];
+@@ -102,9 +115,14 @@ s32 mali_timeline_sync_fence_create(struct mali_timeline_system *system, struct
+ 	}
+ 
+ 	if (-1 != fence->sync_fd) {
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ 		struct sync_fence *sync_fence;
+-
+ 		sync_fence = sync_fence_fdget(fence->sync_fd);
++#else
++		struct mali_internal_sync_fence *sync_fence;
++		sync_fence = mali_internal_sync_fence_fdget(fence->sync_fd);
++#endif
++
+ 		if (NULL == sync_fence) goto error;
+ 
+ 		if (NULL != sync_fence_acc) {
+@@ -129,7 +147,11 @@ s32 mali_timeline_sync_fence_create(struct mali_timeline_system *system, struct
+ 
+ error:
+ 	if (NULL != sync_fence_acc) {
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ 		sync_fence_put(sync_fence_acc);
++#else
++		fput(sync_fence_acc->file);
++#endif
+ 	}
+ 
+ 	return -1;
+@@ -154,5 +176,4 @@ void mali_timeline_sync_fence_activate(struct mali_timeline_sync_fence_tracker *
+ 
+ 	_mali_osk_free(sync_fence_tracker);
+ }
+-
+-#endif /* defined(CONFIG_SYNC) */
++#endif /* defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE) */
+diff --git a/driver/src/devicedrv/mali/common/mali_timeline_sync_fence.h b/driver/src/devicedrv/mali/common/mali_timeline_sync_fence.h
+index 07f46de..390647b 100755
+--- a/driver/src/devicedrv/mali/common/mali_timeline_sync_fence.h
++++ b/driver/src/devicedrv/mali/common/mali_timeline_sync_fence.h
+@@ -19,7 +19,7 @@
+ 
+ #include "mali_timeline.h"
+ 
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
+ 
+ /**
+  * Sync fence tracker.
+@@ -46,6 +46,6 @@ s32 mali_timeline_sync_fence_create(struct mali_timeline_system *system, struct
+  */
+ void mali_timeline_sync_fence_activate(struct mali_timeline_sync_fence_tracker *sync_fence_tracker);
+ 
+-#endif /* defined(CONFIG_SYNC) */
++#endif /* defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE) */
+ 
+ #endif /* __MALI_TIMELINE_SYNC_FENCE_H__ */
+diff --git a/driver/src/devicedrv/mali/linux/mali_internal_sync.c b/driver/src/devicedrv/mali/linux/mali_internal_sync.c
+new file mode 100644
+index 0000000..cb21ec0
+--- /dev/null
++++ b/driver/src/devicedrv/mali/linux/mali_internal_sync.c
+@@ -0,0 +1,813 @@
++/*
++ * This confidential and proprietary software may be used only as
++ * authorised by a licensing agreement from ARM Limited
++ * (C) COPYRIGHT 2012-2016 ARM Limited
++ * ALL RIGHTS RESERVED
++ * The entire notice above must be reproduced on all authorised
++ * copies and copies may only be made to the extent permitted
++ * by a licensing agreement from ARM Limited.
++ */
++
++ #include "mali_internal_sync.h"
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 6, 0)
++#include <linux/ioctl.h>
++#include <linux/export.h>
++#include <linux/file.h>
++#include <linux/fs.h>
++#include <linux/kernel.h>
++#include <linux/poll.h>
++#include <linux/sched.h>
++#include <linux/seq_file.h>
++#include <linux/slab.h>
++#include <linux/uaccess.h>
++#include <linux/anon_inodes.h>
++
++#include "mali_osk.h"
++#include "mali_kernel_common.h"
++#if defined(DEBUG)
++#include "mali_session.h"
++#include "mali_timeline.h"
++#endif
++
++struct mali_internal_sync_merge_data {
++        s32   fd;
++        char    name[32];
++        s32   fence;
++};
++
++struct mali_internal_sync_pt_info {
++	u32	len;
++	char	obj_name[32];
++	char	driver_name[32];
++	int	status;
++	u64	timestamp_ns;
++	u8	driver_data[0];
++};
++
++struct mali_internal_sync_info_data {
++	u32 len;
++	char name[32];
++	int status;
++	u8 sync_pt_info[0];
++};
++
++/**
++ * Define the ioctl constant for sync fence wait.
++ */
++#define MALI_INTERNAL_SYNC_IOC_WAIT           _IOW('>', 0, s32)
++
++/**
++ * Define the ioctl constant for sync fence merge.
++ */
++#define MALI_INTERNAL_SYNC_IOC_MERGE          _IOWR('>', 1, struct mali_internal_sync_merge_data)
++
++/**
++ * Define the ioctl constant for sync fence info.
++ */
++ #define MALI_INTERNAL_SYNC_IOC_FENCE_INFO          _IOWR('>', 2, struct mali_internal_sync_info_data)
++
++static const struct fence_ops fence_ops;
++static const struct file_operations sync_fence_fops;
++
++static struct mali_internal_sync_point *mali_internal_fence_to_sync_pt(struct fence *fence)
++{
++	MALI_DEBUG_ASSERT_POINTER(fence);
++	return container_of(fence, struct mali_internal_sync_point, base);
++}
++
++static inline struct mali_internal_sync_timeline *mali_internal_sync_pt_to_sync_timeline(struct mali_internal_sync_point *sync_pt)
++{
++	MALI_DEBUG_ASSERT_POINTER(sync_pt);
++	return container_of(sync_pt->base.lock, struct mali_internal_sync_timeline, sync_pt_list_lock);
++}
++
++static void mali_internal_sync_timeline_free(struct kref *kref_count)
++{
++	struct mali_internal_sync_timeline *sync_timeline;
++
++	MALI_DEBUG_ASSERT_POINTER(kref_count);
++
++	sync_timeline = container_of(kref_count, struct mali_internal_sync_timeline, kref_count);
++
++	if (sync_timeline->ops->release_obj)
++		sync_timeline->ops->release_obj(sync_timeline);
++
++	kfree(sync_timeline);
++}
++
++static struct mali_internal_sync_fence *mali_internal_sync_fence_alloc(int size)
++{
++	struct mali_internal_sync_fence *sync_fence = NULL;
++
++	sync_fence = kzalloc(size, GFP_KERNEL);
++	if (NULL == sync_fence) {
++		MALI_PRINT_ERROR(("Mali internal sync: Failed to allocate buffer  for the mali internal sync fence.\n"));
++		goto err;
++	}
++
++	sync_fence->file = anon_inode_getfile("mali_sync_fence", &sync_fence_fops, sync_fence, 0);
++	if (IS_ERR(sync_fence->file)) {
++		MALI_PRINT_ERROR(("Mali internal sync: Failed to get file  for the mali internal sync fence: err %d.\n", IS_ERR(sync_fence->file)));
++		goto err;
++	}
++
++	kref_init(&sync_fence->kref_count);
++	init_waitqueue_head(&sync_fence->wq);
++
++	return sync_fence;
++
++err:
++	if (NULL != sync_fence) {
++		kfree(sync_fence);
++	}
++	return NULL;
++}
++
++static void mali_internal_fence_check_cb_func(struct fence *fence, struct fence_cb *cb)
++{
++	struct mali_internal_sync_fence_cb *check;
++	struct mali_internal_sync_fence *sync_fence;
++
++	MALI_DEBUG_ASSERT_POINTER(cb);
++	MALI_IGNORE(fence);
++
++	check = container_of(cb, struct mali_internal_sync_fence_cb, cb);
++	sync_fence = check->sync_fence;
++
++	if (atomic_dec_and_test(&sync_fence->status))
++		wake_up_all(&sync_fence->wq);
++}
++
++static void mali_internal_sync_fence_add_fence(struct mali_internal_sync_fence *sync_fence, struct fence *sync_pt)
++{
++	int fence_num = 0;
++	MALI_DEBUG_ASSERT_POINTER(sync_fence);
++	MALI_DEBUG_ASSERT_POINTER(sync_pt);
++
++	fence_num = atomic_read(&sync_fence->num_fences);
++
++	sync_fence->cbs[fence_num].base = sync_pt;
++	sync_fence->cbs[fence_num].sync_fence = sync_fence;
++
++	if (!fence_add_callback(sync_pt, &sync_fence->cbs[fence_num].cb, mali_internal_fence_check_cb_func)) {
++		fence_get(sync_pt);
++		atomic_inc(&sync_fence->num_fences);
++		atomic_inc(&sync_fence->status);
++	}
++}
++
++static int mali_internal_sync_fence_wake_up_wq(wait_queue_t *curr, unsigned mode,
++				 int wake_flags, void *key)
++{
++	struct mali_internal_sync_fence_waiter *wait;
++	MALI_IGNORE(mode);
++	MALI_IGNORE(wake_flags);
++	MALI_IGNORE(key);
++
++	wait = container_of(curr, struct mali_internal_sync_fence_waiter, work);
++	list_del_init(&wait->work.task_list);
++
++	wait->callback(wait->work.private, wait);
++	return 1;
++}
++
++struct mali_internal_sync_timeline *mali_internal_sync_timeline_create(const struct mali_internal_sync_timeline_ops *ops,
++					   int size, const char *name)
++{
++	struct mali_internal_sync_timeline *sync_timeline = NULL;
++
++	MALI_DEBUG_ASSERT_POINTER(ops);
++
++	if (size < sizeof(struct mali_internal_sync_timeline)) {
++		MALI_PRINT_ERROR(("Mali internal sync:Invalid size to create the mali internal sync timeline.\n"));
++		goto err;
++	}
++
++	sync_timeline = kzalloc(size, GFP_KERNEL);
++	if (NULL == sync_timeline) {
++		MALI_PRINT_ERROR(("Mali internal sync:Failed to  allocate buffer  for the mali internal sync timeline.\n"));
++		goto err;
++	}
++	kref_init(&sync_timeline->kref_count);
++	sync_timeline->ops = ops;
++	sync_timeline->fence_context = fence_context_alloc(1);
++	strlcpy(sync_timeline->name, name, sizeof(sync_timeline->name));
++
++	INIT_LIST_HEAD(&sync_timeline->sync_pt_list_head);
++	spin_lock_init(&sync_timeline->sync_pt_list_lock);
++
++	return sync_timeline;
++err:
++	if (NULL != sync_timeline) {
++		kfree(sync_timeline);
++	}
++	return NULL;
++}
++
++void mali_internal_sync_timeline_destroy(struct mali_internal_sync_timeline *sync_timeline)
++{
++	MALI_DEBUG_ASSERT_POINTER(sync_timeline);
++
++	sync_timeline->destroyed = MALI_TRUE;
++
++	smp_wmb();
++
++	mali_internal_sync_timeline_signal(sync_timeline);
++	kref_put(&sync_timeline->kref_count, mali_internal_sync_timeline_free);
++}
++
++void mali_internal_sync_timeline_signal(struct mali_internal_sync_timeline *sync_timeline)
++{
++	unsigned long flags;
++	struct mali_internal_sync_point *sync_pt, *next;
++
++	MALI_DEBUG_ASSERT_POINTER(sync_timeline);
++
++	spin_lock_irqsave(&sync_timeline->sync_pt_list_lock, flags);
++
++	list_for_each_entry_safe(sync_pt, next, &sync_timeline->sync_pt_list_head,
++				 sync_pt_list) {
++		if (fence_is_signaled_locked(&sync_pt->base))
++			list_del_init(&sync_pt->sync_pt_list);
++	}
++
++	spin_unlock_irqrestore(&sync_timeline->sync_pt_list_lock, flags);
++}
++
++struct mali_internal_sync_point *mali_internal_sync_point_create(struct mali_internal_sync_timeline *sync_timeline, int size)
++{
++	unsigned long flags;
++	struct mali_internal_sync_point *sync_pt = NULL;
++
++	MALI_DEBUG_ASSERT_POINTER(sync_timeline);
++
++	if (size < sizeof(struct mali_internal_sync_point)) {
++		MALI_PRINT_ERROR(("Mali internal sync:Invalid size to create the mali internal sync point.\n"));
++		goto err;
++	}
++
++	sync_pt = kzalloc(size, GFP_KERNEL);
++	if (NULL == sync_pt) {
++		MALI_PRINT_ERROR(("Mali internal sync:Failed to  allocate buffer  for the mali internal sync point.\n"));
++		goto err;
++	}
++	spin_lock_irqsave(&sync_timeline->sync_pt_list_lock, flags);
++	kref_get(&sync_timeline->kref_count);
++	fence_init(&sync_pt->base, &fence_ops, &sync_timeline->sync_pt_list_lock,
++		   sync_timeline->fence_context, ++sync_timeline->value);
++	INIT_LIST_HEAD(&sync_pt->sync_pt_list);
++	spin_unlock_irqrestore(&sync_timeline->sync_pt_list_lock, flags);
++
++	return sync_pt;
++err:
++	if (NULL != sync_pt) {
++		kfree(sync_pt);
++	}
++	return NULL;
++}
++
++struct mali_internal_sync_fence *mali_internal_sync_fence_create(struct mali_internal_sync_point *sync_pt)
++{
++	struct mali_internal_sync_fence *sync_fence = NULL;
++
++	MALI_DEBUG_ASSERT_POINTER(sync_pt);
++
++	sync_fence = mali_internal_sync_fence_alloc(offsetof(struct mali_internal_sync_fence, cbs[1]));
++	if (NULL == sync_fence) {
++		MALI_PRINT_ERROR(("Mali internal sync:Failed to  create the mali internal sync fence.\n"));
++		return NULL;
++	}
++
++	atomic_set(&sync_fence->num_fences, 1);
++	atomic_set(&sync_fence->status, 1);
++
++	sync_fence->cbs[0].base = &sync_pt->base;
++	sync_fence->cbs[0].sync_fence = sync_fence;
++	if (fence_add_callback(&sync_pt->base, &sync_fence->cbs[0].cb,
++			       mali_internal_fence_check_cb_func))
++		atomic_dec(&sync_fence->status);
++
++	return sync_fence;
++}
++
++struct mali_internal_sync_fence *mali_internal_sync_fence_fdget(int fd)
++{
++	struct file *file = fget(fd);
++
++	if (NULL == file) {
++		return NULL;
++	}
++
++	return file->private_data;
++}
++
++struct mali_internal_sync_fence *mali_internal_sync_fence_merge(
++				    struct mali_internal_sync_fence *sync_fence1, struct mali_internal_sync_fence *sync_fence2)
++{
++	struct mali_internal_sync_fence *new_sync_fence;
++	int i, j, num_fence1, num_fence2, total_fences;
++
++	MALI_DEBUG_ASSERT_POINTER(sync_fence1);
++	MALI_DEBUG_ASSERT_POINTER(sync_fence2);
++
++	num_fence1 = atomic_read(&sync_fence1->num_fences);
++	num_fence2= atomic_read(&sync_fence2->num_fences);
++
++	total_fences = num_fence1 + num_fence2;
++
++	new_sync_fence = mali_internal_sync_fence_alloc(offsetof(struct mali_internal_sync_fence, cbs[total_fences]));
++	if (NULL == new_sync_fence) {
++		MALI_PRINT_ERROR(("Mali internal sync:Failed to  create the mali internal sync fence when merging sync fence.\n"));
++		return NULL;
++	}
++
++	for (i = j = 0; i < num_fence1 && j < num_fence2; ) {
++		struct fence *fence1 = sync_fence1->cbs[i].base;
++		struct fence *fence2 = sync_fence2->cbs[j].base;
++
++		if (fence1->context < fence2->context) {
++			mali_internal_sync_fence_add_fence(new_sync_fence, fence1);
++
++			i++;
++		} else if (fence1->context > fence2->context) {
++			mali_internal_sync_fence_add_fence(new_sync_fence, fence2);
++
++			j++;
++		} else {
++			if (fence1->seqno - fence2->seqno <= INT_MAX)
++				mali_internal_sync_fence_add_fence(new_sync_fence, fence1);
++			else
++				mali_internal_sync_fence_add_fence(new_sync_fence, fence2);
++			i++;
++			j++;
++		}
++	}
++
++	for (; i < num_fence1; i++)
++		mali_internal_sync_fence_add_fence(new_sync_fence, sync_fence1->cbs[i].base);
++
++	for (; j < num_fence2; j++)
++		mali_internal_sync_fence_add_fence(new_sync_fence, sync_fence2->cbs[j].base);
++
++	return new_sync_fence;
++}
++
++void mali_internal_sync_fence_waiter_init(struct mali_internal_sync_fence_waiter *waiter,
++                                          mali_internal_sync_callback_t callback)
++{
++	MALI_DEBUG_ASSERT_POINTER(waiter);
++	MALI_DEBUG_ASSERT_POINTER(callback);
++
++	INIT_LIST_HEAD(&waiter->work.task_list);
++	waiter->callback = callback;
++}
++
++int mali_internal_sync_fence_wait_async(struct mali_internal_sync_fence *sync_fence,
++			  struct mali_internal_sync_fence_waiter *waiter)
++{
++	int err;
++	unsigned long flags;
++
++	MALI_DEBUG_ASSERT_POINTER(sync_fence);
++	MALI_DEBUG_ASSERT_POINTER(waiter);
++
++	err = atomic_read(&sync_fence->status);
++
++	if (0 > err)
++		return err;
++
++	if (!err)
++		return 1;
++
++	init_waitqueue_func_entry(&waiter->work, mali_internal_sync_fence_wake_up_wq);
++	waiter->work.private = sync_fence;
++
++	spin_lock_irqsave(&sync_fence->wq.lock, flags);
++	err = atomic_read(&sync_fence->status);
++	if (0 < err)
++		__add_wait_queue_tail(&sync_fence->wq, &waiter->work);
++	spin_unlock_irqrestore(&sync_fence->wq.lock, flags);
++
++	if (0 > err)
++		return err;
++
++	return !err;
++}
++
++int mali_internal_sync_fence_cancel_async(struct mali_internal_sync_fence *sync_fence,
++			     struct mali_internal_sync_fence_waiter *waiter)
++{
++	unsigned long flags;
++	int ret = 0;
++
++	MALI_DEBUG_ASSERT_POINTER(sync_fence);
++	MALI_DEBUG_ASSERT_POINTER(waiter);
++
++	spin_lock_irqsave(&sync_fence->wq.lock, flags);
++	if (!list_empty(&waiter->work.task_list))
++		list_del_init(&waiter->work.task_list);
++	else
++		ret = -ENOENT;
++	spin_unlock_irqrestore(&sync_fence->wq.lock, flags);
++
++	return ret;
++}
++
++#if defined(DEBUG)
++static void mali_internal_sync_timeline_show(void)
++{
++	struct mali_session_data *session, *tmp;
++	u32 session_seq = 1;
++	MALI_DEBUG_PRINT(2, ("timeline system info: \n=================\n\n"));
++
++	mali_session_lock();
++	MALI_SESSION_FOREACH(session, tmp, link) {
++		MALI_DEBUG_PRINT(2, ("session %d <%p> start:\n", session_seq, session));
++		mali_timeline_debug_print_system(session->timeline_system, NULL);
++		MALI_DEBUG_PRINT(2, ("session %d end\n\n\n", session_seq++));
++	}
++	mali_session_unlock();
++}
++#endif
++static int mali_internal_sync_fence_wait(struct mali_internal_sync_fence *sync_fence, long timeout)
++{
++	long ret;
++	MALI_DEBUG_ASSERT_POINTER(sync_fence);
++
++	if (0 > timeout)
++		timeout = MAX_SCHEDULE_TIMEOUT;
++	else
++		timeout = msecs_to_jiffies(timeout);
++
++	ret = wait_event_interruptible_timeout(sync_fence->wq,
++		atomic_read(&sync_fence->status) <= 0, timeout);
++
++	if (0  > ret) {
++		return ret;
++	} else if (ret == 0) {
++		if (timeout) {
++			int i;
++			MALI_DEBUG_PRINT(2, ("Mali internal sync:fence timeout on [%p] after %dms\n",
++				sync_fence, jiffies_to_msecs(timeout)));
++
++			for (i = 0; i < atomic_read(&sync_fence->num_fences); ++i) {
++				sync_fence->cbs[i].base->ops->fence_value_str(sync_fence->cbs[i].base, NULL, 0);
++			}
++
++#if defined(DEBUG)
++			mali_internal_sync_timeline_show();
++#endif
++
++		}
++		return -ETIME;
++	}
++
++	ret = atomic_read(&sync_fence->status);
++	if (ret) {
++		int i;
++		MALI_DEBUG_PRINT(2, ("fence error %ld on [%p]\n", ret, sync_fence));
++		for (i = 0; i < atomic_read(&sync_fence->num_fences); ++i) {
++				sync_fence->cbs[i].base->ops->fence_value_str(sync_fence->cbs[i].base, NULL, 0);
++			}
++#if defined(DEBUG)
++		mali_internal_sync_timeline_show();
++#endif
++	}
++	return ret;
++}
++
++static const char *mali_internal_fence_get_driver_name(struct fence *fence)
++{
++	struct mali_internal_sync_point *sync_pt;
++	struct mali_internal_sync_timeline *parent;
++
++	MALI_DEBUG_ASSERT_POINTER(fence);
++
++	sync_pt = mali_internal_fence_to_sync_pt(fence);
++	parent = mali_internal_sync_pt_to_sync_timeline(sync_pt);
++
++	return parent->ops->driver_name;
++}
++
++static const char *mali_internal_fence_get_timeline_name(struct fence *fence)
++{
++	struct mali_internal_sync_point *sync_pt;
++	struct mali_internal_sync_timeline *parent;
++
++	MALI_DEBUG_ASSERT_POINTER(fence);
++
++	sync_pt = mali_internal_fence_to_sync_pt(fence);
++	parent = mali_internal_sync_pt_to_sync_timeline(sync_pt);
++
++	return parent->name;
++}
++
++static void mali_internal_fence_release(struct fence *fence)
++{
++	unsigned long flags;
++	struct mali_internal_sync_point *sync_pt;
++	struct mali_internal_sync_timeline *parent;
++
++	MALI_DEBUG_ASSERT_POINTER(fence);
++
++	sync_pt = mali_internal_fence_to_sync_pt(fence);
++	parent = mali_internal_sync_pt_to_sync_timeline(sync_pt);
++
++
++	spin_lock_irqsave(fence->lock, flags);
++	if (WARN_ON_ONCE(!list_empty(&sync_pt->sync_pt_list)))
++		list_del(&sync_pt->sync_pt_list);
++	spin_unlock_irqrestore(fence->lock, flags);
++
++	if (parent->ops->free_pt)
++		parent->ops->free_pt(sync_pt);
++
++	kref_put(&parent->kref_count, mali_internal_sync_timeline_free);
++	fence_free(&sync_pt->base);
++}
++
++static bool mali_internal_fence_signaled(struct fence *fence)
++{
++	int ret;
++	struct mali_internal_sync_point *sync_pt;
++	struct mali_internal_sync_timeline *parent;
++
++	MALI_DEBUG_ASSERT_POINTER(fence);
++
++	sync_pt = mali_internal_fence_to_sync_pt(fence);
++	parent = mali_internal_sync_pt_to_sync_timeline(sync_pt);
++
++	ret = parent->ops->has_signaled(sync_pt);
++	if (0 > ret)
++		fence->status = ret;
++	return ret;
++}
++
++static bool mali_internal_fence_enable_signaling(struct fence *fence)
++{
++	struct mali_internal_sync_point *sync_pt;
++	struct mali_internal_sync_timeline *parent;
++
++	MALI_DEBUG_ASSERT_POINTER(fence);
++
++	sync_pt = mali_internal_fence_to_sync_pt(fence);
++	parent = mali_internal_sync_pt_to_sync_timeline(sync_pt);
++
++	if (mali_internal_fence_signaled(fence))
++		return false;
++
++	list_add_tail(&sync_pt->sync_pt_list, &parent->sync_pt_list_head);
++	return true;
++}
++
++static void mali_internal_fence_value_str(struct fence *fence,
++				    char *str, int size)
++{
++	struct mali_internal_sync_point *sync_pt;
++	struct mali_internal_sync_timeline *parent;
++
++	MALI_DEBUG_ASSERT_POINTER(fence);
++	MALI_IGNORE(str);
++	MALI_IGNORE(size);
++
++	sync_pt = mali_internal_fence_to_sync_pt(fence);
++	parent = mali_internal_sync_pt_to_sync_timeline(sync_pt);
++
++	parent->ops->print_sync_pt(sync_pt);
++}
++
++static const struct fence_ops fence_ops = {
++	.get_driver_name = mali_internal_fence_get_driver_name,
++	.get_timeline_name = mali_internal_fence_get_timeline_name,
++	.enable_signaling = mali_internal_fence_enable_signaling,
++	.signaled = mali_internal_fence_signaled,
++	.wait = fence_default_wait,
++	.release = mali_internal_fence_release,
++	.fence_value_str = mali_internal_fence_value_str,
++};
++
++static void mali_internal_sync_fence_free(struct kref *kref_count)
++{
++	struct mali_internal_sync_fence *sync_fence;
++	int i, num_fences;
++
++	MALI_DEBUG_ASSERT_POINTER(kref_count);
++
++	sync_fence = container_of(kref_count, struct mali_internal_sync_fence, kref_count);
++	num_fences = atomic_read(&sync_fence->num_fences);
++
++	for (i = 0; i <num_fences; ++i) {
++		fence_remove_callback(sync_fence->cbs[i].base, &sync_fence->cbs[i].cb);
++		fence_put(sync_fence->cbs[i].base);
++	}
++
++	kfree(sync_fence);
++}
++
++static int mali_internal_sync_fence_release(struct inode *inode, struct file *file)
++{
++	struct mali_internal_sync_fence *sync_fence;
++	MALI_IGNORE(inode);
++	MALI_DEBUG_ASSERT_POINTER(file);
++	sync_fence = file->private_data;
++	kref_put(&sync_fence->kref_count, mali_internal_sync_fence_free);
++	return 0;
++}
++
++static unsigned int mali_internal_sync_fence_poll(struct file *file, poll_table *wait)
++{
++	int status;
++	struct mali_internal_sync_fence *sync_fence;
++
++	MALI_DEBUG_ASSERT_POINTER(file);
++	MALI_DEBUG_ASSERT_POINTER(wait);
++
++	sync_fence = file->private_data;
++	poll_wait(file, &sync_fence->wq, wait);
++	status = atomic_read(&sync_fence->status);
++
++	if (!status)
++		return POLLIN;
++	else if (status < 0)
++		return POLLERR;
++	return 0;
++}
++
++static long mali_internal_sync_fence_ioctl_wait(struct mali_internal_sync_fence *sync_fence, unsigned long arg)
++{
++	s32 value;
++	MALI_DEBUG_ASSERT_POINTER(sync_fence);
++
++	if (copy_from_user(&value, (void __user *)arg, sizeof(value))) {
++		MALI_PRINT_ERROR(("Mali internal sync:Failed to copy from user when sync fence ioctl wait.\n"));
++		return -EFAULT;
++	}
++	return mali_internal_sync_fence_wait(sync_fence, value);
++}
++
++static long mali_internal_sync_fence_ioctl_merge(struct mali_internal_sync_fence *old_sync_fence1, unsigned long arg)
++{
++	int err;
++	struct mali_internal_sync_fence *old_sync_fence2, *new_sync_fence;
++	struct mali_internal_sync_merge_data data;
++	int fd;
++
++	MALI_DEBUG_ASSERT_POINTER(old_sync_fence1);
++
++	fd = get_unused_fd_flags(O_CLOEXEC);
++
++	if (0 > fd) {
++		MALI_PRINT_ERROR(("Mali internal sync:Invaid fd when sync fence ioctl merge.\n"));
++		return fd;
++	}
++	if (copy_from_user(&data, (void __user *)arg, sizeof(data))) {
++		MALI_PRINT_ERROR(("Mali internal sync:Failed to copy from user when sync fence ioctl merge.\n"));
++		err = -EFAULT;
++		goto copy_from_user_failed;
++	}
++
++	old_sync_fence2 = mali_internal_sync_fence_fdget(data.fd);
++	if (NULL == old_sync_fence2) {
++		MALI_PRINT_ERROR(("Mali internal sync:Failed to sync fence fdget when sync fence ioctl merge.\n"));
++		err = -ENOENT;
++		goto sync_fence_fdget_failed;
++	}
++
++	new_sync_fence = mali_internal_sync_fence_merge(old_sync_fence1, old_sync_fence2);
++	if (NULL == new_sync_fence) {
++		MALI_PRINT_ERROR(("Mali internal sync:Failed to sync fence merge when sync fence ioctl merge.\n"));
++		err = -ENOMEM;
++		goto sync_fence_merge_failed;
++	}
++
++	data.fence = fd;
++	if (copy_to_user((void __user *)arg, &data, sizeof(data))) {
++		MALI_PRINT_ERROR(("Mali internal sync:Failed to copy to user when sync fence ioctl merge.\n"));
++		err = -EFAULT;
++		goto copy_to_user_failed;
++	}
++
++	fd_install(fd, new_sync_fence->file);
++	fput(old_sync_fence2->file);
++	return 0;
++
++copy_to_user_failed:
++	fput(new_sync_fence->file);
++sync_fence_merge_failed:
++	fput(old_sync_fence2->file);
++sync_fence_fdget_failed:
++copy_from_user_failed:
++	put_unused_fd(fd);
++	return err;
++}
++
++static long mali_internal_sync_fence_ioctl_fence_info(struct mali_internal_sync_fence *sync_fence, unsigned long arg)
++{
++	struct mali_internal_sync_info_data *sync_info_data;
++	u32 size;
++	char name[32]  = "mali_internal_fence";
++	u32 len = sizeof(struct mali_internal_sync_info_data);
++	int num_fences, err, i;
++
++	if (copy_from_user(&size, (void __user *)arg, sizeof(size))) {
++		MALI_PRINT_ERROR(("Mali internal sync:Failed to copy from user when sync fence ioctl fence data info.\n"));
++		err = -EFAULT;
++		goto copy_from_user_failed;
++	}
++
++	if (size < sizeof(struct mali_internal_sync_info_data)) {
++		MALI_PRINT_ERROR(("Mali internal sync:Failed to data size check when sync fence ioctl fence data info.\n"));
++		err=  -EINVAL;
++		goto data_size_check_failed;
++	}
++
++	if (size > 4096)
++		size = 4096;
++
++	sync_info_data = kzalloc(size, GFP_KERNEL);
++	if (sync_info_data  == NULL) {
++		MALI_PRINT_ERROR(("Mali internal sync:Failed to allocate buffer  when sync fence ioctl fence data info.\n"));
++		err = -ENOMEM;
++		goto allocate_buffer_failed;
++	}
++
++	strlcpy(sync_info_data->name, name, sizeof(sync_info_data->name));
++
++	sync_info_data->status = atomic_read(&sync_fence->status);
++	if (sync_info_data->status >= 0)
++		sync_info_data->status = !sync_info_data->status;
++
++	num_fences = atomic_read(&sync_fence->num_fences);
++
++	for (i = 0; i < num_fences; ++i) {
++		struct mali_internal_sync_pt_info *sync_pt_info = NULL;
++		struct fence *base = sync_fence->cbs[i].base;
++
++		if ((size - len) < sizeof(struct mali_internal_sync_pt_info)) {
++			MALI_PRINT_ERROR(("Mali internal sync:Failed to fence size check  when sync fence ioctl fence data info.\n"));
++			err = -ENOMEM;
++			goto fence_size_check_failed;
++
++		}
++
++		sync_pt_info = (struct mali_internal_sync_pt_info *)((u8 *)sync_info_data + len);
++		sync_pt_info->len = sizeof(struct mali_internal_sync_pt_info);
++
++		strlcpy(sync_pt_info->obj_name, base->ops->get_timeline_name(base), sizeof(sync_pt_info->obj_name));
++		strlcpy(sync_pt_info->driver_name, base->ops->get_driver_name(base), sizeof(sync_pt_info->driver_name));
++
++		if (fence_is_signaled(base))
++			sync_pt_info->status = base->status >= 0 ? 1 : base->status;
++		else
++			sync_pt_info->status = 0;
++
++		sync_pt_info->timestamp_ns = ktime_to_ns(base->timestamp);
++
++		len += sync_pt_info->len;
++	}
++
++	sync_info_data->len = len;
++
++	if (copy_to_user((void __user *)arg, sync_info_data, len)) {
++		MALI_PRINT_ERROR(("Mali internal sync:Failed to copy to user when sync fence ioctl fence data info.\n"));
++		err = -EFAULT;
++		goto copy_to_user_failed;
++	}
++
++	err = 0;
++
++copy_to_user_failed:
++fence_size_check_failed:
++	kfree(sync_info_data);
++allocate_buffer_failed:
++data_size_check_failed:
++copy_from_user_failed:
++	return err;
++}
++
++static long mali_internal_sync_fence_ioctl(struct file *file, unsigned int cmd,
++			     unsigned long arg)
++{
++	struct mali_internal_sync_fence *sync_fence = file->private_data;
++
++	switch (cmd) {
++	case MALI_INTERNAL_SYNC_IOC_WAIT:
++		return mali_internal_sync_fence_ioctl_wait(sync_fence, arg);
++
++	case MALI_INTERNAL_SYNC_IOC_MERGE:
++		return mali_internal_sync_fence_ioctl_merge(sync_fence, arg);
++
++	case MALI_INTERNAL_SYNC_IOC_FENCE_INFO:
++		return mali_internal_sync_fence_ioctl_fence_info(sync_fence, arg);
++	default:
++		return -ENOTTY;
++	}
++}
++
++static const struct file_operations sync_fence_fops = {
++	.release = mali_internal_sync_fence_release,
++	.poll = mali_internal_sync_fence_poll,
++	.unlocked_ioctl = mali_internal_sync_fence_ioctl,
++	.compat_ioctl = mali_internal_sync_fence_ioctl,
++};
++#endif
+diff --git a/driver/src/devicedrv/mali/linux/mali_internal_sync.h b/driver/src/devicedrv/mali/linux/mali_internal_sync.h
+new file mode 100644
+index 0000000..37673ae
+--- /dev/null
++++ b/driver/src/devicedrv/mali/linux/mali_internal_sync.h
+@@ -0,0 +1,144 @@
++/*
++ * This confidential and proprietary software may be used only as
++ * authorised by a licensing agreement from ARM Limited
++ * (C) COPYRIGHT 2012-2015 ARM Limited
++ * ALL RIGHTS RESERVED
++ * The entire notice above must be reproduced on all authorised
++ * copies and copies may only be made to the extent permitted
++ * by a licensing agreement from ARM Limited.
++ */
++
++/**
++ * @file mali_internal_sync.h
++ *
++ * Mali internal structure/interface for sync.
++ */
++
++#ifndef _MALI_INTERNAL_SYNC_H
++#define _MALI_INTERNAL_SYNC_H
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 6, 0)
++#include <linux/types.h>
++#include <linux/kref.h>
++#include <linux/list.h>
++#include <linux/spinlock.h>
++#include <linux/wait.h>
++#include <linux/fence.h>
++
++struct mali_internal_sync_timeline;
++struct mali_internal_sync_point;
++struct mali_internal_sync_fence;
++
++struct mali_internal_sync_timeline_ops {
++	const char *driver_name;
++	int (*has_signaled)(struct mali_internal_sync_point *pt);
++	void (*free_pt)(struct mali_internal_sync_point *sync_pt);
++	void (*release_obj)(struct mali_internal_sync_timeline *sync_timeline);
++	void (*print_sync_pt)(struct mali_internal_sync_point *sync_pt);
++};
++
++struct mali_internal_sync_timeline {
++	struct kref		kref_count;
++	const struct mali_internal_sync_timeline_ops  *ops;
++	char                    name[32];
++	bool			destroyed;
++	int			fence_context;
++	int 			value;
++	spinlock_t		sync_pt_list_lock;
++	struct list_head	sync_pt_list_head;
++};
++
++struct mali_internal_sync_point {
++	struct fence base;
++	struct list_head	sync_pt_list;
++};
++
++struct mali_internal_sync_fence_cb {
++        struct fence_cb cb;
++        struct fence *base;
++        struct mali_internal_sync_fence *sync_fence;
++};
++
++struct mali_internal_sync_fence {
++        struct file             *file;
++        struct kref             kref_count;
++        atomic_t num_fences;
++        wait_queue_head_t       wq;
++        atomic_t                status;
++        struct mali_internal_sync_fence_cb    cbs[];
++};
++
++struct mali_internal_sync_fence_waiter;
++
++typedef void (*mali_internal_sync_callback_t)(struct mali_internal_sync_fence *sync_fence,
++                                struct mali_internal_sync_fence_waiter *waiter);
++
++struct mali_internal_sync_fence_waiter {
++        wait_queue_t work;
++        mali_internal_sync_callback_t callback;
++};
++
++/**
++ * Create a mali internal sync timeline.
++ * @param ops The implementation ops for the mali internal sync timeline
++ * @param size The size to allocate
++ * @param name The sync_timeline name
++ * @return The new mali internal sync timeline if successful, NULL if not.
++ */
++struct mali_internal_sync_timeline *mali_internal_sync_timeline_create(const struct mali_internal_sync_timeline_ops *ops,
++			int size, const char *name);
++
++/**
++ * Destroy one mali internal sync timeline.
++ * @param sync_timeline The mali internal sync timeline to destroy.
++ */
++void mali_internal_sync_timeline_destroy(struct mali_internal_sync_timeline *sync_timeline);
++
++/**
++ * Signal one mali internal sync timeline.
++ * @param sync_timeline The mali internal sync timeline to signal.
++ */
++void mali_internal_sync_timeline_signal(struct mali_internal_sync_timeline *sync_timeline);
++
++/**
++ * Create one mali internal sync point.
++ * @param sync_timeline The mali internal sync timeline to add this mali internal sync point.
++  * @return the new mali internal sync point if successful, NULL if not.
++ */
++struct mali_internal_sync_point *mali_internal_sync_point_create(struct mali_internal_sync_timeline *sync_timeline, int size);
++
++/**
++ * Create a mali internal sync fence
++ * @param sync_pt The mali internel sync point to add
++ * @return the mali internal sync fence if successful, NULL if not.
++ */
++struct mali_internal_sync_fence *mali_internal_sync_fence_create(struct mali_internal_sync_point *sync_pt);
++
++/**
++ * Merge mali internal sync fences
++ * @param sync_fence1 The mali internal sync fence to merge
++ * @param sync_fence2 The mali internal sync fence to merge
++ * @return the new mali internal sync fence if successful, NULL if not.
++ */
++struct mali_internal_sync_fence *mali_internal_sync_fence_merge(struct mali_internal_sync_fence *sync_fence1,
++			struct mali_internal_sync_fence *sync_fence2);
++
++/**
++ * Get the mali internal sync fence from sync fd
++ * @param fd The sync handle to get the mali internal sync fence
++ * @return the mali internal sync fence if successful, NULL if not.
++ */
++struct mali_internal_sync_fence *mali_internal_sync_fence_fdget(int fd);
++
++
++void mali_internal_sync_fence_waiter_init(struct mali_internal_sync_fence_waiter *waiter,
++			mali_internal_sync_callback_t callback);
++
++int mali_internal_sync_fence_wait_async(struct mali_internal_sync_fence *sync_fence,
++			struct mali_internal_sync_fence_waiter *waiter);
++
++int mali_internal_sync_fence_cancel_async(struct mali_internal_sync_fence *sync_fence,
++			struct mali_internal_sync_fence_waiter *waiter);
++
++#endif /*LINUX_VERSION_CODE >= KERNEL_VERSION(4, 6, 0)*/
++#endif /* _MALI_INTERNAL_SYNC_H */
+diff --git a/driver/src/devicedrv/mali/linux/mali_memory_os_alloc.c b/driver/src/devicedrv/mali/linux/mali_memory_os_alloc.c
+index db6d008..91d6703 100755
+--- a/driver/src/devicedrv/mali/linux/mali_memory_os_alloc.c
++++ b/driver/src/devicedrv/mali/linux/mali_memory_os_alloc.c
+@@ -26,7 +26,9 @@
+ #define MALI_OS_MEMORY_KERNEL_BUFFER_SIZE_IN_PAGES (MALI_OS_MEMORY_KERNEL_BUFFER_SIZE_IN_MB * 256)
+ #define MALI_OS_MEMORY_POOL_TRIM_JIFFIES (10 * CONFIG_HZ) /* Default to 10s */
+ 
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 8, 0)
++static unsigned long dma_attrs_wc= 0;
++#elif LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0)
+ /* Write combine dma_attrs */
+ static DEFINE_DMA_ATTRS(dma_attrs_wc);
+ #endif
+@@ -515,7 +517,11 @@ _mali_osk_errcode_t mali_mem_os_get_table_page(mali_dma_addr *phys, mali_io_addr
+ 	spin_unlock(&mali_mem_page_table_page_pool.lock);
+ 
+ 	if (_MALI_OSK_ERR_OK != ret) {
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 8, 0)
++		*mapping = dma_alloc_attrs(&mali_platform_device->dev,
++					   _MALI_OSK_MALI_PAGE_SIZE, &tmp_phys,
++					   GFP_KERNEL, dma_attrs_wc);
++#elif LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0)
+ 		*mapping = dma_alloc_attrs(&mali_platform_device->dev,
+ 					   _MALI_OSK_MALI_PAGE_SIZE, &tmp_phys,
+ 					   GFP_KERNEL, &dma_attrs_wc);
+@@ -554,7 +560,11 @@ void mali_mem_os_release_table_page(mali_dma_addr phys, void *virt)
+ 	} else {
+ 		spin_unlock(&mali_mem_page_table_page_pool.lock);
+ 
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 8, 0)
++		dma_free_attrs(&mali_platform_device->dev,
++			     _MALI_OSK_MALI_PAGE_SIZE, virt, phys,
++			     dma_attrs_wc);
++#elif LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0)
+ 		dma_free_attrs(&mali_platform_device->dev,
+ 			       _MALI_OSK_MALI_PAGE_SIZE, virt, phys,
+ 			       &dma_attrs_wc);
+@@ -610,7 +620,10 @@ static void mali_mem_os_page_table_pool_free(size_t nr_to_free)
+ 
+ 	/* After releasing the spinlock: free the pages we removed from the pool. */
+ 	for (i = 0; i < nr_to_free; i++) {
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 8, 0)
++		dma_free_attrs(&mali_platform_device->dev, _MALI_OSK_MALI_PAGE_SIZE,
++		   	      virt_arr[i], (dma_addr_t)phys_arr[i], dma_attrs_wc);
++#elif LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0)
+ 		dma_free_attrs(&mali_platform_device->dev, _MALI_OSK_MALI_PAGE_SIZE,
+ 			       virt_arr[i], (dma_addr_t)phys_arr[i], &dma_attrs_wc);
+ #else
+@@ -760,8 +773,9 @@ _mali_osk_errcode_t mali_mem_os_init(void)
+ 	if (NULL == mali_mem_os_allocator.wq) {
+ 		return _MALI_OSK_ERR_NOMEM;
+ 	}
+-
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0)
++#if LINUX_VERSION_CODE >=  KERNEL_VERSION(4, 8, 0)
++	dma_attrs_wc = DMA_ATTR_WRITE_COMBINE;
++#elif LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0)
+ 	dma_set_attr(DMA_ATTR_WRITE_COMBINE, &dma_attrs_wc);
+ #endif
+ 
+diff --git a/driver/src/devicedrv/mali/linux/mali_memory_swap_alloc.c b/driver/src/devicedrv/mali/linux/mali_memory_swap_alloc.c
+index 84fa2f8..4e88c70 100755
+--- a/driver/src/devicedrv/mali/linux/mali_memory_swap_alloc.c
++++ b/driver/src/devicedrv/mali/linux/mali_memory_swap_alloc.c
+@@ -52,7 +52,7 @@ extern struct mali_mem_os_allocator mali_mem_os_allocator;
+ #define MALI_SWAP_LOW_MEM_DEFAULT_VALUE (60*1024*1024)
+ #define MALI_SWAP_INVALIDATE_MALI_ADDRESS (0)               /* Used to mark the given memory cookie is invalidate. */
+ #define MALI_SWAP_GLOBAL_SWAP_FILE_SIZE (0xFFFFFFFF)
+-#define MALI_SWAP_GLOBAL_SWAP_FILE_INDEX ((MALI_SWAP_GLOBAL_SWAP_FILE_SIZE) >> PAGE_CACHE_SHIFT)
++#define MALI_SWAP_GLOBAL_SWAP_FILE_INDEX ((MALI_SWAP_GLOBAL_SWAP_FILE_SIZE) >> PAGE_SHIFT)
+ #define MALI_SWAP_GLOBAL_SWAP_FILE_INDEX_RESERVE (1 << 15) /* Reserved for CoW nonlinear swap backend memory, the space size is 128MB. */
+ 
+ unsigned int mali_mem_swap_out_threshold_value = MALI_SWAP_LOW_MEM_DEFAULT_VALUE;
+@@ -183,7 +183,7 @@ static void mali_mem_swap_out_page_node(mali_page_node *page_node)
+ 	dma_unmap_page(&mali_platform_device->dev, page_node->swap_it->dma_addr,
+ 		       _MALI_OSK_MALI_PAGE_SIZE, DMA_TO_DEVICE);
+ 	set_page_dirty(page_node->swap_it->page);
+-	page_cache_release(page_node->swap_it->page);
++	put_page(page_node->swap_it->page);
+ }
+ 
+ void mali_mem_swap_unlock_single_mem_backend(mali_mem_backend *mem_bkend)
+diff --git a/driver/src/devicedrv/mali/linux/mali_sync.c b/driver/src/devicedrv/mali/linux/mali_sync.c
+index fa15803..5fab974 100755
+--- a/driver/src/devicedrv/mali/linux/mali_sync.c
++++ b/driver/src/devicedrv/mali/linux/mali_sync.c
+@@ -20,9 +20,17 @@
+ #include <linux/module.h>
+ 
+ struct mali_sync_pt {
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ 	struct sync_pt         sync_pt;
++#else
++	struct mali_internal_sync_point         sync_pt;
++#endif
+ 	struct mali_sync_flag *flag;
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ 	struct sync_timeline *sync_tl;  /**< Sync timeline this pt is connected to. */
++#else
++	struct mali_internal_sync_timeline *sync_tl;  /**< Sync timeline this pt is connected to. */
++#endif
+ };
+ 
+ /**
+@@ -30,7 +38,11 @@ struct mali_sync_pt {
+  * created from a sync flag, and when the flag is signaled, the sync fences will also be signaled.
+  */
+ struct mali_sync_flag {
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ 	struct sync_timeline *sync_tl;  /**< Sync timeline this flag is connected to. */
++#else
++	struct mali_internal_sync_timeline *sync_tl;  /**< Sync timeline this flag is connected to. */
++#endif
+ 	u32                   point;    /**< Point on timeline. */
+ 	int                   status;   /**< 0 if unsignaled, 1 if signaled without error or negative if signaled with error. */
+ 	struct kref           refcount; /**< Reference count. */
+@@ -41,41 +53,37 @@ struct mali_sync_flag {
+  * When fence timeout can print more detailed mali timeline system info.
+  */
+ struct mali_sync_timeline_container {
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ 	struct sync_timeline sync_timeline;
++#else
++	struct mali_internal_sync_timeline sync_timeline;
++#endif
+ 	struct mali_timeline *timeline;
+ };
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ MALI_STATIC_INLINE struct mali_sync_pt *to_mali_sync_pt(struct sync_pt *pt)
++#else
++MALI_STATIC_INLINE struct mali_sync_pt *to_mali_sync_pt(struct mali_internal_sync_point *pt)
++#endif
+ {
+ 	return container_of(pt, struct mali_sync_pt, sync_pt);
+ }
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ MALI_STATIC_INLINE struct mali_sync_timeline_container *to_mali_sync_tl_container(struct sync_timeline *sync_tl)
++#else
++MALI_STATIC_INLINE struct mali_sync_timeline_container *to_mali_sync_tl_container(struct mali_internal_sync_timeline *sync_tl)
++#endif
+ {
+ 	return container_of(sync_tl, struct mali_sync_timeline_container, sync_timeline);
+ }
+ 
+-static struct sync_pt *timeline_dup(struct sync_pt *pt)
+-{
+-	struct mali_sync_pt *mpt, *new_mpt;
+-	struct sync_pt *new_pt;
+-
+-	MALI_DEBUG_ASSERT_POINTER(pt);
+-	mpt = to_mali_sync_pt(pt);
+-
+-	new_pt = sync_pt_create(mpt->sync_tl, sizeof(struct mali_sync_pt));
+-	if (NULL == new_pt) return NULL;
+-
+-	new_mpt = to_mali_sync_pt(new_pt);
+-
+-	mali_sync_flag_get(mpt->flag);
+-	new_mpt->flag = mpt->flag;
+-	new_mpt->sync_tl = mpt->sync_tl;
+-
+-	return new_pt;
+-}
+-
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ static int timeline_has_signaled(struct sync_pt *pt)
++#else
++static int timeline_has_signaled(struct mali_internal_sync_point *pt)
++#endif
+ {
+ 	struct mali_sync_pt *mpt;
+ 
+@@ -87,29 +95,11 @@ static int timeline_has_signaled(struct sync_pt *pt)
+ 	return mpt->flag->status;
+ }
+ 
+-static int timeline_compare(struct sync_pt *pta, struct sync_pt *ptb)
+-{
+-	struct mali_sync_pt *mpta;
+-	struct mali_sync_pt *mptb;
+-	u32 a, b;
+-
+-	MALI_DEBUG_ASSERT_POINTER(pta);
+-	MALI_DEBUG_ASSERT_POINTER(ptb);
+-	mpta = to_mali_sync_pt(pta);
+-	mptb = to_mali_sync_pt(ptb);
+-
+-	MALI_DEBUG_ASSERT_POINTER(mpta->flag);
+-	MALI_DEBUG_ASSERT_POINTER(mptb->flag);
+-
+-	a = mpta->flag->point;
+-	b = mptb->flag->point;
+-
+-	if (a == b) return 0;
+-
+-	return ((b - a) < (a - b) ? -1 : 1);
+-}
+-
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ static void timeline_free_pt(struct sync_pt *pt)
++#else
++static void timeline_free_pt(struct mali_internal_sync_point *pt)
++#endif
+ {
+ 	struct mali_sync_pt *mpt;
+ 
+@@ -119,7 +109,11 @@ static void timeline_free_pt(struct sync_pt *pt)
+ 	mali_sync_flag_put(mpt->flag);
+ }
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ static void timeline_release(struct sync_timeline *sync_timeline)
++#else
++static void timeline_release(struct mali_internal_sync_timeline *sync_timeline)
++#endif
+ {
+ 	struct mali_sync_timeline_container *mali_sync_tl = NULL;
+ 	struct mali_timeline *mali_tl = NULL;
+@@ -142,6 +136,50 @@ static void timeline_release(struct sync_timeline *sync_timeline)
+ 	module_put(THIS_MODULE);
+ }
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
++static struct sync_pt *timeline_dup(struct sync_pt *pt)
++{
++	struct mali_sync_pt *mpt, *new_mpt;
++	struct sync_pt *new_pt;
++	MALI_DEBUG_ASSERT_POINTER(pt);
++
++	mpt = to_mali_sync_pt(pt);
++
++	new_pt = sync_pt_create(mpt->sync_tl, sizeof(struct mali_sync_pt));
++	if (NULL == new_pt) return NULL;
++
++	new_mpt = to_mali_sync_pt(new_pt);
++
++	mali_sync_flag_get(mpt->flag);
++	new_mpt->flag = mpt->flag;
++	new_mpt->sync_tl = mpt->sync_tl;
++
++	return new_pt;
++}
++
++static int timeline_compare(struct sync_pt *pta, struct sync_pt *ptb)
++{
++	struct mali_sync_pt *mpta;
++	struct mali_sync_pt *mptb;
++	u32 a, b;
++
++	MALI_DEBUG_ASSERT_POINTER(pta);
++	MALI_DEBUG_ASSERT_POINTER(ptb);
++	mpta = to_mali_sync_pt(pta);
++	mptb = to_mali_sync_pt(ptb);
++
++	MALI_DEBUG_ASSERT_POINTER(mpta->flag);
++	MALI_DEBUG_ASSERT_POINTER(mptb->flag);
++
++	a = mpta->flag->point;
++	b = mptb->flag->point;
++
++	if (a == b) return 0;
++
++	return ((b - a) < (a - b) ? -1 : 1);
++}
++#endif
++
+ #if LINUX_VERSION_CODE < KERNEL_VERSION(3, 17, 0)
+ static void timeline_print_pt(struct seq_file *s, struct sync_pt *sync_pt)
+ {
+@@ -198,7 +236,7 @@ static void timeline_print_obj(struct seq_file *s, struct sync_timeline *sync_tl
+ #endif
+ 	}
+ }
+-#else
++#elif LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ static void timeline_pt_value_str(struct sync_pt *pt, char *str, int size)
+ {
+ 	struct mali_sync_pt *mpt;
+@@ -254,9 +292,24 @@ static void timeline_value_str(struct sync_timeline *timeline, char *str, int si
+ #endif
+ 	}
+ }
+-#endif
++#else
++static void timeline_print_sync_pt(struct mali_internal_sync_point *sync_pt)
++{
++	struct mali_sync_pt *mpt;
++
++	MALI_DEBUG_ASSERT_POINTER(sync_pt);
+ 
++	mpt = to_mali_sync_pt(sync_pt);
++
++	if (mpt->flag) {
++		MALI_DEBUG_PRINT(2, ("mali_internal_sync_pt: %u\n", mpt->flag->point));
++	} else {
++		MALI_DEBUG_PRINT(2, ("uninitialized\n", mpt->flag->point));
++	}
++}
++#endif
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ static struct sync_timeline_ops mali_timeline_ops = {
+ 	.driver_name    = "Mali",
+ 	.dup            = timeline_dup,
+@@ -363,43 +416,145 @@ struct mali_sync_flag *mali_sync_flag_create(struct sync_timeline *sync_tl, mali
+ 	return flag;
+ }
+ 
+-void mali_sync_flag_get(struct mali_sync_flag *flag)
+-{
+-	MALI_DEBUG_ASSERT_POINTER(flag);
+-	kref_get(&flag->refcount);
+-}
+-
+ /**
+- * Free sync flag.
++ * Create a sync point attached to given sync flag.
+  *
+- * @param ref kref object embedded in sync flag that should be freed.
++ * @note Sync points must be triggered in *exactly* the same order as they are created.
++ *
++ * @param flag Sync flag.
++ * @return New sync point if successful, NULL if not.
+  */
+-static void mali_sync_flag_free(struct kref *ref)
++static struct sync_pt *mali_sync_flag_create_pt(struct mali_sync_flag *flag)
+ {
+-	struct mali_sync_flag *flag;
++	struct sync_pt *pt;
++	struct mali_sync_pt *mpt;
+ 
+-	MALI_DEBUG_ASSERT_POINTER(ref);
+-	flag = container_of(ref, struct mali_sync_flag, refcount);
++	MALI_DEBUG_ASSERT_POINTER(flag);
++	MALI_DEBUG_ASSERT_POINTER(flag->sync_tl);
+ 
+-	_mali_osk_free(flag);
++	pt = sync_pt_create(flag->sync_tl, sizeof(struct mali_sync_pt));
++	if (NULL == pt) return NULL;
++
++	mali_sync_flag_get(flag);
++
++	mpt = to_mali_sync_pt(pt);
++	mpt->flag = flag;
++	mpt->sync_tl = flag->sync_tl;
++
++	return pt;
+ }
+ 
+-void mali_sync_flag_put(struct mali_sync_flag *flag)
++struct sync_fence *mali_sync_flag_create_fence(struct mali_sync_flag *flag)
+ {
++	struct sync_pt    *sync_pt;
++	struct sync_fence *sync_fence;
++
+ 	MALI_DEBUG_ASSERT_POINTER(flag);
+-	kref_put(&flag->refcount, mali_sync_flag_free);
++	MALI_DEBUG_ASSERT_POINTER(flag->sync_tl);
++
++	sync_pt = mali_sync_flag_create_pt(flag);
++	if (NULL == sync_pt) return NULL;
++
++	sync_fence = sync_fence_create("mali_flag_fence", sync_pt);
++	if (NULL == sync_fence) {
++		sync_pt_free(sync_pt);
++		return NULL;
++	}
++
++	return sync_fence;
+ }
++#else
++static struct mali_internal_sync_timeline_ops mali_timeline_ops = {
++	.driver_name    = "Mali",
++	.has_signaled   = timeline_has_signaled,
++	.free_pt        = timeline_free_pt,
++	.release_obj    = timeline_release,
++	.print_sync_pt = timeline_print_sync_pt,
++};
+ 
+-void mali_sync_flag_signal(struct mali_sync_flag *flag, int error)
++struct mali_internal_sync_timeline *mali_sync_timeline_create(struct mali_timeline *timeline, const char *name)
+ {
+-	MALI_DEBUG_ASSERT_POINTER(flag);
++	struct mali_internal_sync_timeline *sync_tl;
++	struct mali_sync_timeline_container *mali_sync_tl;
+ 
+-	MALI_DEBUG_ASSERT(0 == flag->status);
+-	flag->status = (0 > error) ? error : 1;
++	sync_tl = mali_internal_sync_timeline_create(&mali_timeline_ops, sizeof(struct mali_sync_timeline_container), name);
++	if (NULL == sync_tl) return NULL;
+ 
+-	_mali_osk_write_mem_barrier();
++	mali_sync_tl = to_mali_sync_tl_container(sync_tl);
++	mali_sync_tl->timeline = timeline;
+ 
+-	sync_timeline_signal(flag->sync_tl);
++	/* Grab a reference on the module to ensure the callbacks are present
++	 * as long some timeline exists. The reference is released when the
++	 * timeline is freed.
++	 * Since this function is called from a ioctl on an open file we know
++	 * we already have a reference, so using __module_get is safe. */
++	__module_get(THIS_MODULE);
++
++	return sync_tl;
++}
++
++s32 mali_sync_fence_fd_alloc(struct mali_internal_sync_fence *sync_fence)
++{
++	s32 fd = -1;
++
++	fd = get_unused_fd_flags(0);
++
++	if (fd < 0) {
++		fput(sync_fence->file);
++		return -1;
++	}
++	fd_install(fd, sync_fence->file);
++	return fd;
++}
++
++struct mali_internal_sync_fence *mali_sync_fence_merge(struct mali_internal_sync_fence *sync_fence1, struct mali_internal_sync_fence *sync_fence2)
++{
++	struct mali_internal_sync_fence *sync_fence;
++
++	MALI_DEBUG_ASSERT_POINTER(sync_fence1);
++	MALI_DEBUG_ASSERT_POINTER(sync_fence1);
++
++	sync_fence = mali_internal_sync_fence_merge(sync_fence1, sync_fence2);
++	fput(sync_fence1->file);
++	fput(sync_fence2->file);
++
++	return sync_fence;
++}
++
++struct mali_internal_sync_fence *mali_sync_timeline_create_signaled_fence(struct mali_internal_sync_timeline *sync_tl)
++{
++	struct mali_sync_flag *flag;
++	struct mali_internal_sync_fence *sync_fence;
++
++	MALI_DEBUG_ASSERT_POINTER(sync_tl);
++
++	flag = mali_sync_flag_create(sync_tl, 0);
++	if (NULL == flag) return NULL;
++
++	sync_fence = mali_sync_flag_create_fence(flag);
++
++	mali_sync_flag_signal(flag, 0);
++	mali_sync_flag_put(flag);
++
++	return sync_fence;
++}
++
++struct mali_sync_flag *mali_sync_flag_create(struct mali_internal_sync_timeline *sync_tl, mali_timeline_point point)
++{
++	struct mali_sync_flag *flag;
++
++	if (NULL == sync_tl) return NULL;
++
++	flag = _mali_osk_calloc(1, sizeof(*flag));
++	if (NULL == flag) return NULL;
++
++	flag->sync_tl = sync_tl;
++	flag->point = point;
++
++	flag->status = 0;
++	kref_init(&flag->refcount);
++
++	return flag;
+ }
+ 
+ /**
+@@ -410,17 +565,20 @@ void mali_sync_flag_signal(struct mali_sync_flag *flag, int error)
+  * @param flag Sync flag.
+  * @return New sync point if successful, NULL if not.
+  */
+-static struct sync_pt *mali_sync_flag_create_pt(struct mali_sync_flag *flag)
++static struct mali_internal_sync_point *mali_sync_flag_create_pt(struct mali_sync_flag *flag)
+ {
+-	struct sync_pt *pt;
++	struct mali_internal_sync_point *pt;
+ 	struct mali_sync_pt *mpt;
+ 
+ 	MALI_DEBUG_ASSERT_POINTER(flag);
+ 	MALI_DEBUG_ASSERT_POINTER(flag->sync_tl);
+ 
+-	pt = sync_pt_create(flag->sync_tl, sizeof(struct mali_sync_pt));
+-	if (NULL == pt) return NULL;
++	pt = mali_internal_sync_point_create(flag->sync_tl, sizeof(struct mali_sync_pt));
+ 
++	if (pt == NULL) {
++		MALI_PRINT_ERROR(("Mali sync: sync_pt creation failed\n"));
++		return NULL;
++	}
+ 	mali_sync_flag_get(flag);
+ 
+ 	mpt = to_mali_sync_pt(pt);
+@@ -430,22 +588,70 @@ static struct sync_pt *mali_sync_flag_create_pt(struct mali_sync_flag *flag)
+ 	return pt;
+ }
+ 
+-struct sync_fence *mali_sync_flag_create_fence(struct mali_sync_flag *flag)
++struct mali_internal_sync_fence *mali_sync_flag_create_fence(struct mali_sync_flag *flag)
+ {
+-	struct sync_pt    *sync_pt;
+-	struct sync_fence *sync_fence;
++	struct mali_internal_sync_point    *sync_pt;
++	struct mali_internal_sync_fence *sync_fence;
+ 
+ 	MALI_DEBUG_ASSERT_POINTER(flag);
+ 	MALI_DEBUG_ASSERT_POINTER(flag->sync_tl);
+ 
+ 	sync_pt = mali_sync_flag_create_pt(flag);
+-	if (NULL == sync_pt) return NULL;
+-
+-	sync_fence = sync_fence_create("mali_flag_fence", sync_pt);
++	if (NULL == sync_pt) {
++		MALI_PRINT_ERROR(("Mali sync: sync_pt creation failed\n"));
++		return NULL;
++	}
++	sync_fence = mali_internal_sync_fence_create(sync_pt);
+ 	if (NULL == sync_fence) {
+-		sync_pt_free(sync_pt);
++		MALI_PRINT_ERROR(("Mali sync: sync_fence creation failed\n"));
++		fence_put(&sync_pt->base);
+ 		return NULL;
+ 	}
+ 
+ 	return sync_fence;
+ }
++#endif
++
++void mali_sync_flag_get(struct mali_sync_flag *flag)
++{
++	MALI_DEBUG_ASSERT_POINTER(flag);
++	kref_get(&flag->refcount);
++}
++
++/**
++ * Free sync flag.
++ *
++ * @param ref kref object embedded in sync flag that should be freed.
++ */
++static void mali_sync_flag_free(struct kref *ref)
++{
++	struct mali_sync_flag *flag;
++
++	MALI_DEBUG_ASSERT_POINTER(ref);
++	flag = container_of(ref, struct mali_sync_flag, refcount);
++
++	_mali_osk_free(flag);
++}
++
++void mali_sync_flag_put(struct mali_sync_flag *flag)
++{
++	MALI_DEBUG_ASSERT_POINTER(flag);
++	kref_put(&flag->refcount, mali_sync_flag_free);
++}
++
++void mali_sync_flag_signal(struct mali_sync_flag *flag, int error)
++{
++	MALI_DEBUG_ASSERT_POINTER(flag);
++
++	MALI_DEBUG_ASSERT(0 == flag->status);
++	flag->status = (0 > error) ? error : 1;
++
++	_mali_osk_write_mem_barrier();
++#if  LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
++	sync_timeline_signal(flag->sync_tl);
++#else
++	mali_internal_sync_timeline_signal(flag->sync_tl);
++#endif
++}
++
++
+diff --git a/driver/src/devicedrv/mali/linux/mali_sync.h b/driver/src/devicedrv/mali/linux/mali_sync.h
+index da023c3..c3d7d32 100755
+--- a/driver/src/devicedrv/mali/linux/mali_sync.h
++++ b/driver/src/devicedrv/mali/linux/mali_sync.h
+@@ -17,14 +17,17 @@
+ #ifndef _MALI_SYNC_H_
+ #define _MALI_SYNC_H_
+ 
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
+ 
+ #include <linux/seq_file.h>
+ #include <linux/version.h>
++
+ #if LINUX_VERSION_CODE < KERNEL_VERSION(3, 10, 0)
+ #include <linux/sync.h>
+-#else
++#elif LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ #include <sync.h>
++#else
++#include "mali_internal_sync.h"
+ #endif
+ 
+ 
+@@ -33,6 +36,7 @@
+ struct mali_sync_flag;
+ struct mali_timeline;
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
+ /**
+  * Create a sync timeline.
+  *
+@@ -67,6 +71,7 @@ struct sync_fence *mali_sync_fence_merge(struct sync_fence *sync_fence1, struct
+  */
+ struct sync_fence *mali_sync_timeline_create_signaled_fence(struct sync_timeline *sync_tl);
+ 
++
+ /**
+  * Create a sync flag.
+  *
+@@ -77,6 +82,67 @@ struct sync_fence *mali_sync_timeline_create_signaled_fence(struct sync_timeline
+ struct mali_sync_flag *mali_sync_flag_create(struct sync_timeline *sync_tl, u32 point);
+ 
+ /**
++ * Create a sync fence attached to given sync flag.
++ *
++ * @param flag Sync flag.
++ * @return New sync fence if successful, NULL if not.
++ */
++struct sync_fence *mali_sync_flag_create_fence(struct mali_sync_flag *flag);
++#else
++/**
++ * Create a sync timeline.
++ *
++ * @param name Name of the sync timeline.
++ * @return The new sync timeline if successful, NULL if not.
++ */
++struct mali_internal_sync_timeline *mali_sync_timeline_create(struct mali_timeline *timeline, const char *name);
++
++/**
++ * Creates a file descriptor representing the sync fence.  Will release sync fence if allocation of
++ * file descriptor fails.
++ *
++ * @param sync_fence Sync fence.
++ * @return File descriptor representing sync fence if successful, or -1 if not.
++ */
++s32 mali_sync_fence_fd_alloc(struct mali_internal_sync_fence *sync_fence);
++
++/**
++ * Merges two sync fences.  Both input sync fences will be released.
++ *
++ * @param sync_fence1 First sync fence.
++ * @param sync_fence2 Second sync fence.
++ * @return New sync fence that is the result of the merger if successful, or NULL if not.
++ */
++struct mali_internal_sync_fence *mali_sync_fence_merge(struct mali_internal_sync_fence *sync_fence1, struct mali_internal_sync_fence *sync_fence2);
++
++/**
++ * Create a sync fence that is already signaled.
++ *
++ * @param tl Sync timeline.
++ * @return New signaled sync fence if successful, NULL if not.
++ */
++struct mali_internal_sync_fence *mali_sync_timeline_create_signaled_fence(struct mali_internal_sync_timeline *sync_tl);
++
++
++/**
++ * Create a sync flag.
++ *
++ * @param sync_tl Sync timeline.
++ * @param point Point on Mali timeline.
++ * @return New sync flag if successful, NULL if not.
++ */
++struct mali_sync_flag *mali_sync_flag_create(struct mali_internal_sync_timeline *sync_tl, u32 point);
++
++/**
++ * Create a sync fence attached to given sync flag.
++ *
++ * @param flag Sync flag.
++ * @return New sync fence if successful, NULL if not.
++ */
++struct mali_internal_sync_fence *mali_sync_flag_create_fence(struct mali_sync_flag *flag);
++
++#endif
++/**
+  * Grab sync flag reference.
+  *
+  * @param flag Sync flag.
+@@ -98,14 +164,6 @@ void mali_sync_flag_put(struct mali_sync_flag *flag);
+  */
+ void mali_sync_flag_signal(struct mali_sync_flag *flag, int error);
+ 
+-/**
+- * Create a sync fence attached to given sync flag.
+- *
+- * @param flag Sync flag.
+- * @return New sync fence if successful, NULL if not.
+- */
+-struct sync_fence *mali_sync_flag_create_fence(struct mali_sync_flag *flag);
+-
+-#endif /* defined(CONFIG_SYNC) */
++#endif /* defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE) */
+ 
+ #endif /* _MALI_SYNC_H_ */
+diff --git a/driver/src/devicedrv/mali/linux/mali_ukk_timeline.c b/driver/src/devicedrv/mali/linux/mali_ukk_timeline.c
+index 53ed2c6..cdad3de 100755
+--- a/driver/src/devicedrv/mali/linux/mali_ukk_timeline.c
++++ b/driver/src/devicedrv/mali/linux/mali_ukk_timeline.c
+@@ -76,11 +76,11 @@ int timeline_create_sync_fence_wrapper(struct mali_session_data *session, _mali_
+ 	if (0 != copy_from_user(&uk_fence, &uargs->fence, sizeof(_mali_uk_fence_t))) return -EFAULT;
+ 	mali_timeline_fence_copy_uk_fence(&fence, &uk_fence);
+ 
+-#if defined(CONFIG_SYNC)
++#if defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE)
+ 	sync_fd = mali_timeline_sync_fence_create(session->timeline_system, &fence);
+ #else
+ 	sync_fd = -1;
+-#endif /* defined(CONFIG_SYNC) */
++#endif /* defined(CONFIG_SYNC) || defined(CONFIG_SYNC_FILE) */
+ 
+ 	if (0 != put_user(sync_fd, &uargs->sync_fd)) return -EFAULT;
+ 
+diff --git a/driver/src/devicedrv/ump/linux/ump_kernel_linux.c b/driver/src/devicedrv/ump/linux/ump_kernel_linux.c
+index de9d478..77bc855 100755
+--- a/driver/src/devicedrv/ump/linux/ump_kernel_linux.c
++++ b/driver/src/devicedrv/ump/linux/ump_kernel_linux.c
+@@ -107,7 +107,7 @@ static int ump_initialize_module(void)
+ {
+ 	_mali_osk_errcode_t err;
+ 
+-	DBG_MSG(2, ("Inserting UMP device driver. Compiled: %s, time: %s\n", __DATE__, __TIME__));
++	//DBG_MSG(2, ("Inserting UMP device driver. Compiled: %s, time: %s\n", __DATE__, __TIME__));
+ 
+ 	err = ump_kernel_constructor();
+ 	if (_MALI_OSK_ERR_OK != err) {
