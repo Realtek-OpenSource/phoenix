@@ -45,9 +45,11 @@
 
 
 /*------------------------Define local variable------------------------------*/
+#ifdef CONFIG_RF_SHADOW_RW
 /* 2008/11/20 MH For Debug only, RF
  * static	RF_SHADOW_T	RF_Shadow[RF6052_MAX_PATH][RF6052_MAX_REG] = {0}; */
 static	RF_SHADOW_T	RF_Shadow[RF6052_MAX_PATH][RF6052_MAX_REG];
+#endif /*CONFIG_RF_SHADOW_RW*/
 /*------------------------Define local variable------------------------------*/
 
 /*-----------------------------------------------------------------------------

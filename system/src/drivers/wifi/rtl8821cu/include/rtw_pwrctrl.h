@@ -397,6 +397,7 @@ struct pwrctrl_priv {
 #ifdef CONFIG_GPIO_WAKEUP
 	u8		is_high_active;
 #endif /* CONFIG_GPIO_WAKEUP */
+	u8		hst2dev_high_active;
 #ifdef CONFIG_WOWLAN
 	bool		default_patterns_en;
 #ifdef CONFIG_IPV6

@@ -1071,7 +1071,7 @@ static u8 _bfer_set_entry_gid(PADAPTER adapter, u8 *addr, u8 *gid, u8 *position)
 	struct beamformer_entry bfer;
 
 	memset(&bfer, 0, sizeof(bfer));
-	memcpy(bfer.mac_addr, addr, 6);
+	memcpy(bfer.mac_addr, addr, ETH_ALEN);
 
 	/* Parsing Membership Status Array */
 	memcpy(bfer.gid_valid, gid, 8);
@@ -2916,7 +2916,7 @@ u32	rtw_beamforming_get_report_frame(PADAPTER	 Adapter, union recv_frame *precv_
 	u32	ret = _SUCCESS;
 #if (BEAMFORMING_SUPPORT == 1)
 	PHAL_DATA_TYPE	pHalData = GET_HAL_DATA(Adapter);
-	struct PHY_DM_STRUCT		*pDM_Odm = &(pHalData->odmpriv);
+	struct dm_struct		*pDM_Odm = &(pHalData->odmpriv);
 
 	ret = beamforming_get_report_frame(pDM_Odm, precv_frame);
 
@@ -2963,7 +2963,7 @@ void	rtw_beamforming_get_ndpa_frame(PADAPTER	 Adapter, union recv_frame *precv_f
 {
 #if (BEAMFORMING_SUPPORT == 1)
 	PHAL_DATA_TYPE	pHalData = GET_HAL_DATA(Adapter);
-	struct PHY_DM_STRUCT		*pDM_Odm = &(pHalData->odmpriv);
+	struct dm_struct		*pDM_Odm = &(pHalData->odmpriv);
 
 	beamforming_get_ndpa_frame(pDM_Odm, precv_frame);
 
@@ -3039,7 +3039,7 @@ void	rtw_beamforming_get_ndpa_frame(PADAPTER	 Adapter, union recv_frame *precv_f
 void	beamforming_wk_hdl(_adapter *padapter, u8 type, u8 *pbuf)
 {
 	PHAL_DATA_TYPE	pHalData = GET_HAL_DATA(padapter);
-	struct PHY_DM_STRUCT		*pDM_Odm = &(pHalData->odmpriv);
+	struct dm_struct		*pDM_Odm = &(pHalData->odmpriv);
 
 #if (BEAMFORMING_SUPPORT == 1) /*(BEAMFORMING_SUPPORT == 1)- for PHYDM beamfoming*/
 	switch (type) {

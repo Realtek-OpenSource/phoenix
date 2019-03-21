@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2007 - 2017 Realtek Corporation.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -11,12 +11,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
  *
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
- *
- *
- ******************************************************************************/
+ *****************************************************************************/
 #define _HCI_HAL_INIT_C_
 
 /* #include <drv_types.h> */
@@ -78,6 +73,44 @@ _ConfigChipOutEP_8812(
 
 }
 
+static VOID _FourOutPipeMapping88212AU(
+	IN	PADAPTER	pAdapter,
+	IN	BOOLEAN		bWIFICfg
+)
+{
+	struct dvobj_priv	*pdvobjpriv = adapter_to_dvobj(pAdapter);
+
+	if (bWIFICfg) { /* for WMM */
+
+		/* 0:H, 1:N, 2:L ,3:E */
+
+		pdvobjpriv->Queue2Pipe[0] = pdvobjpriv->RtOutPipe[0];/* VO */
+		pdvobjpriv->Queue2Pipe[1] = pdvobjpriv->RtOutPipe[1];/* VI */
+		pdvobjpriv->Queue2Pipe[2] = pdvobjpriv->RtOutPipe[2];/* BE */
+		pdvobjpriv->Queue2Pipe[3] = pdvobjpriv->RtOutPipe[1];/* BK */
+
+		pdvobjpriv->Queue2Pipe[4] = pdvobjpriv->RtOutPipe[0];/* BCN */
+		pdvobjpriv->Queue2Pipe[5] = pdvobjpriv->RtOutPipe[0];/* MGT */
+		pdvobjpriv->Queue2Pipe[6] = pdvobjpriv->RtOutPipe[3];/* HIGH */
+		pdvobjpriv->Queue2Pipe[7] = pdvobjpriv->RtOutPipe[0];/* TXCMD */
+
+	} else { /* typical setting */
+
+		/* 0:H, 1:N, 2:L, 3:E */
+
+		pdvobjpriv->Queue2Pipe[0] = pdvobjpriv->RtOutPipe[1];/* VO */
+		pdvobjpriv->Queue2Pipe[1] = pdvobjpriv->RtOutPipe[1];/* VI */
+		pdvobjpriv->Queue2Pipe[2] = pdvobjpriv->RtOutPipe[2];/* BE */
+		pdvobjpriv->Queue2Pipe[3] = pdvobjpriv->RtOutPipe[2];/* BK */
+
+		pdvobjpriv->Queue2Pipe[4] = pdvobjpriv->RtOutPipe[0];/* BCN */
+		pdvobjpriv->Queue2Pipe[5] = pdvobjpriv->RtOutPipe[3];/* MGT */
+		pdvobjpriv->Queue2Pipe[6] = pdvobjpriv->RtOutPipe[0];/* HIGH */
+		pdvobjpriv->Queue2Pipe[7] = pdvobjpriv->RtOutPipe[3];/* TXCMD */
+	}
+
+}
+
 static BOOLEAN HalUsbSetQueuePipeMapping8812AUsb(
 	IN	PADAPTER	pAdapter,
 	IN	u8		NumInPipe,
@@ -86,6 +119,8 @@ static BOOLEAN HalUsbSetQueuePipeMapping8812AUsb(
 {
 	HAL_DATA_TYPE	*pHalData	= GET_HAL_DATA(pAdapter);
 	BOOLEAN			result		= _FALSE;
+	struct registry_priv *pregistrypriv = &pAdapter->registrypriv;
+	BOOLEAN	 bWIFICfg = (pregistrypriv->wifi_spec) ? _TRUE : _FALSE;
 
 	_ConfigChipOutEP_8812(pAdapter, NumOutPipe);
 
@@ -100,6 +135,10 @@ static BOOLEAN HalUsbSetQueuePipeMapping8812AUsb(
 	/*	return result; */
 	/* } */
 
+	if (NumOutPipe == 4) {
+		result = _TRUE;
+		_FourOutPipeMapping88212AU(pAdapter, bWIFICfg);
+	} else
 	result = Hal_MappingOutPipe(pAdapter, NumOutPipe);
 
 	return result;
@@ -326,11 +365,6 @@ static u32 _InitPowerOn_8812AU(_adapter *padapter)
 	}
 	bMacPwrCtrlOn = _TRUE;
 	rtw_hal_set_hwreg(padapter, HW_VAR_APFM_ON_MAC, &bMacPwrCtrlOn);
-
-#ifdef CONFIG_BT_COEXIST
-	if (IS_HARDWARE_TYPE_8821(padapter))
-		rtw_btcoex_PowerOnSetting(padapter);
-#endif /* CONFIG_BT_COEXIST */
 
 	return _SUCCESS;
 }
@@ -661,6 +695,43 @@ _InitNormalChipThreeOutEpPriority_8812AUsb(
 }
 
 static VOID
+init_hi_queue_config_8812a_usb(
+	IN	PADAPTER Adapter
+)
+{
+	/* Packet in Hi Queue Tx immediately (No constraint for ATIM Period)*/
+	rtw_write8(Adapter, REG_HIQ_NO_LMT_EN, 0xFF);
+}
+
+static VOID
+_InitNormalChipFourOutEpPriority_8812AUsb(
+	IN	PADAPTER Adapter
+)
+{
+	struct registry_priv *pregistrypriv = &Adapter->registrypriv;
+	u16			beQ, bkQ, viQ, voQ, mgtQ, hiQ;
+
+	if (!pregistrypriv->wifi_spec) { /* typical setting */
+		beQ		= QUEUE_LOW;
+		bkQ		= QUEUE_LOW;
+		viQ		= QUEUE_NORMAL;
+		voQ		= QUEUE_NORMAL;
+		mgtQ	= QUEUE_EXTRA;
+		hiQ		= QUEUE_HIGH;
+	} else { /* for WMM */
+		beQ		= QUEUE_LOW;
+		bkQ		= QUEUE_NORMAL;
+		viQ		= QUEUE_NORMAL;
+		voQ		= QUEUE_HIGH;
+		mgtQ	= QUEUE_HIGH;
+		hiQ		= QUEUE_HIGH;
+	}
+	_InitNormalChipRegPriority_8812AUsb(Adapter, beQ, bkQ, viQ, voQ, mgtQ, hiQ);
+	init_hi_queue_config_8812a_usb(Adapter);
+}
+
+
+static VOID
 _InitQueuePriority_8812AUsb(
 	IN	PADAPTER Adapter
 )
@@ -672,8 +743,10 @@ _InitQueuePriority_8812AUsb(
 		_InitNormalChipTwoOutEpPriority_8812AUsb(Adapter);
 		break;
 	case 3:
-	case 4:
 		_InitNormalChipThreeOutEpPriority_8812AUsb(Adapter);
+		break;
+	case 4:
+		_InitNormalChipFourOutEpPriority_8812AUsb(Adapter);
 		break;
 	default:
 		RTW_INFO("_InitQueuePriority_8812AUsb(): Shall not reach here!\n");
@@ -738,24 +811,21 @@ _InitWMACSetting_8812A(
 	/* u4Byte			value32; */
 	u16			value16;
 	HAL_DATA_TYPE	*pHalData = GET_HAL_DATA(Adapter);
+	u32 rcr;
 
-	/* pHalData->ReceiveConfig = AAP | APM | AM | AB | APP_ICV | ADF | AMF | APP_FCS | HTC_LOC_CTRL | APP_MIC | APP_PHYSTS; */
-	pHalData->ReceiveConfig =
+	/* rcr = AAP | APM | AM | AB | APP_ICV | ADF | AMF | APP_FCS | HTC_LOC_CTRL | APP_MIC | APP_PHYSTS; */
+	rcr =
 		RCR_APM | RCR_AM | RCR_AB | RCR_CBSSID_DATA | RCR_CBSSID_BCN | RCR_APP_ICV | RCR_AMF | RCR_HTC_LOC_CTRL | RCR_APP_MIC | RCR_APP_PHYST_RXFF;
 
 #if (1 == RTL8812A_RX_PACKET_INCLUDE_CRC)
-	pHalData->ReceiveConfig |= ACRC32;
+	rcr |= ACRC32;
 #endif
 
 #ifdef CONFIG_RX_PACKET_APPEND_FCS
-	pHalData->ReceiveConfig |= RCR_APPFCS;
+	rcr |= RCR_APPFCS;
 #endif
-
-	if (IS_HARDWARE_TYPE_8812AU(Adapter) || IS_HARDWARE_TYPE_8821U(Adapter))
-		pHalData->ReceiveConfig |= FORCEACK;
-
-	/* some REG_RCR will be modified later by phy_ConfigMACWithHeaderFile() */
-	rtw_write32(Adapter, REG_RCR, pHalData->ReceiveConfig);
+	rcr |= FORCEACK;
+	rtw_hal_set_hwreg(Adapter, HW_VAR_RCR, (u8 *)&rcr);
 
 	/* Accept all multicast address */
 	rtw_write32(Adapter, REG_MAR, 0xFFFFFFFF);
@@ -813,7 +883,7 @@ _InitAdaptiveCtrl_8812AUsb(
 	rtw_write16(Adapter, REG_SPEC_SIFS, value16);
 
 	/* Retry Limit */
-	value16 = _LRL(0x30) | _SRL(0x30);
+	value16 = _LRL(RL_VAL_STA) | _SRL(RL_VAL_STA);
 	rtw_write16(Adapter, REG_RL, value16);
 
 }
@@ -859,10 +929,10 @@ _InitBeaconMaxError_8812A(
 }
 
 
-#ifdef CONFIG_LED
+#ifdef CONFIG_RTW_LED
 static void _InitHWLed(PADAPTER Adapter)
 {
-	struct led_priv *pledpriv = &(Adapter->ledpriv);
+	struct led_priv *pledpriv = adapter_to_led(Adapter);
 
 	if (pledpriv->LedStrategy != HW_LED)
 		return;
@@ -872,7 +942,7 @@ static void _InitHWLed(PADAPTER Adapter)
 	 * must consider cases of antenna diversity/ commbo card/solo card/mini card */
 
 }
-#endif /* CONFIG_LED */
+#endif /* CONFIG_RTW_LED */
 
 static VOID
 _InitRDGSetting_8812A(
@@ -1111,70 +1181,6 @@ USB_AggModeSwitch(
 #endif
 }	/* USB_AggModeSwitch */
 
-static VOID
-_InitOperationMode_8812A(
-	IN	PADAPTER			Adapter
-)
-{
-#if 0/* gtest */
-	PHAL_DATA_TYPE	pHalData = GET_HAL_DATA(Adapter);
-	u1Byte				regBwOpMode = 0;
-	u4Byte				regRATR = 0, regRRSR = 0;
-
-
-	/* 1 This part need to modified according to the rate set we filtered!! */
-	/*  */
-	/* Set RRSR, RATR, and REG_BWOPMODE registers */
-	/*  */
-	switch (Adapter->RegWirelessMode) {
-	case WIRELESS_MODE_B:
-		regBwOpMode = BW_OPMODE_20MHZ;
-		regRATR = RATE_ALL_CCK;
-		regRRSR = RATE_ALL_CCK;
-		break;
-	case WIRELESS_MODE_A:
-		regBwOpMode = BW_OPMODE_5G | BW_OPMODE_20MHZ;
-		regRATR = RATE_ALL_OFDM_AG;
-		regRRSR = RATE_ALL_OFDM_AG;
-		break;
-	case WIRELESS_MODE_G:
-		regBwOpMode = BW_OPMODE_20MHZ;
-		regRATR = RATE_ALL_CCK | RATE_ALL_OFDM_AG;
-		regRRSR = RATE_ALL_CCK | RATE_ALL_OFDM_AG;
-		break;
-	case WIRELESS_MODE_AUTO:
-		if (Adapter->bInHctTest) {
-			regBwOpMode = BW_OPMODE_20MHZ;
-			regRATR = RATE_ALL_CCK | RATE_ALL_OFDM_AG;
-			regRRSR = RATE_ALL_CCK | RATE_ALL_OFDM_AG;
-		} else {
-			regBwOpMode = BW_OPMODE_20MHZ;
-			regRATR = RATE_ALL_CCK | RATE_ALL_OFDM_AG | RATE_ALL_OFDM_1SS | RATE_ALL_OFDM_2SS;
-			regRRSR = RATE_ALL_CCK | RATE_ALL_OFDM_AG;
-		}
-		break;
-	case WIRELESS_MODE_N_24G:
-		/* It support CCK rate by default. */
-		/* CCK rate will be filtered out only when associated AP does not support it. */
-		regBwOpMode = BW_OPMODE_20MHZ;
-		regRATR = RATE_ALL_CCK | RATE_ALL_OFDM_AG | RATE_ALL_OFDM_1SS | RATE_ALL_OFDM_2SS;
-		regRRSR = RATE_ALL_CCK | RATE_ALL_OFDM_AG;
-		break;
-	case WIRELESS_MODE_N_5G:
-		regBwOpMode = BW_OPMODE_5G;
-		regRATR = RATE_ALL_OFDM_AG | RATE_ALL_OFDM_1SS | RATE_ALL_OFDM_2SS;
-		regRRSR = RATE_ALL_OFDM_AG;
-		break;
-
-	default: /* for MacOSX compiler warning. */
-		break;
-	}
-
-	/* Ziv ???????? */
-	/* PlatformEFIOWrite4Byte(Adapter, REG_INIRTS_RATE_SEL, regRRSR); */
-	PlatformEFIOWrite1Byte(Adapter, REG_BWOPMODE, regBwOpMode);
-#endif
-}
 
 
 /* Set CCK and OFDM Block "ON" */
@@ -1197,7 +1203,7 @@ static VOID _RfPowerSave(
 #if 0
 	HAL_DATA_TYPE	*pHalData	= GET_HAL_DATA(Adapter);
 	PMGNT_INFO		pMgntInfo	= &(Adapter->MgntInfo);
-	u1Byte			eRFPath;
+	enum rf_path			eRFPath;
 
 #if (DISABLE_BB_RF)
 	return;
@@ -1351,7 +1357,7 @@ u32 rtl8812au_hal_init(PADAPTER Adapter)
 
 	rt_rf_power_state		eRfPowerStateToSet;
 
-	u32 init_start_time = rtw_get_current_time();
+	systime init_start_time = rtw_get_current_time();
 
 
 #ifdef DBG_HAL_INIT_PROFILING
@@ -1413,7 +1419,7 @@ u32 rtl8812au_hal_init(PADAPTER Adapter)
 	};
 
 	int hal_init_profiling_i;
-	u32 hal_init_stages_timestamp[HAL_INIT_STAGES_NUM]; /* used to record the time of each stage's starting point */
+	systime hal_init_stages_timestamp[HAL_INIT_STAGES_NUM]; /* used to record the time of each stage's starting point */
 
 	for (hal_init_profiling_i = 0; hal_init_profiling_i < HAL_INIT_STAGES_NUM; hal_init_profiling_i++)
 		hal_init_stages_timestamp[hal_init_profiling_i] = 0;
@@ -1514,12 +1520,12 @@ u32 rtl8812au_hal_init(PADAPTER Adapter)
 		status = FirmwareDownload8812(Adapter, _FALSE);
 		if (status != _SUCCESS) {
 			RTW_INFO("%s: Download Firmware failed!!\n", __FUNCTION__);
-			Adapter->bFWReady = _FALSE;
+			pHalData->bFWReady = _FALSE;
 			pHalData->fw_ractrl = _FALSE;
 			/* return status; */
 		} else {
 			RTW_INFO("%s: Download Firmware Success!!\n", __FUNCTION__);
-			Adapter->bFWReady = _TRUE;
+			pHalData->bFWReady = _TRUE;
 			pHalData->fw_ractrl = _TRUE;
 		}
 	}
@@ -1571,7 +1577,7 @@ u32 rtl8812au_hal_init(PADAPTER Adapter)
 
 	_InitRetryFunction_8812A(Adapter);
 	init_UsbAggregationSetting_8812A(Adapter);
-	_InitOperationMode_8812A(Adapter);/* todo */
+
 	_InitBeaconParameters_8812A(Adapter);
 	_InitBeaconMaxError_8812A(Adapter, _TRUE);
 
@@ -1593,20 +1599,19 @@ u32 rtl8812au_hal_init(PADAPTER Adapter)
 #endif /* CONFIG_CHECK_AC_LIFETIME */
 
 #ifdef CONFIG_TX_MCAST2UNI
-	// + Bug DHCWIFI-55: 20160426, Janet
+	/* + Bug DHCWIFI-55: 20160426, Janet */
 	rtw_write16(Adapter, REG_PKT_VO_VI_LIFE_TIME, 0x3000);	// unit: 256us. 3s
 	rtw_write16(Adapter, REG_PKT_BE_BK_LIFE_TIME, 0x3000);	// unit: 256us. 3s
-#else	// CONFIG_TX_MCAST2UNI
+#else
 	rtw_write16(Adapter, REG_PKT_VO_VI_LIFE_TIME, 0x3000);	// unit: 256us. 3s
 	rtw_write16(Adapter, REG_PKT_BE_BK_LIFE_TIME, 0x3000);	// unit: 256us. 3s
-#endif	// CONFIG_TX_MCAST2UNI
-#endif	// CONFIG_CONCURRENT_MODE || CONFIG_TX_MCAST2UNI
-	
+#endif	/* CONFIG_TX_MCAST2UNI */
+#endif	
 
 
-#ifdef CONFIG_LED
+#ifdef CONFIG_RTW_LED
 	_InitHWLed(Adapter);
-#endif /* CONFIG_LED */
+#endif /* CONFIG_RTW_LED */
 
 	/*  */
 	/* d. Initialize BB related configurations. */
@@ -1823,7 +1828,7 @@ hal_poweroff_8812au(
 		HalPwrSeqCmdParsing(Adapter, PWR_CUT_ALL_MSK, PWR_FAB_ALL_MSK, PWR_INTF_USB_MSK, Rtl8812_NIC_LPS_ENTER_FLOW);
 
 	if ((rtw_read8(Adapter, REG_MCUFWDL) & RAM_DL_SEL) &&
-	    Adapter->bFWReady) /* 8051 RAM code */
+	    GET_HAL_DATA(Adapter)->bFWReady) /* 8051 RAM code */
 		_8051Reset8812(Adapter);
 
 	/* Reset MCU. Suggested by Filen. 2011.01.26. by tynli. */
@@ -1842,7 +1847,7 @@ hal_poweroff_8812au(
 	bMacPwrCtrlOn = _FALSE;
 	rtw_hal_set_hwreg(Adapter, HW_VAR_APFM_ON_MAC, &bMacPwrCtrlOn);
 
-	Adapter->bFWReady = _FALSE;
+	GET_HAL_DATA(Adapter)->bFWReady = _FALSE;
 
 	if (ori_fsmc0 & 0x8000) {
 		utemp = rtw_read16(Adapter, REG_APS_FSMCO);
@@ -2120,8 +2125,9 @@ hal_CustomizedBehavior_8812AU(
 	IN	PADAPTER	Adapter
 )
 {
+#ifdef CONFIG_RTW_SW_LED
 	HAL_DATA_TYPE	*pHalData = GET_HAL_DATA(Adapter);
-	struct led_priv	*pledpriv = &(Adapter->ledpriv);
+	struct led_priv	*pledpriv = adapter_to_led(Adapter);
 
 
 	/* Led mode */
@@ -2173,6 +2179,7 @@ hal_CustomizedBehavior_8812AU(
 	}
 
 	pHalData->bLedOpenDrain = _TRUE;/* Support Open-drain arrangement for controlling the LED. Added by Roger, 2009.10.16. */
+#endif
 }
 
 static void
@@ -2277,13 +2284,15 @@ ReadLEDSetting_8812AU(
 	IN	BOOLEAN		AutoloadFail
 )
 {
-	struct led_priv *pledpriv = &(Adapter->ledpriv);
+#ifdef CONFIG_RTW_LED
+	struct led_priv *pledpriv = adapter_to_led(Adapter);
 
-#ifdef CONFIG_SW_LED
+#ifdef CONFIG_RTW_SW_LED
 	pledpriv->bRegUseLed = _TRUE;
 #else /* HW LED */
 	pledpriv->LedStrategy = HW_LED;
-#endif /* CONFIG_SW_LED */
+#endif /* CONFIG_RTW_SW_LED */
+#endif
 }
 
 VOID
@@ -2331,6 +2340,9 @@ InitAdapterVariablesByPROM_8812AU(
 
 	if (IS_HARDWARE_TYPE_8821U(Adapter))
 		Hal_EfuseParseKFreeData_8821A(Adapter, pHalData->efuse_eeprom_data, pHalData->bautoload_fail_flag);
+
+	/* set coex. ant info once efuse parsing is done */
+	rtw_btcoex_set_ant_info(Adapter);
 }
 
 static void Hal_ReadPROMContent_8812A(
@@ -2392,11 +2404,12 @@ void UpdateInterruptMask8812AU(PADAPTER padapter, u8 bHIMR0 , u32 AddMSR, u32 Re
 
 }
 
-void SetHwReg8812AU(PADAPTER Adapter, u8 variable, u8 *val)
+u8 SetHwReg8812AU(PADAPTER Adapter, u8 variable, u8 *val)
 {
 	HAL_DATA_TYPE	*pHalData = GET_HAL_DATA(Adapter);
 	struct pwrctrl_priv *pwrctl = adapter_to_pwrctl(Adapter);
 	struct registry_priv *registry_par = &Adapter->registrypriv;
+	u8 ret = _SUCCESS;
 
 	switch (variable) {
 	case HW_VAR_RXDMA_AGG_PG_TH:
@@ -2473,10 +2486,11 @@ void SetHwReg8812AU(PADAPTER Adapter, u8 variable, u8 *val)
 		}
 		break;
 	default:
-		SetHwReg8812A(Adapter, variable, val);
+		ret = SetHwReg8812A(Adapter, variable, val);
 		break;
 	}
 
+	return ret;
 }
 
 void GetHwReg8812AU(PADAPTER Adapter, u8 variable, u8 *val)
@@ -2661,13 +2675,10 @@ void rtl8812au_set_hal_ops(_adapter *padapter)
 
 	pHalFunc->init_recv_priv = &rtl8812au_init_recv_priv;
 	pHalFunc->free_recv_priv = &rtl8812au_free_recv_priv;
-#ifdef CONFIG_SW_LED
+#ifdef CONFIG_RTW_SW_LED
 	pHalFunc->InitSwLeds = &rtl8812au_InitSwLeds;
 	pHalFunc->DeInitSwLeds = &rtl8812au_DeInitSwLeds;
-#else /* case of hw led or no led */
-	pHalFunc->InitSwLeds = NULL;
-	pHalFunc->DeInitSwLeds = NULL;
-#endif/* CONFIG_SW_LED */
+#endif/* CONFIG_RTW_SW_LED */
 
 	pHalFunc->init_default_value = &rtl8812au_init_default_value;
 	pHalFunc->intf_chip_configure = &rtl8812au_interface_configure;

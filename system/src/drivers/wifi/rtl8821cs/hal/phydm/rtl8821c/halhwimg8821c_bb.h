@@ -11,9 +11,19 @@
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
  *
+ * The full GNU General Public License is included in this distribution in the
+ * file called LICENSE.
+ *
+ * Contact Information:
+ * wlanfae <wlanfae@realtek.com>
+ * Realtek Corporation, No. 2, Innovation Road II, Hsinchu Science Park,
+ * Hsinchu 300, Taiwan.
+ *
+ * Larry Finger <Larry.Finger@lwfinger.net>
+ *
  *****************************************************************************/
 
-/*Image2HeaderVersion: R2 1.3.2*/
+/*Image2HeaderVersion: R3 1.0*/
 #if (RTL8821C_SUPPORT == 1)
 #ifndef __INC_MP_BB_HW_IMG_8821C_H
 #define __INC_MP_BB_HW_IMG_8821C_H
@@ -24,10 +34,9 @@
 ******************************************************************************/
 
 void
-odm_read_and_config_mp_8821c_agc_tab(/* tc: Test Chip, mp: mp Chip*/
-	struct	PHY_DM_STRUCT *p_dm
-);
-u32	odm_get_version_mp_8821c_agc_tab(void);
+odm_read_and_config_mp_8821c_agc_tab( /* tc: Test Chip, mp: mp Chip*/
+				     struct dm_struct *dm);
+u32 odm_get_version_mp_8821c_agc_tab(void);
 
 /******************************************************************************
 *                           agc_tab_diff.TXT
@@ -36,41 +45,35 @@ u32	odm_get_version_mp_8821c_agc_tab(void);
 extern u32	array_mp_8821c_agc_tab_diff_wlg[780];
 extern u32	array_mp_8821c_agc_tab_diff_btg[780];
 void
-odm_read_and_config_mp_8821c_agc_tab_diff(
-	struct PHY_DM_STRUCT *p_dm,
-	u32	array[],
-	u32	array_len
-);
-u32	odm_get_version_mp_8821c_agc_tab_diff(void);
+odm_read_and_config_mp_8821c_agc_tab_diff(struct dm_struct *dm, u32 array[],
+					  u32 array_len);
+u32 odm_get_version_mp_8821c_agc_tab_diff(void);
 
 /******************************************************************************
 *                           phy_reg.TXT
 ******************************************************************************/
 
 void
-odm_read_and_config_mp_8821c_phy_reg(/* tc: Test Chip, mp: mp Chip*/
-	struct	PHY_DM_STRUCT *p_dm
-);
-u32	odm_get_version_mp_8821c_phy_reg(void);
+odm_read_and_config_mp_8821c_phy_reg( /* tc: Test Chip, mp: mp Chip*/
+				     struct dm_struct *dm);
+u32 odm_get_version_mp_8821c_phy_reg(void);
 
 /******************************************************************************
 *                           phy_reg_mp.TXT
 ******************************************************************************/
 
 void
-odm_read_and_config_mp_8821c_phy_reg_mp(/* tc: Test Chip, mp: mp Chip*/
-	struct	PHY_DM_STRUCT *p_dm
-);
-u32	odm_get_version_mp_8821c_phy_reg_mp(void);
+odm_read_and_config_mp_8821c_phy_reg_mp( /* tc: Test Chip, mp: mp Chip*/
+					struct dm_struct *dm);
+u32 odm_get_version_mp_8821c_phy_reg_mp(void);
 
 /******************************************************************************
 *                           phy_reg_pg.TXT
 ******************************************************************************/
 
 void
-odm_read_and_config_mp_8821c_phy_reg_pg(/* tc: Test Chip, mp: mp Chip*/
-	struct	PHY_DM_STRUCT *p_dm
-);
+odm_read_and_config_mp_8821c_phy_reg_pg( /* tc: Test Chip, mp: mp Chip*/
+					struct dm_struct *dm);
 u32	odm_get_version_mp_8821c_phy_reg_pg(void);
 
 /******************************************************************************
@@ -78,9 +81,9 @@ u32	odm_get_version_mp_8821c_phy_reg_pg(void);
 ******************************************************************************/
 
 void
-odm_read_and_config_mp_8821c_phy_reg_pg_type0x28(/* tc: Test Chip, mp: mp Chip*/
-	struct	PHY_DM_STRUCT *p_dm
-);
+odm_read_and_config_mp_8821c_phy_reg_pg_type0x28(
+						 /* tc: Test Chip, mp: mp Chip*/
+						 struct dm_struct *dm);
 u32	odm_get_version_mp_8821c_phy_reg_pg_type0x28(void);
 
 #endif

@@ -79,6 +79,7 @@ typedef struct _ADAPTER _adapter, ADAPTER, *PADAPTER;
 #include <rtw_xmit.h>
 #include <xmit_osdep.h>
 #include <rtw_recv.h>
+#include <rtw_rm.h>
 
 #ifdef CONFIG_BEAMFORMING
 	#include <rtw_beamforming.h>
@@ -108,6 +109,9 @@ typedef struct _ADAPTER _adapter, ADAPTER, *PADAPTER;
 #include <rtw_mlme_ext.h>
 #include <rtw_mi.h>
 #include <rtw_ap.h>
+#ifdef CONFIG_RTW_MESH
+#include "../core/mesh/rtw_mesh.h"
+#endif
 #include <rtw_efuse.h>
 #include <rtw_version.h>
 #include <rtw_odm.h>
@@ -202,6 +206,7 @@ struct registry_priv {
 	u8	long_retry_lmt;
 	u8	short_retry_lmt;
 	u16	busy_thresh;
+	u16	max_bss_cnt;
 	u8	ack_policy;
 	u8	mp_mode;
 #if defined(CONFIG_MP_INCLUDED) && defined(CONFIG_RTW_CUSTOMER_STR)
@@ -339,6 +344,9 @@ struct registry_priv {
 	s8 target_tx_pwr_5g[RF_PATH_MAX][RATE_SECTION_NUM - 1];
 #endif
 
+	u8 tsf_update_pause_factor;
+	u8 tsf_update_restore_factor;
+
 	s8	TxBBSwing_2G;
 	s8	TxBBSwing_5G;
 	u8	AmplifierType_2G;
@@ -362,8 +370,6 @@ struct registry_priv {
 	u8 hiq_filter;
 	u8 adaptivity_en;
 	u8 adaptivity_mode;
-	u8 adaptivity_dml;
-	u8 adaptivity_dc_backoff;
 	s8 adaptivity_th_l2h_ini;
 	s8 adaptivity_th_edcca_hl_diff;
 
@@ -397,11 +403,7 @@ struct registry_priv {
 	u32 rtw_mcc_sta_bw80_target_tx_tp;
 	s8 rtw_mcc_policy_table_idx;
 	u8 rtw_mcc_duration;
-	u8 rtw_mcc_tsf_sync_offset;
-	u8 rtw_mcc_start_time_offset;
-	u8 rtw_mcc_interval;
-	s8 rtw_mcc_guard_offset0;
-	s8 rtw_mcc_guard_offset1;
+	u8 rtw_mcc_enable_runtime_duration;
 #endif /* CONFIG_MCC_MODE */
 
 #ifdef CONFIG_RTW_NAPI
@@ -426,6 +428,7 @@ struct registry_priv {
 	u32 pci_aspm_config;
 
 	u8 iqk_fw_offload;
+	u8 ch_switch_offload;
 
 #ifdef CONFIG_TDLS
 	u8 en_tdls;
@@ -437,6 +440,16 @@ struct registry_priv {
 
 #ifdef CONFIG_FW_OFFLOAD_PARAM_INIT
 	u8 fw_param_init;
+#endif
+#ifdef CONFIG_DYNAMIC_SOML
+	u8 dyn_soml_en;
+	u8 dyn_soml_train_num;
+	u8 dyn_soml_interval;
+	u8 dyn_soml_period;
+	u8 dyn_soml_delay;
+#endif
+#ifdef CONFIG_FW_HANDLE_TXBCN
+	u8 fw_tbtt_rpt;
 #endif
 };
 
@@ -460,8 +473,13 @@ struct registry_priv {
 
 #define BW_MODE_2G(bw_mode) ((bw_mode) & 0x0F)
 #define BW_MODE_5G(bw_mode) ((bw_mode) >> 4)
+#ifdef CONFIG_80211N_HT
 #define REGSTY_BW_2G(regsty) BW_MODE_2G((regsty)->bw_mode)
 #define REGSTY_BW_5G(regsty) BW_MODE_5G((regsty)->bw_mode)
+#else
+#define REGSTY_BW_2G(regsty) CHANNEL_WIDTH_20
+#define REGSTY_BW_5G(regsty) CHANNEL_WIDTH_20
+#endif
 #define REGSTY_IS_BW_2G_SUPPORT(regsty, bw) (REGSTY_BW_2G((regsty)) >= (bw))
 #define REGSTY_IS_BW_5G_SUPPORT(regsty, bw) (REGSTY_BW_5G((regsty)) >= (bw))
 
@@ -749,6 +767,15 @@ struct macid_bmp {
 #endif
 };
 
+#ifdef CONFIG_CLIENT_PORT_CFG
+struct clt_port_t{
+	_lock lock;
+	u8 bmp;
+	s8 num;
+};
+#define get_clt_num(adapter) (adapter_to_dvobj(adapter)->clt_port.num)
+#endif
+
 struct macid_ctl_t {
 	_lock lock;
 	u8 num;
@@ -864,7 +891,10 @@ struct rf_ctl_t {
 	#endif
 #endif
 
+	u8 ch_sel_same_band_prefer;
+
 #ifdef CONFIG_DFS_MASTER
+	_timer dfs_master_timer;
 	bool radar_detect_by_others;
 	u8 dfs_master_enabled;
 	bool radar_detected;
@@ -875,6 +905,7 @@ struct rf_ctl_t {
 
 	systime cac_start_time;
 	systime cac_end_time;
+	u8 cac_force_stop;
 
 	u8 dfs_ch_sel_d_flags;
 
@@ -885,9 +916,15 @@ struct rf_ctl_t {
 };
 
 #define RTW_CAC_STOPPED 0
+#ifdef CONFIG_DFS_MASTER
 #define IS_CAC_STOPPED(rfctl) ((rfctl)->cac_end_time == RTW_CAC_STOPPED)
-#define IS_CH_WAITING(rfctl) (!IS_CAC_STOPPED(rfctl) && time_after((rfctl)->cac_end_time, rtw_get_current_time()))
-#define IS_UNDER_CAC(rfctl) (IS_CH_WAITING(rfctl) && time_after(rtw_get_current_time(), (rfctl)->cac_start_time))
+#define IS_CH_WAITING(rfctl) (!IS_CAC_STOPPED(rfctl) && rtw_time_after((rfctl)->cac_end_time, rtw_get_current_time()))
+#define IS_UNDER_CAC(rfctl) (IS_CH_WAITING(rfctl) && rtw_time_after(rtw_get_current_time(), (rfctl)->cac_start_time))
+#else
+#define IS_CAC_STOPPED(rfctl) 1
+#define IS_CH_WAITING(rfctl) 0
+#define IS_UNDER_CAC(rfctl) 0
+#endif /* CONFIG_DFS_MASTER */
 
 #ifdef CONFIG_MBSSID_CAM
 #define TOTAL_MBID_CAM_NUM	8
@@ -927,6 +964,21 @@ struct halmacpriv {
 };
 #endif /* RTW_HALMAC */
 
+#ifdef CONFIG_FW_MULTI_PORT_SUPPORT
+/*info for H2C-0x2C*/
+struct dft_info {
+	u8 port_id;
+	u8 mac_id;
+};
+#endif
+
+#ifdef CONFIG_HW_P0_TSF_SYNC
+struct tsf_info {
+	u8 sync_port;/*port_x's tsf sync to port_0*/
+	u8 offset; /*tsf timer offset*/
+};
+#endif
+
 struct dvobj_priv {
 	/*-------- below is common data --------*/
 	u8	chip_type;
@@ -956,6 +1008,10 @@ struct dvobj_priv {
 	_mutex sd_indirect_access_mutex;
 #endif
 
+#ifdef CONFIG_SYSON_INDIRECT_ACCESS
+	_mutex syson_indirect_access_mutex;	/* System On Reg R/W */
+#endif
+
 	unsigned char	oper_channel; /* saved channel info when call set_channel_bw */
 	unsigned char	oper_bwmode;
 	unsigned char	oper_ch_offset;/* PRIME_CHNL_OFFSET */
@@ -966,14 +1022,27 @@ struct dvobj_priv {
 	struct mi_state iface_state;
 
 #ifdef CONFIG_AP_MODE
-	u8 nr_ap_if; /* total interface s number of ap/go mode. */
-	u16 inter_bcn_space; /* unit:ms */
+	#ifdef CONFIG_SUPPORT_MULTI_BCN
+	u8		nr_ap_if; /* total interface number of ap /go /mesh / nan mode. */
+	u16		inter_bcn_space; /* unit:ms */
 	_queue	ap_if_q;
-#ifdef CONFIG_RTW_REPEATER_SON
+	u8		vap_map;
+	u8		fw_bcn_offload;
+	u8		vap_tbtt_rpt_map;
+	#endif /*CONFIG_SUPPORT_MULTI_BCN*/
+	#ifdef CONFIG_RTW_REPEATER_SON
 	struct rtw_rson_struct  rson_data;
+	#endif
+#endif
+#ifdef CONFIG_CLIENT_PORT_CFG
+	struct clt_port_t clt_port;
 #endif
 
+#ifdef CONFIG_HW_P0_TSF_SYNC
+	struct tsf_info p0_tsf;
 #endif
+	systime periodic_tsf_update_etime;
+	_timer periodic_tsf_update_end_timer;
 
 	struct macid_ctl_t macid_ctl;
 
@@ -1031,8 +1100,14 @@ struct dvobj_priv {
 #endif /* RTW_HALMAC */
 
 #ifdef CONFIG_FW_MULTI_PORT_SUPPORT
-	u8 default_port_id;
+	/*info for H2C-0x2C*/
+	struct dft_info dft;
 #endif
+
+#ifdef CONFIG_RTW_WIFI_HAL
+	u32 nodfs;
+#endif
+
 	/*-------- below is for SDIO INTERFACE --------*/
 
 #ifdef INTF_DATA
@@ -1162,11 +1237,15 @@ struct dvobj_priv {
 #define DEV_STA_LG_NUM(_dvobj)		MSTATE_STA_LG_NUM(&((_dvobj)->iface_state))
 #define DEV_TDLS_LD_NUM(_dvobj)		MSTATE_TDLS_LD_NUM(&((_dvobj)->iface_state))
 #define DEV_AP_NUM(_dvobj)			MSTATE_AP_NUM(&((_dvobj)->iface_state))
+#define DEV_AP_STARTING_NUM(_dvobj)	MSTATE_AP_STARTING_NUM(&((_dvobj)->iface_state))
 #define DEV_AP_LD_NUM(_dvobj)		MSTATE_AP_LD_NUM(&((_dvobj)->iface_state))
 #define DEV_ADHOC_NUM(_dvobj)		MSTATE_ADHOC_NUM(&((_dvobj)->iface_state))
 #define DEV_ADHOC_LD_NUM(_dvobj)	MSTATE_ADHOC_LD_NUM(&((_dvobj)->iface_state))
 #define DEV_MESH_NUM(_dvobj)		MSTATE_MESH_NUM(&((_dvobj)->iface_state))
 #define DEV_MESH_LD_NUM(_dvobj)		MSTATE_MESH_LD_NUM(&((_dvobj)->iface_state))
+#define DEV_P2P_DV_NUM(_dvobj)		MSTATE_P2P_DV_NUM(&((_dvobj)->iface_state))
+#define DEV_P2P_GC_NUM(_dvobj)		MSTATE_P2P_GC_NUM(&((_dvobj)->iface_state))
+#define DEV_P2P_GO_NUM(_dvobj)		MSTATE_P2P_GO_NUM(&((_dvobj)->iface_state))
 #define DEV_SCAN_NUM(_dvobj)		MSTATE_SCAN_NUM(&((_dvobj)->iface_state))
 #define DEV_WPS_NUM(_dvobj)			MSTATE_WPS_NUM(&((_dvobj)->iface_state))
 #define DEV_ROCH_NUM(_dvobj)		MSTATE_ROCH_NUM(&((_dvobj)->iface_state))
@@ -1206,7 +1285,7 @@ static inline void dev_clr_drv_stopped(struct dvobj_priv *dvobj)
 #define dev_is_drv_stopped(dvobj)		(ATOMIC_READ(&dvobj->bDriverStopped) == _TRUE)
 
 #ifdef PLATFORM_LINUX
-static struct device *dvobj_to_dev(struct dvobj_priv *dvobj)
+static inline struct device *dvobj_to_dev(struct dvobj_priv *dvobj)
 {
 	/* todo: get interface type from dvobj and the return the dev accordingly */
 #ifdef RTW_DVOBJ_CHIP_HW_TYPE
@@ -1240,6 +1319,19 @@ enum _hw_port {
 	HW_PORT4,
 	MAX_HW_PORT,
 };
+
+#ifdef CONFIG_CLIENT_PORT_CFG
+enum _client_port {
+	CLT_PORT0 = HW_PORT1,
+	CLT_PORT1 = HW_PORT2,
+	CLT_PORT2 = HW_PORT3,
+	CLT_PORT3 = HW_PORT4,
+	CLT_PORT_INVALID = HW_PORT0,
+};
+
+#define MAX_CLIENT_PORT_NUM	4
+#define get_clt_port(adapter) (adapter->client_port)
+#endif
 
 enum _ADAPTER_TYPE {
 	PRIMARY_ADAPTER,
@@ -1288,11 +1380,6 @@ typedef struct loopbackdata {
 } LOOPBACKDATA, *PLOOPBACKDATA;
 #endif
 
-struct tsf_info {
-	u8 sync_port;/*tsf sync from portx*/
-	u8 offset; /*tsf timer offset*/
-};
-
 #define ADAPTER_TX_BW_2G(adapter) BW_MODE_2G((adapter)->driver_tx_bw_mode)
 #define ADAPTER_TX_BW_5G(adapter) BW_MODE_5G((adapter)->driver_tx_bw_mode)
 
@@ -1301,13 +1388,19 @@ struct _ADAPTER {
 	int	pid[3];/* process id from UI, 0:wps, 1:hostapd, 2:dhcpcd */
 	int	bDongle;/* build-in module or external dongle */
 
+	#if defined(CONFIG_AP_MODE) && defined(CONFIG_SUPPORT_MULTI_BCN)
 	_list	list;
-
+	u8 vap_id;
+	#endif
 	struct dvobj_priv *dvobj;
 	struct	mlme_priv mlmepriv;
 	struct	mlme_ext_priv mlmeextpriv;
 	struct	cmd_priv	cmdpriv;
 	struct	evt_priv	evtpriv;
+
+#ifdef CONFIG_RTW_80211K
+	struct	rm_priv		rmpriv;
+#endif
 	/* struct	io_queue	*pio_queue; */
 	struct	io_priv	iopriv;
 	struct	xmit_priv	xmitpriv;
@@ -1316,10 +1409,6 @@ struct _ADAPTER {
 	struct	security_priv	securitypriv;
 	_lock   security_key_mutex; /* add for CONFIG_IEEE80211W, none 11w also can use */
 	struct	registry_priv	registrypriv;
-#ifdef CONFIG_RTW_LED
-	struct	led_priv	ledpriv;
-#endif
-
 
 #ifdef CONFIG_RTW_NAPI
 	struct	napi_struct napi;
@@ -1484,12 +1573,14 @@ struct _ADAPTER {
 	**	refer to iface_id if iface_nums>2 and isprimary is false and the adapter_type value is 0xff.*/
 	u8 adapter_type;/*be used in  Multi-interface to recognize whether is PRIMARY_ADAPTER  or not(PRIMARY_ADAPTER/VIRTUAL_ADAPTER) .*/
 	u8 hw_port; /*interface port type, it depends on HW port */
-	struct tsf_info tsf;
 
+	#ifdef CONFIG_CLIENT_PORT_CFG
+	u8 client_id;
+	u8 client_port;
+	#endif
+	/*struct tsf_info tsf;*//*reserve define for 8814B*/
 
 	/*extend to support multi interface*/
-	/*IFACE_ID0 is equals to PRIMARY_ADAPTER
-	IFACE_ID1 is equals to VIRTUAL_ADAPTER*/
 	u8 iface_id;
 
 #ifdef CONFIG_BR_EXT
@@ -1563,6 +1654,16 @@ struct _ADAPTER {
 #ifdef CONFIG_MCC_MODE
 	struct mcc_adapter_priv mcc_adapterpriv;
 #endif /* CONFIG_MCC_MODE */
+
+#ifdef CONFIG_RTW_MESH
+	struct rtw_mesh_cfg mesh_cfg;
+	struct rtw_mesh_info mesh_info;
+	_timer mesh_path_timer;
+	_timer mesh_path_root_timer;
+	_timer mesh_atlm_param_req_timer; /* airtime link metrics param request timer */
+	_workitem mesh_work;
+	unsigned long wrkq_flags;
+#endif /* CONFIG_RTW_MESH */
 };
 
 #define adapter_to_dvobj(adapter) ((adapter)->dvobj)
@@ -1579,6 +1680,11 @@ struct _ADAPTER {
 #define adapter_to_macidctl(adapter) dvobj_to_macidctl(adapter_to_dvobj((adapter)))
 
 #define adapter_mac_addr(adapter) (adapter->mac_addr)
+#ifdef CONFIG_RTW_CFGVENDOR_RANDOM_MAC_OUI
+#define adapter_pno_mac_addr(adapter) \
+	((adapter_wdev_data(adapter))->pno_mac_addr)
+#endif
+
 #define adapter_to_chset(adapter) (adapter_to_rfctl((adapter))->channel_set)
 
 #define mlme_to_adapter(mlme) container_of((mlme), struct _ADAPTER, mlmepriv)

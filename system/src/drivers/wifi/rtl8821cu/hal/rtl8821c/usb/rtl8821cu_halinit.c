@@ -43,7 +43,7 @@ static void _dbg_dump_macreg(PADAPTER padapter)
 static void init_hwled(PADAPTER adapter, u8 enable)
 {
 	u8 mode = 0;
-	struct led_priv *ledpriv = &(adapter->ledpriv);
+	struct led_priv *ledpriv = adapter_to_led(adapter);
 
 	if (ledpriv->LedStrategy != HW_LED)
 		return;

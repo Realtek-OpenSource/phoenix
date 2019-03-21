@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2016 - 2017 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2016 - 2018 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -18,13 +18,16 @@
 
 #define HALMAC_SVN_VER  "11692M"
 
-#define HALMAC_MAJOR_VER        0x0001		/* major version, ver_1 for async_api */
-#define HALMAC_PROTOTYPE_VER    0x0004		/* For halmac_api num change or prototype change, increment prototype version */
-#define HALMAC_MINOR_VER        0x0006		/* else increment minor version */
-#define HALMAC_PATCH_VER        0x0003		/* patch version */
+#define HALMAC_MAJOR_VER        0x0001
+#define HALMAC_PROTOTYPE_VER    0x0004
+#define HALMAC_MINOR_VER        0x0019
+#define HALMAC_PATCH_VER        0x0003
 
-#define HALMAC_88XX_SUPPORT			(HALMAC_8821C_SUPPORT || HALMAC_8822B_SUPPORT || HALMAC_8822C_SUPPORT)
-#define HALMAC_88XX_V1_SUPPORT		HALMAC_8814B_SUPPORT
+#define HALMAC_88XX_SUPPORT	(HALMAC_8821C_SUPPORT || \
+				 HALMAC_8822B_SUPPORT || \
+				 HALMAC_8822C_SUPPORT)
+
+#define HALMAC_88XX_V1_SUPPORT	HALMAC_8814B_SUPPORT
 
 #include "halmac_2_platform.h"
 #include "halmac_type.h"
@@ -86,8 +89,6 @@
 #include "halmac_tx_desc_ap.h"
 #include "halmac_tx_desc_buffer_ap.h"
 #include "halmac_tx_desc_ie_ap.h"
-#include "halmac_rx_bd_ap.h"
-#include "halmac_tx_bd_ap.h"
 #include "halmac_fw_offload_c2h_ap.h"
 #include "halmac_fw_offload_h2c_ap.h"
 #include "halmac_h2c_extra_info_ap.h"
@@ -99,31 +100,20 @@
 #include "halmac_rx_desc_chip.h"
 #include "halmac_tx_desc_buffer_chip.h"
 #include "halmac_tx_desc_ie_chip.h"
-#include "halmac_tx_bd_chip.h"
-#include "halmac_rx_bd_chip.h"
 
 enum halmac_ret_status
-halmac_init_adapter(
-	IN void *pDriver_adapter,
-	IN struct halmac_platform_api *pHalmac_platform_api,
-	IN enum halmac_interface halmac_interface,
-	OUT struct halmac_adapter **ppHalmac_adapter,
-	OUT struct halmac_api **ppHalmac_api
-);
+halmac_init_adapter(void *drv_adapter, struct halmac_platform_api *pltfm_api,
+		    enum halmac_interface intf,
+		    struct halmac_adapter **halmac_adapter,
+		    struct halmac_api **halmac_api);
 
 enum halmac_ret_status
-halmac_deinit_adapter(
-	IN struct halmac_adapter *pHalmac_adapter
-);
+halmac_deinit_adapter(struct halmac_adapter *adapter);
 
 enum halmac_ret_status
-halmac_halt_api(
-	IN struct halmac_adapter *pHalmac_adapter
-);
+halmac_halt_api(struct halmac_adapter *adapter);
 
 enum halmac_ret_status
-halmac_get_version(
-	OUT struct halmac_ver *version
-);
+halmac_get_version(struct halmac_ver *version);
 
 #endif

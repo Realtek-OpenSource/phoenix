@@ -22,7 +22,7 @@
 	#error "Shall be Linux or Windows, but not both!\n"
 
 #endif
-
+#define CONFIG_RSSI_PRIORITY
 #ifdef CONFIG_RTW_REPEATER_SON
 	#ifndef CONFIG_AP
 		#define CONFIG_AP
@@ -120,6 +120,33 @@
 	#undef CONFIG_DFS_MASTER
 #endif
 
+#ifdef CONFIG_RTW_MESH
+	#ifndef CONFIG_RTW_MESH_OFFCH_CAND
+	#define CONFIG_RTW_MESH_OFFCH_CAND 1
+	#endif
+
+	#ifndef CONFIG_RTW_MESH_PEER_BLACKLIST
+	#define CONFIG_RTW_MESH_PEER_BLACKLIST 1
+	#endif
+
+	#ifndef CONFIG_RTW_MESH_CTO_MGATE_BLACKLIST
+	#define CONFIG_RTW_MESH_CTO_MGATE_BLACKLIST 1
+	#endif
+
+	#ifndef CONFIG_RTW_MPM_TX_IES_SYNC_BSS
+	#define CONFIG_RTW_MPM_TX_IES_SYNC_BSS 1
+	#endif
+	#if CONFIG_RTW_MPM_TX_IES_SYNC_BSS
+		#ifndef CONFIG_RTW_MESH_AEK
+		#define CONFIG_RTW_MESH_AEK
+		#endif
+	#endif
+
+	#ifndef CONFIG_RTW_MESH_DATA_BMC_TO_UC
+	#define CONFIG_RTW_MESH_DATA_BMC_TO_UC 1
+	#endif
+#endif
+
 #if !defined(CONFIG_SCAN_BACKOP) && defined(CONFIG_AP_MODE)
 #define CONFIG_SCAN_BACKOP
 #endif
@@ -138,14 +165,6 @@
 
 #ifndef CONFIG_RTW_ADAPTIVITY_MODE
 	#define CONFIG_RTW_ADAPTIVITY_MODE 0
-#endif
-
-#ifndef CONFIG_RTW_ADAPTIVITY_DML
-	#define CONFIG_RTW_ADAPTIVITY_DML 0
-#endif
-
-#ifndef CONFIG_RTW_ADAPTIVITY_DC_BACKOFF
-	#define CONFIG_RTW_ADAPTIVITY_DC_BACKOFF 2
 #endif
 
 #ifndef CONFIG_RTW_ADAPTIVITY_TH_L2H_INI
@@ -293,11 +312,11 @@
 #endif
 
 #if (CONFIG_IFACE_NUMBER == 0)
-	#error "CONFIG_IFACE_NUMBER cound not equel to 0 !!"
+	#error "CONFIG_IFACE_NUMBER cound not be 0 !!"
 #endif
 
-#if (CONFIG_IFACE_NUMBER > 3)
-	#error "Not support over 3 interfaces yet !!"
+#if (CONFIG_IFACE_NUMBER > 4)
+	#error "Not support over 4 interfaces yet !!"
 #endif
 
 #if (CONFIG_IFACE_NUMBER > 8)	/*IFACE_ID_MAX*/
@@ -315,10 +334,29 @@
 	#endif
 
 	#ifdef CONFIG_AP_MODE
+		#define CONFIG_SUPPORT_MULTI_BCN
+
 		#define CONFIG_SWTIMER_BASED_TXBCN
-		/*#define CONFIG_FW_BASED_BCN*/
-	#endif
-#endif
+
+		#if defined(CONFIG_RTL8822B) || defined(CONFIG_RTL8821C) /* || defined(CONFIG_RTL8822C)*/
+		#define CONFIG_FW_HANDLE_TXBCN
+
+		#ifdef CONFIG_FW_HANDLE_TXBCN
+			#ifdef CONFIG_SWTIMER_BASED_TXBCN
+				#undef CONFIG_SWTIMER_BASED_TXBCN
+			#endif
+
+			#define CONFIG_LIMITED_AP_NUM	4
+		#endif
+	#endif /*defined(CONFIG_RTL8822B) || defined(CONFIG_RTL8821C) */ /*|| defined(CONFIG_RTL8822C)*/
+	#endif /*CONFIG_AP_MODE*/
+
+	#if defined(CONFIG_RTL8822B) || defined(CONFIG_RTL8821C) || defined(CONFIG_RTL8822C)
+	#define CONFIG_CLIENT_PORT_CFG
+	#define CONFIG_NEW_NETDEV_HDL
+	#endif/*defined(CONFIG_RTL8822B) || defined(CONFIG_RTL8821C) || defined(CONFIG_RTL8822C)*/
+
+#endif/*(CONFIG_IFACE_NUMBER > 2)*/
 
 #define MACID_NUM_SW_LIMIT 32
 #define SEC_CAM_ENT_NUM_SW_LIMIT 32
@@ -329,6 +367,14 @@
 
 #if defined(CONFIG_WOWLAN) && (defined(CONFIG_RTL8822B) || defined(CONFIG_RTL8821C))
 	#define CONFIG_WOW_PATTERN_HW_CAM
+#endif
+
+#ifndef CONFIG_TSF_UPDATE_PAUSE_FACTOR
+#define CONFIG_TSF_UPDATE_PAUSE_FACTOR 200
+#endif
+
+#ifndef CONFIG_TSF_UPDATE_RESTORE_FACTOR
+#define CONFIG_TSF_UPDATE_RESTORE_FACTOR 5
 #endif
 
 /*
@@ -343,6 +389,7 @@
 
 
 /*#define CONFIG_DOSCAN_IN_BUSYTRAFFIC	*/
+/*#define CONFIG_PHDYM_FW_FIXRATE		*/	/*	Another way to fix tx rate	*/
 
 /*Don't release SDIO irq in suspend/resume procedure*/
 #define CONFIG_RTW_SDIO_KEEP_IRQ	0
@@ -372,6 +419,12 @@
 		#endif
 	#endif
 #endif
+
+#ifdef CONFIG_RTW_80211K
+	#ifndef CONFIG_RTW_ACS
+		#define CONFIG_RTW_ACS
+	#endif
+#endif /*CONFIG_RTW_80211K*/
 
 #ifdef DBG_CONFIG_ERROR_RESET
 #ifndef CONFIG_IPS

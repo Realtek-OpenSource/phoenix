@@ -37,12 +37,17 @@
  */
 
 #define CONFIG_IEEE80211_BAND_5GHZ
+
 #define CONFIG_80211N_HT
+#define CONFIG_80211AC_VHT
+#ifdef CONFIG_80211AC_VHT
+	#ifndef CONFIG_80211N_HT
+		#define CONFIG_80211N_HT
+	#endif
+#endif
 
 #ifdef CONFIG_80211N_HT
-	#define CONFIG_80211AC_VHT
 	/* #define CONFIG_BEAMFORMING */
-
 #endif
 
 /* set CONFIG_IOCTL_CFG80211 from Makefile */
@@ -98,7 +103,7 @@
 
 #ifdef CONFIG_LPS_LCLK
 	#ifdef CONFIG_POWER_SAVING
-		#define CONFIG_XMIT_THREAD_MODE
+		/* #define CONFIG_XMIT_THREAD_MODE */
 	#endif
 	#ifndef CONFIG_SUPPORT_USB_INT
 		#define LPS_RPWM_WAIT_MS 300
@@ -118,20 +123,6 @@
 #ifdef CONFIG_ANTENNA_DIVERSITY
 #define CONFIG_HW_ANTENNA_DIVERSITY
 #endif
-
-
-/*#define CONFIG_CONCURRENT_MODE*/
-#ifdef CONFIG_CONCURRENT_MODE
-	/* #define CONFIG_HWPORT_SWAP */				/* Port0->Sec , Port1->Pri */
-	/*#define CONFIG_RUNTIME_PORT_SWITCH*/
-	/* #define DBG_RUNTIME_PORT_SWITCH */
-	#if 0
-	#ifdef CONFIG_RTL8812A
-		#define CONFIG_TSF_RESET_OFFLOAD 1		/* For 2 PORT TSF SYNC. */
-	#endif
-	#endif
-#endif
-
 
 #define CONFIG_AP_MODE
 #ifdef CONFIG_AP_MODE
@@ -164,7 +155,7 @@
 	/* #define CONFIG_P2P_IPS */
 	#define CONFIG_P2P_OP_CHK_SOCIAL_CH
 	#define CONFIG_CFG80211_ONECHANNEL_UNDER_CONCURRENT  /* replace CONFIG_P2P_CHK_INVITE_CH_LIST flag */
-	#define CONFIG_P2P_INVITE_IOT
+	/*#define CONFIG_P2P_INVITE_IOT*/
 #endif
 
 /*	Added by Kurt 20110511 */
@@ -192,6 +183,8 @@
 #endif /* CONFIG_RTW_LED */
 
 #define CONFIG_GLOBAL_UI_PID
+
+/*#define CONFIG_RTW_80211K*/
 
 #define CONFIG_LAYER2_ROAMING
 #define CONFIG_LAYER2_ROAMING_RESUME
@@ -311,10 +304,6 @@
 /* #define	CONFIG_TX_EARLY_MODE */
 #endif
 
-#define CONFIG_80211D
-
-#define CONFIG_ATTEMPT_TO_FIX_AP_BEACON_ERROR
-
 /*
  * Debug Related Config
  */
@@ -330,9 +319,9 @@
 
 /*#define DBG_IO*/
 /*#define DBG_DELAY_OS*/
-#ifndef DBG_MEM_ALLOC
-#define DBG_MEM_ALLOC
-#endif
+/*#ifndef DBG_MEM_ALLOC*/
+/*#define DBG_MEM_ALLOC*/
+/*#endif*/
 /*#define DBG_MEMORY_LEAK*/
 /*#define DBG_IOCTL*/
 

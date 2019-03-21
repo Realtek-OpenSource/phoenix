@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2016 - 2017 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2016 - 2018 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -22,13 +22,17 @@
 
 #if HALMAC_8821C_SUPPORT
 
+#define INTF_INTGRA_MINREF	90
+#define INTF_INTGRA_HOSTREF	100
+
+static u16
+get_target(struct halmac_adapter *adapter);
+
 static enum halmac_ret_status
-halmac_auto_refclk_cal_8821c_pcie(
-	IN struct halmac_adapter *adapter
-);
+freerun_delay_us(struct halmac_adapter *adapter, u16 delay);
 
 /**
- * halmac_mac_power_switch_8821c_pcie() - switch mac power
+ * mac_pwr_switch_pcie_8821c() - switch mac power
  * @adapter : the adapter of halmac
  * @pwr : power state
  * Author : KaiYuan Chang / Ivan Lin
@@ -36,71 +40,65 @@ halmac_auto_refclk_cal_8821c_pcie(
  * More details of status code can be found in prototype document
  */
 enum halmac_ret_status
-halmac_mac_power_switch_8821c_pcie(
-	IN struct halmac_adapter *adapter,
-	IN enum halmac_mac_power pwr
-)
+mac_pwr_switch_pcie_8821c(struct halmac_adapter *adapter,
+			  enum halmac_mac_power pwr)
 {
-	u8 intf_mask;
 	u8 value8;
 	u8 rpwm;
-	struct halmac_api *api = (struct halmac_api *)adapter->pHalmac_api;
+	struct halmac_api *api = (struct halmac_api *)adapter->halmac_api;
 	enum halmac_ret_status status;
 
-	if (halmac_api_validate(adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_API_INVALID;
+	PLTFM_MSG_TRACE("[TRACE]%s ===>\n", __func__);
+	PLTFM_MSG_TRACE("[TRACE]pwr = %x\n", pwr);
+	PLTFM_MSG_TRACE("[TRACE]8821C pwr seq ver = %s\n",
+			HALMAC_8821C_PWR_SEQ_VER);
 
-	PLTFM_MSG_PRINT(HALMAC_DBG_TRACE, "[TRACE]%s ===>\n", __func__);
-	PLTFM_MSG_PRINT(HALMAC_DBG_TRACE, "[TRACE]pwr = %x\n", pwr);
-	PLTFM_MSG_PRINT(HALMAC_DBG_TRACE, "[TRACE]8821C pwr seq ver = %s\n", HALMAC_8821C_PWR_SEQ_VER);
-
-	intf_mask = HALMAC_PWR_INTF_PCI_MSK;
-
-	adapter->rpwm_record = HALMAC_REG_R8(REG_PCIE_HRPWM1_V1);
+	adapter->rpwm = HALMAC_REG_R8(REG_PCIE_HRPWM1_V1);
 
 	/* Check FW still exist or not */
 	if (HALMAC_REG_R16(REG_MCUFW_CTRL) == 0xC078) {
 		/* Leave 32K */
-		rpwm = (u8)((adapter->rpwm_record ^ BIT(7)) & 0x80);
+		rpwm = (u8)((adapter->rpwm ^ BIT(7)) & 0x80);
 		HALMAC_REG_W8(REG_PCIE_HRPWM1_V1, rpwm);
 	}
 
 	value8 = HALMAC_REG_R8(REG_CR);
 	if (value8 == 0xEA)
-		adapter->halmac_state.mac_power = HALMAC_MAC_POWER_OFF;
+		adapter->halmac_state.mac_pwr = HALMAC_MAC_POWER_OFF;
 	else
-		adapter->halmac_state.mac_power = HALMAC_MAC_POWER_ON;
+		adapter->halmac_state.mac_pwr = HALMAC_MAC_POWER_ON;
 
 	/* Check if power switch is needed */
-	if (pwr == HALMAC_MAC_POWER_ON && adapter->halmac_state.mac_power == HALMAC_MAC_POWER_ON) {
-		PLTFM_MSG_PRINT(HALMAC_DBG_WARN, "[WARN]halmac_mac_power_switch power state unchange!\n");
+	if (pwr == HALMAC_MAC_POWER_ON &&
+	    adapter->halmac_state.mac_pwr == HALMAC_MAC_POWER_ON) {
+		PLTFM_MSG_WARN("[WARN]power state unchange!!\n");
 		return HALMAC_RET_PWR_UNCHANGE;
 	}
 
 	if (pwr == HALMAC_MAC_POWER_OFF) {
-		status = halmac_trxdma_check_idle_88xx(adapter);
+		status = trxdma_check_idle_88xx(adapter);
 		if (status != HALMAC_RET_SUCCESS)
 			return status;
-		if (halmac_pwr_seq_parser_88xx(adapter, HALMAC_PWR_CUT_ALL_MSK, HALMAC_PWR_FAB_TSMC_MSK,
-					       intf_mask, halmac_8821c_card_disable_flow) != HALMAC_RET_SUCCESS) {
-			PLTFM_MSG_PRINT(HALMAC_DBG_ERR, "[ERR]Handle power off cmd error\n");
+		if (pwr_seq_parser_88xx(adapter, card_dis_flow_8821c) !=
+		    HALMAC_RET_SUCCESS) {
+			PLTFM_MSG_ERR("[ERR]Handle power off cmd error\n");
 			return HALMAC_RET_POWER_OFF_FAIL;
 		}
 
-		adapter->halmac_state.mac_power = HALMAC_MAC_POWER_OFF;
+		adapter->halmac_state.mac_pwr = HALMAC_MAC_POWER_OFF;
 		adapter->halmac_state.dlfw_state = HALMAC_DLFW_NONE;
-		halmac_init_adapter_dynamic_para_88xx(adapter);
+		init_adapter_dynamic_param_88xx(adapter);
 	} else {
-		if (halmac_pwr_seq_parser_88xx(adapter, HALMAC_PWR_CUT_ALL_MSK, HALMAC_PWR_FAB_TSMC_MSK,
-					       intf_mask, halmac_8821c_card_enable_flow) != HALMAC_RET_SUCCESS) {
-			PLTFM_MSG_PRINT(HALMAC_DBG_ERR, "[ERR]Handle power on cmd error\n");
+		if (pwr_seq_parser_88xx(adapter, card_en_flow_8821c) !=
+		    HALMAC_RET_SUCCESS) {
+			PLTFM_MSG_ERR("[ERR]Handle power on cmd error\n");
 			return HALMAC_RET_POWER_ON_FAIL;
 		}
 
-		adapter->halmac_state.mac_power = HALMAC_MAC_POWER_ON;
+		adapter->halmac_state.mac_pwr = HALMAC_MAC_POWER_ON;
 	}
 
-	PLTFM_MSG_PRINT(HALMAC_DBG_TRACE, "[TRACE]%s <===\n", __func__);
+	PLTFM_MSG_TRACE("[TRACE]%s <===\n", __func__);
 
 	return HALMAC_RET_SUCCESS;
 }
@@ -114,207 +112,244 @@ halmac_mac_power_switch_8821c_pcie(
  * More details of status code can be found in prototype document
  */
 enum halmac_ret_status
-halmac_pcie_switch_8821c_pcie(
-	IN struct halmac_adapter *adapter,
-	IN enum halmac_pcie_cfg	cfg
-)
+pcie_switch_8821c(struct halmac_adapter *adapter, enum halmac_pcie_cfg cfg)
 {
-	if (halmac_api_validate(adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_API_INVALID;
-
 	return HALMAC_RET_SUCCESS;
 }
 
 /**
- * halmac_phy_cfg_8821c_pcie() - phy config
+ * phy_cfg_pcie_8821c() - phy config
  * @adapter : the adapter of halmac
  * Author : KaiYuan Chang / Ivan Lin
  * Return : enum halmac_ret_status
  * More details of status code can be found in prototype document
  */
 enum halmac_ret_status
-halmac_phy_cfg_8821c_pcie(
-	IN struct halmac_adapter *adapter,
-	IN enum halmac_intf_phy_platform pltfm
-)
+phy_cfg_pcie_8821c(struct halmac_adapter *adapter,
+		   enum halmac_intf_phy_platform pltfm)
 {
 	enum halmac_ret_status status = HALMAC_RET_SUCCESS;
-	struct halmac_api *api = (struct halmac_api *)adapter->pHalmac_api;
 
-	if (halmac_api_validate(adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_API_INVALID;
+	PLTFM_MSG_TRACE("[TRACE]%s ===>\n", __func__);
 
-	PLTFM_MSG_PRINT(HALMAC_DBG_TRACE, "[TRACE]%s ===>\n", __func__);
-
-	status = halmac_parse_intf_phy_88xx(adapter, HALMAC_RTL8821C_PCIE_PHY_GEN1, pltfm, HAL_INTF_PHY_PCIE_GEN1);
+	status = parse_intf_phy_88xx(adapter, pcie_gen1_phy_param_8821c, pltfm,
+				     HAL_INTF_PHY_PCIE_GEN1);
 
 	if (status != HALMAC_RET_SUCCESS)
 		return status;
 
-	status = halmac_parse_intf_phy_88xx(adapter, HALMAC_RTL8821C_PCIE_PHY_GEN2, pltfm, HAL_INTF_PHY_PCIE_GEN2);
+	status = parse_intf_phy_88xx(adapter, pcie_gen2_phy_param_8821c, pltfm,
+				     HAL_INTF_PHY_PCIE_GEN2);
 
 	if (status != HALMAC_RET_SUCCESS)
 		return status;
 
-	PLTFM_MSG_PRINT(HALMAC_DBG_TRACE, "[TRACE]%s <===\n", __func__);
+	PLTFM_MSG_TRACE("[TRACE]%s <===\n", __func__);
 
 	return HALMAC_RET_SUCCESS;
 }
 
 /**
- * halmac_interface_integration_tuning_8821c_pcie() - pcie interface fine tuning
+ * intf_tun_pcie_8821c() - pcie interface fine tuning
  * @adapter : the adapter of halmac
  * Author : Rick Liu
  * Return : enum halmac_ret_status
  * More details of status code can be found in prototype document
  */
 enum halmac_ret_status
-halmac_interface_integration_tuning_8821c_pcie(
-	IN struct halmac_adapter *adapter
-)
+intf_tun_pcie_8821c(struct halmac_adapter *adapter)
 {
-	enum halmac_ret_status status;
+	return HALMAC_RET_SUCCESS;
+}
 
-	status = halmac_auto_refclk_cal_8821c_pcie(adapter);
+enum halmac_ret_status
+auto_refclk_cal_8821c_pcie(struct halmac_adapter *adapter)
+{
+	u8 bdr_ori;
+	u16 tmp_u16;
+	u16 div_set;
+	u16 mgn_tmp;
+	u16 mgn_set;
+	u16 tar;
+	enum halmac_ret_status status = HALMAC_RET_SUCCESS;
+	u8 l1_flag = 0;
+
+#if (INTF_INTGRA_HOSTREF <= INTF_INTGRA_MINREF || 0 >= INTF_INTGRA_MINREF)
+	return status;
+#endif
+	/* Disable L1BD */
+	bdr_ori = dbi_r8_88xx(adapter, PCIE_L1_BACKDOOR);
+	if (bdr_ori & (BIT(4) | BIT(3))) {
+		status = dbi_w8_88xx(adapter, PCIE_L1_BACKDOOR,
+				     bdr_ori & ~(BIT(4) | BIT(3)));
+		if (status != HALMAC_RET_SUCCESS)
+			return status;
+		l1_flag = 1;
+	}
+
+	/* Disable function */
+	tmp_u16 = mdio_read_88xx(adapter, RAC_CTRL_PPR,
+				 HAL_INTF_PHY_PCIE_GEN1);
+	if (tmp_u16 & BIT(9)) {
+		status = mdio_write_88xx(adapter, RAC_CTRL_PPR,
+					 tmp_u16 & ~(BIT(9)),
+					 HAL_INTF_PHY_PCIE_GEN1);
+		if (status != HALMAC_RET_SUCCESS)
+			return status;
+	}
+	if (adapter->pcie_refautok_en == 0) {
+		if (l1_flag == 1)
+			status = dbi_w8_88xx(adapter, PCIE_L1_BACKDOOR,
+					     bdr_ori);
+		return status;
+	}
+
+	/* Set div */
+	tmp_u16 = mdio_read_88xx(adapter, RAC_CTRL_PPR, HAL_INTF_PHY_PCIE_GEN1);
+	status = mdio_write_88xx(adapter, RAC_CTRL_PPR,
+				 tmp_u16 & ~(BIT(7) | BIT(6)),
+				 HAL_INTF_PHY_PCIE_GEN1);
+	if (status != HALMAC_RET_SUCCESS)
+		return status;
+
+	/*  Obtain div and margin */
+	tar = get_target(adapter);
+	if (tar == 0xFFFF)
+		return HALMAC_RET_FAIL;
+	mgn_tmp = tar * INTF_INTGRA_HOSTREF / INTF_INTGRA_MINREF - tar;
+
+	if (mgn_tmp >= 128) {
+		div_set = 0x0003;
+		mgn_set = 0x000F;
+	} else if (mgn_tmp >= 64) {
+		div_set = 0x0003;
+		mgn_set = mgn_tmp >> 3;
+	} else if (mgn_tmp >= 32) {
+		div_set = 0x0002;
+		mgn_set = mgn_tmp >> 2;
+	} else if (mgn_tmp >= 16) {
+		div_set = 0x0001;
+		mgn_set = mgn_tmp >> 1;
+	} else if (mgn_tmp == 0) {
+		div_set = 0x0000;
+		mgn_set = 0x0001;
+	} else {
+		div_set = 0x0000;
+		mgn_set = mgn_tmp;
+	}
+
+	/* Set div, margin, target*/
+	tmp_u16 = mdio_read_88xx(adapter, RAC_CTRL_PPR, HAL_INTF_PHY_PCIE_GEN1);
+	tmp_u16 = (tmp_u16 & ~(BIT(7) | BIT(6))) | (div_set << 6);
+	status = mdio_write_88xx(adapter, RAC_CTRL_PPR,
+				 tmp_u16, HAL_INTF_PHY_PCIE_GEN1);
+	if (status != HALMAC_RET_SUCCESS)
+		return status;
+	tar = get_target(adapter);
+	if (tar == 0xFFFF)
+		return HALMAC_RET_FAIL;
+	PLTFM_MSG_TRACE("[TRACE]target = 0x%X, div = 0x%X, margin = 0x%X\n",
+			tar, div_set, mgn_set);
+	status = mdio_write_88xx(adapter, RAC_SET_PPR,
+				 (tar & 0x0FFF) | (mgn_set << 12),
+				 HAL_INTF_PHY_PCIE_GEN1);
+	if (status != HALMAC_RET_SUCCESS)
+		return status;
+
+	/* Enable function */
+	tmp_u16 = mdio_read_88xx(adapter, RAC_CTRL_PPR, HAL_INTF_PHY_PCIE_GEN1);
+	status = mdio_write_88xx(adapter, RAC_CTRL_PPR, tmp_u16 | BIT(9),
+				 HAL_INTF_PHY_PCIE_GEN1);
+	if (status != HALMAC_RET_SUCCESS)
+		return status;
+	PLTFM_MSG_TRACE("[TRACE]%s <===\n", __func__);
+
+	/* Set L1BD to ori */
+	if (l1_flag == 1)
+		status = dbi_w8_88xx(adapter, PCIE_L1_BACKDOOR, bdr_ori);
 
 	return status;
 }
 
-static enum halmac_ret_status
-halmac_auto_refclk_cal_8821c_pcie(
-	IN struct halmac_adapter *adapter
-)
+static u16
+get_target(struct halmac_adapter *adapter)
 {
-	u8 backdoor_org;
 	u16 tmp_u16;
-	u16 div_set;
-	u16 margin_tmp16;
-	u16 margin_set;
-	u16 target_est;
-	u16 target_final;
+	u16 tar;
 	enum halmac_ret_status status = HALMAC_RET_SUCCESS;
-	u8 l1_write_flag = 0;
-	u32 count_tar;
 
-	/* Disable L1 backdoor at 0x719[4:3] */
-	backdoor_org = halmac_dbi_read8_88xx(adapter, PCIE_L1_BACKDOOR);
-	if (backdoor_org & (BIT(4) | BIT(3))) {
-		status = halmac_dbi_write8_88xx(adapter, PCIE_L1_BACKDOOR, backdoor_org & ~(BIT(4) | BIT(3)));
+	/* Enable counter */
+	tmp_u16 = mdio_read_88xx(adapter, RAC_CTRL_PPR, HAL_INTF_PHY_PCIE_GEN1);
+	status = mdio_write_88xx(adapter, RAC_CTRL_PPR,
+				 tmp_u16 | BIT(11), HAL_INTF_PHY_PCIE_GEN1);
+	if (status != HALMAC_RET_SUCCESS)
+		return 0xFFFF;
+
+	/* Obtain target */
+	status = freerun_delay_us(adapter, 300);
+	if (status != HALMAC_RET_SUCCESS)
+		return 0xFFFF;
+	tar = mdio_read_88xx(adapter, RAC_TRG_PPR, HAL_INTF_PHY_PCIE_GEN1);
+	if (tar == 0) {
+		PLTFM_MSG_ERR("[ERR]Get target failed.\n");
+		return 0xFFFF;
+	}
+
+	/* Disable counter */
+	tmp_u16 = mdio_read_88xx(adapter, RAC_CTRL_PPR, HAL_INTF_PHY_PCIE_GEN1);
+	status = mdio_write_88xx(adapter, RAC_CTRL_PPR,
+				 tmp_u16 & ~(BIT(11)), HAL_INTF_PHY_PCIE_GEN1);
+	if (status != HALMAC_RET_SUCCESS)
+		return 0xFFFF;
+	return tar;
+}
+
+static enum halmac_ret_status
+freerun_delay_us(struct halmac_adapter *adapter, u16 delay)
+{
+	u16 count;
+	u8 mc_ori;
+	u32 frcnt_ori;
+	u32 frcnt_cmp;
+	u8 frcnt_onflg = 0;
+	u32 cmp_val;
+	struct halmac_api *api = (struct halmac_api *)adapter->halmac_api;
+	enum halmac_ret_status status = HALMAC_RET_SUCCESS;
+
+	/* Enable free-run counter */
+	mc_ori = HALMAC_REG_R8(REG_MISC_CTRL);
+	if ((mc_ori & BIT(3)) == 0) {
+		status = HALMAC_REG_W8(REG_MISC_CTRL, mc_ori | BIT(3));
 		if (status != HALMAC_RET_SUCCESS)
 			return status;
-		l1_write_flag = 1;
+		frcnt_onflg = 1;
 	}
 
-	/* Disable this function before configuration*/
-	tmp_u16 = halmac_mdio_read_88xx(adapter, CLKCAL_CTRL_PHYPARA, HAL_INTF_PHY_PCIE_GEN1);
-	if (tmp_u16 & BIT(9)) {
-		status = halmac_mdio_write_88xx(adapter, CLKCAL_CTRL_PHYPARA, tmp_u16 & ~(BIT(9)), HAL_INTF_PHY_PCIE_GEN1);
-		if (status != HALMAC_RET_SUCCESS)
-			return status;
-	}
-
-	/* If minref value is 0 or large than 100, then disable this function */
-	if ((HALMAC_INTF_INTGRA_HOSTREF_8821C <= HALMAC_INTF_INTGRA_MINREF_8821C) | (HALMAC_INTF_INTGRA_MINREF_8821C <= 0)) {
-		if (l1_write_flag == 1)
-			status = halmac_dbi_write8_88xx(adapter, PCIE_L1_BACKDOOR, backdoor_org);
-		return status;
-	}
-
-	/* Set div 2048 at 0x00[7:6] to estimate slow clock*/
-	PLTFM_MSG_PRINT(HALMAC_DBG_TRACE, "[TRACE]%s ===>\n", __func__);
-	tmp_u16 = halmac_mdio_read_88xx(adapter, CLKCAL_CTRL_PHYPARA, HAL_INTF_PHY_PCIE_GEN1);
-	status = halmac_mdio_write_88xx(adapter, CLKCAL_CTRL_PHYPARA, tmp_u16 & ~(BIT(7) | BIT(6)), HAL_INTF_PHY_PCIE_GEN1);
-	if (status != HALMAC_RET_SUCCESS)
-		return status;
-
-	/* Set 0x00[11]=1 to count 1T of reference clock and read target value at 0x21[11:0] */
-	tmp_u16 = halmac_mdio_read_88xx(adapter, CLKCAL_CTRL_PHYPARA, HAL_INTF_PHY_PCIE_GEN1);
-	status = halmac_mdio_write_88xx(adapter, CLKCAL_CTRL_PHYPARA, tmp_u16 | BIT(11), HAL_INTF_PHY_PCIE_GEN1);
-	if (status != HALMAC_RET_SUCCESS)
-		return status;
-
-	count_tar = 5;
+	/* counting delay */
+	count = 20;
+	frcnt_ori = HALMAC_REG_R32(REG_FREERUN_CNT);
+	PLTFM_MSG_TRACE("[TRACE]free_ori = 0x%X\n", frcnt_ori);
 	do {
-		PLTFM_DELAY_US(22);
-		target_est = halmac_mdio_read_88xx(adapter, CLKCAL_TRG_VAL_PHYPARA, HAL_INTF_PHY_PCIE_GEN1);
-		count_tar--;
-	} while ((count_tar > 0) && (target_est == 0));
-	if (target_est == 0) {
-		PLTFM_MSG_PRINT(HALMAC_DBG_ERR, "[ERR]Estimated target reads failed.\n");
-		return HALMAC_RET_FAIL;
-	}
+		PLTFM_DELAY_US(100);
+		count--;
+		frcnt_cmp = HALMAC_REG_R32(REG_FREERUN_CNT);
+		PLTFM_MSG_TRACE("[TRACE]Count=0x%X, free_cmp=0x%X\n"
+				, count, frcnt_cmp);
+		if (frcnt_cmp >= frcnt_ori)
+			cmp_val = frcnt_cmp - frcnt_ori;
+		else
+			cmp_val = 0xFFFFFFFF - frcnt_ori + frcnt_cmp;
+	} while ((count > 0) && (cmp_val < delay));
 
-	tmp_u16 = halmac_mdio_read_88xx(adapter, CLKCAL_CTRL_PHYPARA, HAL_INTF_PHY_PCIE_GEN1);
-	status = halmac_mdio_write_88xx(adapter, CLKCAL_CTRL_PHYPARA, tmp_u16 & ~(BIT(11)), HAL_INTF_PHY_PCIE_GEN1);
-	if (status != HALMAC_RET_SUCCESS)
+	/*  Reset freerun counter */
+	if (frcnt_onflg != 1)
 		return status;
 
-	/* Based on mininum tolerable refclk to calculate suitable div and margin */
-	margin_tmp16 = target_est * HALMAC_INTF_INTGRA_HOSTREF_8821C / HALMAC_INTF_INTGRA_MINREF_8821C - target_est;
-
-	if (margin_tmp16 >= 128) {
-		div_set = 0x0003;
-		margin_set = 0x000F;
-	} else if (margin_tmp16 >= 64) {
-		div_set = 0x0003;
-		margin_set = margin_tmp16 >> 3;
-	} else if (margin_tmp16 >= 32) {
-		div_set = 0x0002;
-		margin_set = margin_tmp16 >> 2;
-	} else if (margin_tmp16 >= 16) {
-		div_set = 0x0001;
-		margin_set = margin_tmp16 >> 1;
-	} else if (margin_tmp16 == 0) {
-		div_set = 0x0000;
-		margin_set = 0x0001;
-	} else {
-		div_set = 0x0000;
-		margin_set = margin_tmp16;
-	}
-
-	/* Set div and count target */
-	tmp_u16 = halmac_mdio_read_88xx(adapter, CLKCAL_CTRL_PHYPARA, HAL_INTF_PHY_PCIE_GEN1);
-	status = halmac_mdio_write_88xx(adapter, CLKCAL_CTRL_PHYPARA, (tmp_u16 & ~(BIT(7) | BIT(6))) | (div_set << 6), HAL_INTF_PHY_PCIE_GEN1);
+	status = HALMAC_REG_W8(REG_MISC_CTRL, mc_ori);
 	if (status != HALMAC_RET_SUCCESS)
 		return status;
-	tmp_u16 = halmac_mdio_read_88xx(adapter, CLKCAL_CTRL_PHYPARA, HAL_INTF_PHY_PCIE_GEN1);
-	status = halmac_mdio_write_88xx(adapter, CLKCAL_CTRL_PHYPARA, tmp_u16 | BIT(11), HAL_INTF_PHY_PCIE_GEN1);
-	if (status != HALMAC_RET_SUCCESS)
-		return status;
-
-	count_tar = 5;
-	do {
-		PLTFM_DELAY_US(22);
-		target_final = halmac_mdio_read_88xx(adapter, CLKCAL_TRG_VAL_PHYPARA, HAL_INTF_PHY_PCIE_GEN1);
-		count_tar--;
-	} while ((count_tar > 0) && (target_final == 0));
-	if (target_final == 0) {
-		PLTFM_MSG_PRINT(HALMAC_DBG_ERR, "[ERR]Final target reads failed.\n");
-		return HALMAC_RET_FAIL;
-	}
-
-	tmp_u16 = halmac_mdio_read_88xx(adapter, CLKCAL_CTRL_PHYPARA, HAL_INTF_PHY_PCIE_GEN1);
-	status = halmac_mdio_write_88xx(adapter, CLKCAL_CTRL_PHYPARA, tmp_u16 & ~(BIT(11)), HAL_INTF_PHY_PCIE_GEN1);
-	if (status != HALMAC_RET_SUCCESS)
-		return status;
-
-	/* Set calibration target at 0x20[11:0] and margin at 0x20[15:12] */
-	PLTFM_MSG_PRINT(HALMAC_DBG_TRACE, "[TRACE]final target = 0x%X, div = 0x%X, margin = 0x%X\n", target_final, div_set, margin_set);
-	status = halmac_mdio_write_88xx(adapter, CLKCAL_SET_PHYPARA, (target_final & 0x0FFF) | (margin_set << 12), HAL_INTF_PHY_PCIE_GEN1);
-	if (status != HALMAC_RET_SUCCESS)
-		return status;
-
-	/* Turn on calibration mechanium at 0x00[9] */
-	tmp_u16 = halmac_mdio_read_88xx(adapter, CLKCAL_CTRL_PHYPARA, HAL_INTF_PHY_PCIE_GEN1);
-	status = halmac_mdio_write_88xx(adapter, CLKCAL_CTRL_PHYPARA, tmp_u16 | BIT(9), HAL_INTF_PHY_PCIE_GEN1);
-	if (status != HALMAC_RET_SUCCESS)
-		return status;
-	PLTFM_MSG_PRINT(HALMAC_DBG_TRACE, "[TRACE]%s <===\n", __func__);
-
-	/* Set L1 backdoor to ori value at 0x719[4:3] */
-	if (l1_write_flag == 1)
-		status = halmac_dbi_write8_88xx(adapter, PCIE_L1_BACKDOOR, backdoor_org);
-
+	status = HALMAC_REG_W8(REG_DUAL_TSF_RST,
+			       HALMAC_REG_R8(REG_DUAL_TSF_RST) | BIT(5));
 	return status;
 }
 

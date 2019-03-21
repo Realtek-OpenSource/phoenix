@@ -88,10 +88,8 @@ void rtl8821c_query_rx_desc(union recv_frame *, u8 *pdesc);
 
 /* rtl8821c_cmd.c */
 s32 rtl8821c_fillh2ccmd(PADAPTER, u8 id, u32 buf_len, u8 *pbuf);
-void rtl8821c_set_FwRssiSetting_cmd(_adapter *adapter, u8 *param);
 void rtl8821c_set_FwPwrMode_cmd(PADAPTER, u8 psmode);
 void rtl8821c_set_FwPwrModeInIPS_cmd(PADAPTER adapter, u8 cmd_param);
-void rtl8821c_fw_update_beacon_cmd(PADAPTER);
 void c2h_handler_rtl8821c(_adapter *adapter, u8 *pbuf, u16 length);
 void c2h_pre_handler_rtl8821c(_adapter *adapter, u8 *pbuf, s32 length);
 #ifdef CONFIG_BT_COEXIST

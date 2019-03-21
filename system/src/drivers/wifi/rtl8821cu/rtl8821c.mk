@@ -16,6 +16,7 @@ _HAL_HALMAC_FILES +=	hal/halmac/halmac_88xx/halmac_bb_rf_88xx.o \
 			hal/halmac/halmac_88xx/halmac_cfg_wmac_88xx.o \
 			hal/halmac/halmac_88xx/halmac_common_88xx.o \
 			hal/halmac/halmac_88xx/halmac_efuse_88xx.o \
+			hal/halmac/halmac_88xx/halmac_flash_88xx.o \
 			hal/halmac/halmac_88xx/halmac_fw_88xx.o \
 			hal/halmac/halmac_88xx/halmac_gpio_88xx.o \
 			hal/halmac/halmac_88xx/halmac_init_88xx.o \
@@ -63,3 +64,9 @@ _HAL_INTFS_FILES +=hal/efuse/$(RTL871X)/HalEfuseMask8821C_PCIE.o
 endif
 
 _HAL_INTFS_FILES += $(_HAL_HALMAC_FILES)
+
+_BTC_FILES += hal/btc/halbtc8821cwifionly.o
+ifeq ($(CONFIG_BT_COEXIST), y)
+_BTC_FILES += hal/btc/halbtc8821c1ant.o \
+				hal/btc/halbtc8821c2ant.o
+endif

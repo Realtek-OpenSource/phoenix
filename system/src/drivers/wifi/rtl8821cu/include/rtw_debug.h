@@ -68,8 +68,6 @@ extern void rtl871x_cedbg(const char *fmt, ...);
 
 #define RTW_DBGDUMP 0 /* 'stream' for _dbgdump */
 
-/* don't use these 3 APIs anymore, will be removed later */
-#define RT_TRACE(_Comp, _Level, Fmt) do {} while (0)
 
 
 #undef _dbgdump
@@ -98,7 +96,7 @@ extern void rtl871x_cedbg(const char *fmt, ...);
 #endif
 
 void RTW_BUF_DUMP_SEL(uint _loglevel, void *sel, u8 *_titlestring,
-								bool _idx_show, u8 *_hexdata, int _hexdatalen);
+								bool _idx_show, const u8 *_hexdata, int _hexdatalen);
 
 #ifdef CONFIG_RTW_DEBUG
 
@@ -308,12 +306,6 @@ int proc_get_rf_info(struct seq_file *m, void *v);
 int proc_get_scan_param(struct seq_file *m, void *v);
 ssize_t proc_set_scan_param(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
 int proc_get_scan_abort(struct seq_file *m, void *v);
-#ifdef CONFIG_SCAN_BACKOP
-int proc_get_backop_flags_sta(struct seq_file *m, void *v);
-ssize_t proc_set_backop_flags_sta(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
-int proc_get_backop_flags_ap(struct seq_file *m, void *v);
-ssize_t proc_set_backop_flags_ap(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
-#endif /* CONFIG_SCAN_BACKOP */
 #ifdef CONFIG_RTW_REPEATER_SON
 int proc_get_rson_data(struct seq_file *m, void *v);
 ssize_t proc_set_rson_data(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
@@ -340,9 +332,6 @@ int proc_get_bmc_tx_rate(struct seq_file *m, void *v);
 ssize_t proc_set_bmc_tx_rate(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
 #endif /*CONFIG_AP_MODE*/
 
-int proc_get_dis_pwt(struct seq_file *m, void *v);
-ssize_t proc_set_dis_pwt(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
-
 int proc_get_ps_dbg_info(struct seq_file *m, void *v);
 ssize_t proc_set_ps_dbg_info(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
 
@@ -351,10 +340,6 @@ bool rtw_fwdl_test_trigger_wintint_rdy_fail(void);
 ssize_t proc_set_fwdl_test_case(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
 bool rtw_del_rx_ampdu_test_trigger_no_tx_fail(void);
 ssize_t proc_set_del_rx_ampdu_test_case(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
-#ifdef CONFIG_DFS_MASTER
-int proc_get_dfs_master_test_case(struct seq_file *m, void *v);
-ssize_t proc_set_dfs_master_test_case(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
-#endif /* CONFIG_DFS_MASTER */
 u32 rtw_get_wait_hiq_empty_ms(void);
 ssize_t proc_set_wait_hiq_empty(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
 void rtw_sta_linking_test_set_start(void);
@@ -383,6 +368,7 @@ int proc_get_rx_signal(struct seq_file *m, void *v);
 ssize_t proc_set_rx_signal(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
 int proc_get_hw_status(struct seq_file *m, void *v);
 ssize_t proc_set_hw_status(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
+int proc_get_mac_rptbuf(struct seq_file *m, void *v);
 
 #ifdef CONFIG_80211N_HT
 int proc_get_ht_enable(struct seq_file *m, void *v);
@@ -393,8 +379,6 @@ ssize_t proc_set_bw_mode(struct file *file, const char __user *buffer, size_t co
 
 int proc_get_ampdu_enable(struct seq_file *m, void *v);
 ssize_t proc_set_ampdu_enable(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
-
-int proc_get_mac_rptbuf(struct seq_file *m, void *v);
 
 void dump_regsty_rx_ampdu_size_limit(void *sel, _adapter *adapter);
 int proc_get_rx_ampdu(struct seq_file *m, void *v);
@@ -471,6 +455,13 @@ int proc_get_int_logs(struct seq_file *m, void *v);
 int proc_get_rx_ring(struct seq_file *m, void *v);
 int proc_get_tx_ring(struct seq_file *m, void *v);
 int proc_get_pci_aspm(struct seq_file *m, void *v);
+int proc_get_pci_conf_space(struct seq_file *m, void *v);
+ssize_t proc_set_pci_conf_space(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
+
+int proc_get_pci_bridge_conf_space(struct seq_file *m, void *v);
+ssize_t proc_set_pci_bridge_conf_space(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
+
+
 #ifdef DBG_TXBD_DESC_DUMP
 int proc_get_tx_ring_ext(struct seq_file *m, void *v);
 ssize_t proc_set_tx_ring_ext(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
@@ -543,6 +534,7 @@ ssize_t proc_set_efuse_map(struct file *file, const char __user *buffer, size_t 
 #ifdef CONFIG_MCC_MODE
 int proc_get_mcc_info(struct seq_file *m, void *v);
 ssize_t proc_set_mcc_enable(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
+ssize_t proc_set_mcc_duration(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
 ssize_t proc_set_mcc_single_tx_criteria(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
 ssize_t proc_set_mcc_ap_bw20_target_tp(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
 ssize_t proc_set_mcc_ap_bw40_target_tp(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
@@ -551,14 +543,18 @@ ssize_t proc_set_mcc_sta_bw20_target_tp(struct file *file, const char __user *bu
 ssize_t proc_set_mcc_sta_bw40_target_tp(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
 ssize_t proc_set_mcc_sta_bw80_target_tp(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
 int proc_get_mcc_policy_table(struct seq_file *m, void *v);
-ssize_t proc_set_mcc_policy_table(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
 #endif /* CONFIG_MCC_MODE */
 
 int proc_get_ack_timeout(struct seq_file *m, void *v);
 ssize_t proc_set_ack_timeout(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
 
-int proc_get_iqk_fw_offload(struct seq_file *m, void *v);
-ssize_t proc_set_iqk_fw_offload(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
+int proc_get_fw_offload(struct seq_file *m, void *v);
+ssize_t proc_set_fw_offload(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
+
+#ifdef CONFIG_FW_HANDLE_TXBCN
+ssize_t proc_set_fw_tbtt_rpt(struct file *file, const char __user *buffer, size_t count, loff_t *pos, void *data);
+int proc_get_fw_tbtt_rpt(struct seq_file *m, void *v);
+#endif
 
 #ifdef CONFIG_DBG_RF_CAL
 int proc_get_iqk_info(struct seq_file *m, void *v);

@@ -128,7 +128,10 @@ query_free_page:
 		goto free_xmitbuf;
 
 #ifdef CONFIG_CHECK_LEAVE_LPS
-	traffic_check_for_leave_lps(padapter, _TRUE, pxmitbuf->agg_num);
+	#ifdef CONFIG_LPS_CHK_BY_TP
+	if (!adapter_to_pwrctl(padapter)->lps_chk_by_tp)
+	#endif
+		traffic_check_for_leave_lps(padapter, _TRUE, pxmitbuf->agg_num);
 #endif
 
 	rtw_write_port(padapter, deviceId, pxmitbuf->len, (u8 *)pxmitbuf);

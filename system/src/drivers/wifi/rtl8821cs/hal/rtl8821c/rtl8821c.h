@@ -49,9 +49,10 @@ u8 rtl8821c_rx_tsf_addr_filter_config(_adapter *adapter, u8 config);
 s32 rtl8821c_fw_dl(PADAPTER, u8 wowlan);
 s32 rtl8821c_fw_mem_dl(PADAPTER adapter, enum fw_mem mem);
 
-#ifdef CONFIG_AMPDU_PRETX_CD
 #define BIT_PRETXERR_HANDLE_IMR	BIT(31)
 #define BIT_PRETXERR_HANDLE_ISR	BIT(31)
+
+#ifdef CONFIG_AMPDU_PRETX_CD
 #define BIT_PRETXERR			BIT(7)
 
 void rtl8821c_pretx_cd_config(_adapter *adapter);
@@ -87,10 +88,8 @@ void rtl8821c_query_rx_desc(union recv_frame *, u8 *pdesc);
 
 /* rtl8821c_cmd.c */
 s32 rtl8821c_fillh2ccmd(PADAPTER, u8 id, u32 buf_len, u8 *pbuf);
-void rtl8821c_set_FwRssiSetting_cmd(_adapter *adapter, u8 *param);
 void rtl8821c_set_FwPwrMode_cmd(PADAPTER, u8 psmode);
 void rtl8821c_set_FwPwrModeInIPS_cmd(PADAPTER adapter, u8 cmd_param);
-void rtl8821c_fw_update_beacon_cmd(PADAPTER);
 void c2h_handler_rtl8821c(_adapter *adapter, u8 *pbuf, u16 length);
 void c2h_pre_handler_rtl8821c(_adapter *adapter, u8 *pbuf, s32 length);
 #ifdef CONFIG_BT_COEXIST
@@ -108,5 +107,10 @@ void rtl8821c_get_tx_power_level(PADAPTER, s32 *power);
 void rtl8821c_set_tx_power_index(PADAPTER adapter, u32 powerindex, enum rf_path rfpath, u8 rate);
 u8 rtl8821c_get_tx_power_index(PADAPTER adapter, enum rf_path rfpath, u8 rate, u8 bandwidth, u8 channel, struct txpwr_idx_comp *tic);
 void rtl8821c_notch_filter_switch(PADAPTER, bool enable);
-
+#ifdef CONFIG_BEAMFORMING
+void rtl8821c_phy_bf_init(PADAPTER);
+void rtl8821c_phy_bf_enter(PADAPTER, struct sta_info*);
+void rtl8821c_phy_bf_leave(PADAPTER, u8 *addr);
+void rtl8821c_phy_bf_set_gid_table(PADAPTER, struct beamformer_entry*);
+#endif /* CONFIG_BEAMFORMING */
 #endif /* _RTL8821C_H_ */

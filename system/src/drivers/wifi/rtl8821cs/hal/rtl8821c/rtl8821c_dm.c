@@ -149,7 +149,7 @@ void dm_InterruptMigration(PADAPTER adapter)
 static void init_phydm_cominfo(PADAPTER adapter)
 {
 	PHAL_DATA_TYPE hal = GET_HAL_DATA(adapter);
-	struct PHY_DM_STRUCT *pDM_Odm = &hal->odmpriv;
+	struct dm_struct *pDM_Odm = &hal->odmpriv;
 	u8 cut_ver = ODM_CUT_A, fab_ver = ODM_TSMC;
 
 	Init_ODM_ComInfo(adapter);
@@ -196,31 +196,22 @@ static void init_phydm_cominfo(PADAPTER adapter)
 	
 void rtl8821c_phy_init_dm_priv(PADAPTER adapter)
 {
-	struct PHY_DM_STRUCT *podmpriv = adapter_to_phydm(adapter);
+	struct dm_struct *phydm = adapter_to_phydm(adapter);
 
 	init_phydm_cominfo(adapter);
-	odm_init_all_timers(podmpriv);
-
+	odm_init_all_timers(phydm);
 }
 	
 void rtl8821c_phy_deinit_dm_priv(PADAPTER adapter)
 {
-	struct PHY_DM_STRUCT *podmpriv = adapter_to_phydm(adapter);
+	struct dm_struct *phydm = adapter_to_phydm(adapter);
 
-
-	odm_cancel_all_timers(podmpriv);
+	odm_cancel_all_timers(phydm);
 }
 
 void rtl8821c_phy_init_haldm(PADAPTER adapter)
 {
-	struct PHY_DM_STRUCT *phydm = adapter_to_phydm(adapter);
-
-	/*PHYDM API - thermal trim*/
-	phydm_get_thermal_trim_offset(phydm);
-	/*PHYDM API - power trim*/
-	phydm_get_power_trim_offset(phydm);
-
-	odm_dm_init(phydm);
+	rtw_phydm_init(adapter);
 }
 
 void rtl8821c_phy_haldm_watchdog(PADAPTER Adapter)
@@ -257,6 +248,13 @@ void rtl8821c_phy_haldm_watchdog(PADAPTER Adapter)
 
 skip_dm:
 
+#ifdef CONFIG_BEAMFORMING
+#ifdef RTW_BEAMFORMING_VERSION_2
+	if (check_fwstate(&Adapter->mlmepriv, WIFI_STATION_STATE) &&
+			check_fwstate(&Adapter->mlmepriv, _FW_LINKED))
+		rtw_hal_beamforming_config_csirate(Adapter);
+#endif
+#endif
 #ifdef CONFIG_SUPPORT_HW_WPS_PBC
 	/* Check GPIO to determine current Pbc status.*/
 	dm_CheckPbcGPIO(Adapter);

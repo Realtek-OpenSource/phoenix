@@ -16,8 +16,12 @@
 #define __HAL_DM_H__
 
 #define adapter_to_phydm(adapter) (&(GET_HAL_DATA(adapter)->odmpriv))
+#define dvobj_to_phydm(dvobj) adapter_to_phydm(dvobj_get_primary_adapter(dvobj))
 
+void rtw_phydm_priv_init(_adapter *adapter);
 void Init_ODM_ComInfo(_adapter *adapter);
+void rtw_phydm_init(_adapter *adapter);
+
 void rtw_hal_turbo_edca(_adapter *adapter);
 u8 rtw_phydm_is_iqk_in_progress(_adapter *adapter);
 
@@ -34,6 +38,12 @@ void SetHalODMVar(
 
 void rtw_phydm_ra_registed(_adapter *adapter, struct sta_info *psta);
 
+#ifdef CONFIG_DYNAMIC_SOML
+void rtw_dyn_soml_byte_update(_adapter *adapter, u8 data_rate, u32 size);
+void rtw_dyn_soml_para_set(_adapter *adapter, u8 train_num, u8 intvl,
+			u8 period, u8 delay);
+void rtw_dyn_soml_config(_adapter *adapter);
+#endif
 void rtw_phydm_watchdog(_adapter *adapter);
 
 void rtw_hal_update_iqk_fw_offload_cap(_adapter *adapter);
@@ -75,6 +85,11 @@ enum phy_cnt {
 u32 rtw_phydm_get_phy_cnt(_adapter *adapter, enum phy_cnt cnt);
 #if ((RTL8822B_SUPPORT == 1) || (RTL8821C_SUPPORT == 1) || (RTL8814B_SUPPORT == 1))
 void rtw_phydm_iqk_trigger(_adapter *adapter);
+#endif
+void rtw_phydm_read_efuse(_adapter *adapter);
+
+#ifdef CONFIG_SUPPORT_DYNAMIC_TXPWR
+void rtw_phydm_set_dyntxpwr(_adapter *adapter, u8 *desc, u8 mac_id);
 #endif
 
 #endif /* __HAL_DM_H__ */

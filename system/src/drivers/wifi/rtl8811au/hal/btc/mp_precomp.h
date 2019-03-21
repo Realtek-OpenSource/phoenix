@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2013 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2013 - 2017 Realtek Corporation.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -11,12 +11,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
  *
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
- *
- *
- ******************************************************************************/
+ *****************************************************************************/
 #ifndef __MP_PRECOMP_H__
 #define __MP_PRECOMP_H__
 
@@ -65,26 +60,68 @@ extern u4Byte GLBtcDbgType[];
 #endif
 
 #include "halbtcoutsrc.h"
-#include "halbtc8192e1ant.h"
-#include "halbtc8192e2ant.h"
-#include "halbtc8723b1ant.h"
-#include "halbtc8723b2ant.h"
-#include "halbtc8812a1ant.h"
-#include "halbtc8812a2ant.h"
-#include "halbtc8821a1ant.h"
-#include "halbtc8821a2ant.h"
-#include "halbtc8703b1ant.h"
-#include "halbtc8723d1ant.h"
-#include "halbtc8723d2ant.h"
-#include "halbtc8822b1ant.h"
-#include "halbtc8822b2ant.h"
-#include "halbtc8821c1ant.h"
-#include "halbtc8821c2ant.h"
 
 /* for wifi only mode */
 #include "hal_btcoex_wifionly.h"
+
+#ifdef CONFIG_BT_COEXIST
+
+#ifdef CONFIG_RTL8192E
+#include "halbtc8192e1ant.h"
+#include "halbtc8192e2ant.h"
+#endif
+
+#ifdef CONFIG_RTL8723B
 #include "halbtc8723bwifionly.h"
+#include "halbtc8723b1ant.h"
+#include "halbtc8723b2ant.h"
+#endif
+
+#ifdef CONFIG_RTL8812A
+#include "halbtc8812a1ant.h"
+#include "halbtc8812a2ant.h"
+#endif
+
+#ifdef CONFIG_RTL8821A
+#include "halbtc8821a1ant.h"
+#include "halbtc8821a2ant.h"
+#endif
+
+#ifdef CONFIG_RTL8703B
+#include "halbtc8703b1ant.h"
+#endif
+
+#ifdef CONFIG_RTL8723D
+#include "halbtc8723d1ant.h"
+#include "halbtc8723d2ant.h"
+#endif
+
+#ifdef CONFIG_RTL8822B
 #include "halbtc8822bwifionly.h"
+#include "halbtc8822b1ant.h"
+#include "halbtc8822b2ant.h"
+#endif
+
+#ifdef CONFIG_RTL8821C
 #include "halbtc8821cwifionly.h"
+#include "halbtc8821c1ant.h"
+#include "halbtc8821c2ant.h"
+#endif
+
+#else /* CONFIG_BT_COEXIST */
+
+#ifdef CONFIG_RTL8723B
+#include "halbtc8723bwifionly.h"
+#endif
+
+#ifdef CONFIG_RTL8822B
+#include "halbtc8822bwifionly.h"
+#endif
+
+#ifdef CONFIG_RTL8821C
+#include "halbtc8821cwifionly.h"
+#endif
+
+#endif /* CONFIG_BT_COEXIST */
 
 #endif /*  __MP_PRECOMP_H__ */

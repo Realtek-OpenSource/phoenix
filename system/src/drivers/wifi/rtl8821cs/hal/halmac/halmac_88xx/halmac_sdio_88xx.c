@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2016 - 2017 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2016 - 2018 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -16,115 +16,125 @@
 #include "halmac_sdio_88xx.h"
 #include "halmac_88xx_cfg.h"
 
-#if HALMAC_88XX_SUPPORT
+#if (HALMAC_88XX_SUPPORT && HALMAC_SDIO_SUPPORT)
+
+/* define the SDIO Bus CLK threshold */
+/* for avoiding CMD53 fails that result from SDIO CLK sync to ana_clk fail */
+#define SDIO_CLK_HIGH_SPEED_TH		50 /* 50MHz */
+#define SDIO_CLK_SPEED_MAX		208 /* 208MHz */
+
+/*only for r_indir_sdio_88xx !!, Soar 20171222*/
+static u8
+r_indir_cmd52_88xx(struct halmac_adapter *adapter, u32 offset);
+
+/*only for r_indir_sdio_88xx !!, Soar 20171222*/
+static u32
+r_indir_cmd53_88xx(struct halmac_adapter *adapter, u32 offset);
+
+/*only for r_indir_sdio_88xx !!, Soar 20171222*/
+static u32
+r8_indir_sdio_88xx(struct halmac_adapter *adapter, u32 adr);
+
+/*only for r_indir_sdio_88xx !!, Soar 20171222*/
+static u32
+r16_indir_sdio_88xx(struct halmac_adapter *adapter, u32 adr);
+
+/*only for r_indir_sdio_88xx !!, Soar 20171222*/
+static u32
+r32_indir_sdio_88xx(struct halmac_adapter *adapter, u32 adr);
+
+/*only for w_indir_sdio_88xx !!, Soar 20171222*/
+static enum halmac_ret_status
+w_indir_cmd52_88xx(struct halmac_adapter *adapter, u32 adr, u32 val,
+		   enum halmac_io_size size);
+
+/*only for w_indir_sdio_88xx !!, Soar 20171222*/
+static enum halmac_ret_status
+w_indir_cmd53_88xx(struct halmac_adapter *adapter, u32 adr, u32 val,
+		   enum halmac_io_size size);
+
+/*only for w_indir_sdio_88xx !!, Soar 20171222*/
+static enum halmac_ret_status
+w8_indir_sdio_88xx(struct halmac_adapter *adapter, u32 adr, u32 val);
+
+/*only for w_indir_sdio_88xx !!, Soar 20171222*/
+static enum halmac_ret_status
+w16_indir_sdio_88xx(struct halmac_adapter *adapter, u32 adr, u32 val);
+
+/*only for w_indir_sdio_88xx !!, Soar 20171222*/
+static enum halmac_ret_status
+w32_indir_sdio_88xx(struct halmac_adapter *adapter, u32 adr, u32 val);
 
 /**
- * halmac_init_sdio_cfg_88xx() - init SDIO
- * @pHalmac_adapter : the adapter of halmac
+ * init_sdio_cfg_88xx() - init SDIO
+ * @adapter : the adapter of halmac
  * Author : KaiYuan Chang/Ivan Lin
- * Return : HALMAC_RET_STATUS
+ * Return : enum halmac_ret_status
  * More details of status code can be found in prototype document
  */
-HALMAC_RET_STATUS
-halmac_init_sdio_cfg_88xx(
-	IN PHALMAC_ADAPTER pHalmac_adapter
-)
+enum halmac_ret_status
+init_sdio_cfg_88xx(struct halmac_adapter *adapter)
 {
 	u32 value32;
-	VOID *pDriver_adapter = NULL;
-	PHALMAC_API pHalmac_api;
+	struct halmac_api *api = (struct halmac_api *)adapter->halmac_api;
 
-	if (halmac_adapter_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_ADAPTER_INVALID;
-
-	if (halmac_api_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_API_INVALID;
-
-	if (pHalmac_adapter->halmac_interface != HALMAC_INTERFACE_SDIO)
+	if (adapter->intf != HALMAC_INTERFACE_SDIO)
 		return HALMAC_RET_WRONG_INTF;
 
-	pDriver_adapter = pHalmac_adapter->pDriver_adapter;
-	pHalmac_api = (PHALMAC_API)pHalmac_adapter->pHalmac_api;
+	PLTFM_MSG_TRACE("[TRACE]%s ===>\n", __func__);
 
-	PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_TRACE, "[TRACE]halmac_init_sdio_cfg_88xx ==========>\n");
+	HALMAC_REG_R32(REG_SDIO_FREE_TXPG);
 
-	HALMAC_REG_READ_32(pHalmac_adapter, REG_SDIO_FREE_TXPG);
+	value32 = HALMAC_REG_R32(REG_SDIO_TX_CTRL) & 0xFFFF;
+	value32 &= ~(BIT_CMD_ERR_STOP_INT_EN | BIT_EN_MASK_TIMER |
+							BIT_EN_RXDMA_MASK_INT);
+	HALMAC_REG_W32(REG_SDIO_TX_CTRL, value32);
 
-	value32 = HALMAC_REG_READ_32(pHalmac_adapter, REG_SDIO_TX_CTRL);
-	value32 &= 0x0000FFFF;
-	value32 &= ~(BIT_CMD_ERR_STOP_INT_EN | BIT_EN_MASK_TIMER | BIT_EN_RXDMA_MASK_INT);
-	HALMAC_REG_WRITE_32(pHalmac_adapter, REG_SDIO_TX_CTRL, value32);
-
-	PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_TRACE, "[TRACE]halmac_init_sdio_cfg_88xx <==========\n");
+	PLTFM_MSG_TRACE("[TRACE]%s <===\n", __func__);
 
 	return HALMAC_RET_SUCCESS;
 }
 
 /**
- * halmac_deinit_sdio_cfg_88xx() - deinit SDIO
- * @pHalmac_adapter : the adapter of halmac
+ * deinit_sdio_cfg_88xx() - deinit SDIO
+ * @adapter : the adapter of halmac
  * Author : KaiYuan Chang/Ivan Lin
- * Return : HALMAC_RET_STATUS
+ * Return : enum halmac_ret_status
  * More details of status code can be found in prototype document
  */
-HALMAC_RET_STATUS
-halmac_deinit_sdio_cfg_88xx(
-	IN PHALMAC_ADAPTER pHalmac_adapter
-)
+enum halmac_ret_status
+deinit_sdio_cfg_88xx(struct halmac_adapter *adapter)
 {
-	VOID *pDriver_adapter = NULL;
-
-	if (halmac_adapter_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_ADAPTER_INVALID;
-
-	if (halmac_api_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_API_INVALID;
-
-	if (pHalmac_adapter->halmac_interface != HALMAC_INTERFACE_SDIO)
+	if (adapter->intf != HALMAC_INTERFACE_SDIO)
 		return HALMAC_RET_WRONG_INTF;
-
-	pDriver_adapter = pHalmac_adapter->pDriver_adapter;
-
-	PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_TRACE, "[TRACE]halmac_deinit_sdio_cfg_88xx ==========>\n");
-
-	PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_TRACE, "[TRACE]halmac_deinit_sdio_cfg_88xx <==========\n");
 
 	return HALMAC_RET_SUCCESS;
 }
 
 /**
- * halmac_cfg_rx_aggregation_88xx_sdio() - config rx aggregation
- * @pHalmac_adapter : the adapter of halmac
+ * cfg_sdio_rx_agg_88xx() - config rx aggregation
+ * @adapter : the adapter of halmac
  * @halmac_rx_agg_mode
  * Author : KaiYuan Chang/Ivan Lin
- * Return : HALMAC_RET_STATUS
+ * Return : enum halmac_ret_status
  * More details of status code can be found in prototype document
  */
-HALMAC_RET_STATUS
-halmac_cfg_rx_aggregation_88xx_sdio(
-	IN PHALMAC_ADAPTER pHalmac_adapter,
-	IN PHALMAC_RXAGG_CFG phalmac_rxagg_cfg
-)
+enum halmac_ret_status
+cfg_sdio_rx_agg_88xx(struct halmac_adapter *adapter,
+		     struct halmac_rxagg_cfg *cfg)
 {
 	u8 value8;
-	u8 size = 0, timeout = 0, agg_enable = 0;
-	VOID *pDriver_adapter = NULL;
-	PHALMAC_API pHalmac_api;
+	u8 size;
+	u8 timeout;
+	u8 agg_enable;
+	u32 value32;
+	struct halmac_api *api = (struct halmac_api *)adapter->halmac_api;
 
-	if (halmac_adapter_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_ADAPTER_INVALID;
+	PLTFM_MSG_TRACE("[TRACE]%s ===>\n", __func__);
 
-	if (halmac_api_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_API_INVALID;
+	agg_enable = HALMAC_REG_R8(REG_TXDMA_PQ_MAP);
 
-	pDriver_adapter = pHalmac_adapter->pDriver_adapter;
-	pHalmac_api = (PHALMAC_API)pHalmac_adapter->pHalmac_api;
-
-	PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_TRACE, "[TRACE]halmac_cfg_rx_aggregation_88xx_sdio ==========>\n");
-
-	agg_enable = HALMAC_REG_READ_8(pHalmac_adapter, REG_TXDMA_PQ_MAP);
-
-	switch (phalmac_rxagg_cfg->mode) {
+	switch (cfg->mode) {
 	case HALMAC_RX_AGG_MODE_NONE:
 		agg_enable &= ~(BIT_RXDMA_AGG_EN);
 		break;
@@ -133,690 +143,744 @@ halmac_cfg_rx_aggregation_88xx_sdio(
 		agg_enable |= BIT_RXDMA_AGG_EN;
 		break;
 	default:
-		PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_ERR, "[ERR]halmac_cfg_rx_aggregation_88xx_usb switch case not support\n");
+		PLTFM_MSG_ERR("[ERR]unsupported mode\n");
 		agg_enable &= ~BIT_RXDMA_AGG_EN;
 		break;
 	}
 
-	if (phalmac_rxagg_cfg->threshold.drv_define == _FALSE) {
+	if (cfg->threshold.drv_define == 0) {
 		size = 0xFF;
 		timeout = 0x01;
 	} else {
-		size = phalmac_rxagg_cfg->threshold.size;
-		timeout = phalmac_rxagg_cfg->threshold.timeout;
+		size = cfg->threshold.size;
+		timeout = cfg->threshold.timeout;
 	}
 
-	HALMAC_REG_WRITE_8(pHalmac_adapter, REG_TXDMA_PQ_MAP, agg_enable);
-	HALMAC_REG_WRITE_16(pHalmac_adapter, REG_RXDMA_AGG_PG_TH, (u16)(size | (timeout << BIT_SHIFT_DMA_AGG_TO_V1)));
-
-	value8 = HALMAC_REG_READ_8(pHalmac_adapter, REG_RXDMA_MODE);
-	if (0 != (agg_enable & BIT_RXDMA_AGG_EN))
-		HALMAC_REG_WRITE_8(pHalmac_adapter, REG_RXDMA_MODE, value8 | BIT_DMA_MODE);
+	value32 = HALMAC_REG_R32(REG_RXDMA_AGG_PG_TH);
+	if (cfg->threshold.size_limit_en == 0)
+		HALMAC_REG_W32(REG_RXDMA_AGG_PG_TH, value32 & ~BIT_EN_PRE_CALC);
 	else
-		HALMAC_REG_WRITE_8(pHalmac_adapter, REG_RXDMA_MODE, value8 & ~(BIT_DMA_MODE));
+		HALMAC_REG_W32(REG_RXDMA_AGG_PG_TH, value32 | BIT_EN_PRE_CALC);
 
-	PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_TRACE, "[TRACE]halmac_cfg_rx_aggregation_88xx_sdio <==========\n");
+	HALMAC_REG_W8(REG_TXDMA_PQ_MAP, agg_enable);
+	HALMAC_REG_W16(REG_RXDMA_AGG_PG_TH,
+		       (u16)(size | (timeout << BIT_SHIFT_DMA_AGG_TO_V1)));
 
-	return HALMAC_RET_SUCCESS;
-}
+	value8 = HALMAC_REG_R8(REG_RXDMA_MODE);
+	if (0 != (agg_enable & BIT_RXDMA_AGG_EN))
+		HALMAC_REG_W8(REG_RXDMA_MODE, value8 | BIT_DMA_MODE);
+	else
+		HALMAC_REG_W8(REG_RXDMA_MODE, value8 & ~(BIT_DMA_MODE));
 
-/**
- * halmac_reg_read_8_sdio_88xx() - read 1byte register
- * @pHalmac_adapter : the adapter of halmac
- * @halmac_offset : register offset
- * Author : KaiYuan Chang/Ivan Lin
- * Return : HALMAC_RET_STATUS
- * More details of status code can be found in prototype document
- */
-u8
-halmac_reg_read_8_sdio_88xx(
-	IN PHALMAC_ADAPTER pHalmac_adapter,
-	IN u32 halmac_offset
-)
-{
-	u8 value8;
-	VOID *pDriver_adapter = NULL;
-	HALMAC_RET_STATUS status = HALMAC_RET_SUCCESS;
-
-	if (halmac_adapter_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_ADAPTER_INVALID;
-
-	if (halmac_api_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_API_INVALID;
-
-	pDriver_adapter = pHalmac_adapter->pDriver_adapter;
-
-	if (0 == (halmac_offset & 0xFFFF0000))
-		halmac_offset |= WLAN_IOREG_OFFSET;
-
-	status = halmac_convert_to_sdio_bus_offset_88xx(pHalmac_adapter, &halmac_offset);
-
-	if (status != HALMAC_RET_SUCCESS) {
-		PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_ERR, "[ERR]halmac_reg_read_8_sdio_88xx error = %x\n", status);
-		return status;
-	}
-
-	value8 = PLATFORM_SDIO_CMD52_READ(pDriver_adapter, halmac_offset);
-
-	return value8;
-}
-
-/**
- * halmac_reg_write_8_sdio_88xx() - write 1byte register
- * @pHalmac_adapter : the adapter of halmac
- * @halmac_offset : register offset
- * @halmac_data : register value
- * Author : KaiYuan Chang/Ivan Lin
- * Return : HALMAC_RET_STATUS
- * More details of status code can be found in prototype document
- */
-HALMAC_RET_STATUS
-halmac_reg_write_8_sdio_88xx(
-	IN PHALMAC_ADAPTER pHalmac_adapter,
-	IN u32 halmac_offset,
-	IN u8 halmac_data
-)
-{
-	VOID *pDriver_adapter = NULL;
-	HALMAC_RET_STATUS status = HALMAC_RET_SUCCESS;
-
-	if (halmac_adapter_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_ADAPTER_INVALID;
-
-	if (halmac_api_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_API_INVALID;
-
-	pDriver_adapter = pHalmac_adapter->pDriver_adapter;
-
-	if (0 == (halmac_offset & 0xFFFF0000))
-		halmac_offset |= WLAN_IOREG_OFFSET;
-
-	status = halmac_convert_to_sdio_bus_offset_88xx(pHalmac_adapter, &halmac_offset);
-
-	if (status != HALMAC_RET_SUCCESS) {
-		PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_ERR, "[ERR]halmac_reg_write_8_sdio_88xx error = %x\n", status);
-		return status;
-	}
-
-	PLATFORM_SDIO_CMD52_WRITE(pDriver_adapter, halmac_offset, halmac_data);
+	PLTFM_MSG_TRACE("[TRACE]%s <===\n", __func__);
 
 	return HALMAC_RET_SUCCESS;
 }
 
 /**
- * halmac_reg_read_16_sdio_88xx() - read 2byte register
- * @pHalmac_adapter : the adapter of halmac
- * @halmac_offset : register offset
- * Author : KaiYuan Chang/Ivan Lin
- * Return : HALMAC_RET_STATUS
- * More details of status code can be found in prototype document
- */
-u16
-halmac_reg_read_16_sdio_88xx(
-	IN PHALMAC_ADAPTER pHalmac_adapter,
-	IN u32 halmac_offset
-)
-{
-	VOID *pDriver_adapter = NULL;
-	HALMAC_RET_STATUS status = HALMAC_RET_SUCCESS;
-	u32 halmac_offset_old = 0;
-
-	union {
-		u16	word;
-		u8	byte[2];
-	} value16 = { 0x0000 };
-
-	if (halmac_adapter_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_ADAPTER_INVALID;
-
-	if (halmac_api_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_API_INVALID;
-
-	pDriver_adapter = pHalmac_adapter->pDriver_adapter;
-	halmac_offset_old = halmac_offset;
-
-	if (0 == (halmac_offset & 0xFFFF0000))
-		halmac_offset |= WLAN_IOREG_OFFSET;
-
-	status = halmac_convert_to_sdio_bus_offset_88xx(pHalmac_adapter, &halmac_offset);
-
-	if (status != HALMAC_RET_SUCCESS) {
-		PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_ERR, "[ERR]halmac_reg_read_16_sdio_88xx error = %x\n", status);
-		return status;
-	}
-
-	if ((pHalmac_adapter->halmac_state.mac_power == HALMAC_MAC_POWER_OFF) || ((halmac_offset & (2 - 1)) != 0) ||
-		(pHalmac_adapter->sdio_cmd53_4byte == HALMAC_SDIO_CMD53_4BYTE_MODE_RW) || (pHalmac_adapter->sdio_cmd53_4byte == HALMAC_SDIO_CMD53_4BYTE_MODE_R)) {
-		PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_COMMON, HALMAC_DBG_TRACE, "[TRACE]use cmd52, offset = %x\n", halmac_offset);
-		value16.byte[0] = PLATFORM_SDIO_CMD52_READ(pDriver_adapter, halmac_offset);
-		value16.byte[1] = PLATFORM_SDIO_CMD52_READ(pDriver_adapter, halmac_offset + 1);
-		value16.word = rtk_le16_to_cpu(value16.word);
-	} else {
-		if (pHalmac_adapter->sdio_hw_info.io_hi_speed_flag != 0) {
-			if ((halmac_offset_old & 0xffffef00) == 0x00000000) {
-				value16.byte[0] = PLATFORM_SDIO_CMD52_READ(pDriver_adapter, halmac_offset);
-				value16.byte[1] = PLATFORM_SDIO_CMD52_READ(pDriver_adapter, halmac_offset + 1);
-				value16.word = rtk_le16_to_cpu(value16.word);
-			} else {
-				value16.word = PLATFORM_SDIO_CMD53_READ_16(pDriver_adapter, halmac_offset);
-			}
-		} else {
-			value16.word = PLATFORM_SDIO_CMD53_READ_16(pDriver_adapter, halmac_offset);
-		}
-	}
-
-	return value16.word;
-}
-
-/**
- * halmac_reg_write_16_sdio_88xx() - write 2byte register
- * @pHalmac_adapter : the adapter of halmac
- * @halmac_offset : register offset
- * @halmac_data : register value
- * Author : KaiYuan Chang/Ivan Lin
- * Return : HALMAC_RET_STATUS
- * More details of status code can be found in prototype document
- */
-HALMAC_RET_STATUS
-halmac_reg_write_16_sdio_88xx(
-	IN PHALMAC_ADAPTER pHalmac_adapter,
-	IN u32 halmac_offset,
-	IN u16 halmac_data
-)
-{
-	VOID *pDriver_adapter = NULL;
-	HALMAC_RET_STATUS status = HALMAC_RET_SUCCESS;
-
-	if (halmac_adapter_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_ADAPTER_INVALID;
-
-	if (halmac_api_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_API_INVALID;
-
-	pDriver_adapter = pHalmac_adapter->pDriver_adapter;
-
-	if (0 == (halmac_offset & 0xFFFF0000))
-		halmac_offset |= WLAN_IOREG_OFFSET;
-
-	status = halmac_convert_to_sdio_bus_offset_88xx(pHalmac_adapter, &halmac_offset);
-
-	if (status != HALMAC_RET_SUCCESS) {
-		PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_ERR, "[ERR]halmac_reg_write_16_sdio_88xx error = %x\n", status);
-		return status;
-	}
-
-	if ((pHalmac_adapter->halmac_state.mac_power == HALMAC_MAC_POWER_OFF) || ((halmac_offset & (2 - 1)) != 0) ||
-		(pHalmac_adapter->sdio_cmd53_4byte == HALMAC_SDIO_CMD53_4BYTE_MODE_RW) || (pHalmac_adapter->sdio_cmd53_4byte == HALMAC_SDIO_CMD53_4BYTE_MODE_W)) {
-		PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_COMMON, HALMAC_DBG_TRACE, "[TRACE]use cmd52, offset = %x\n", halmac_offset);
-		PLATFORM_SDIO_CMD52_WRITE(pDriver_adapter, halmac_offset, (u8)(halmac_data & 0xFF));
-		PLATFORM_SDIO_CMD52_WRITE(pDriver_adapter, halmac_offset + 1, (u8)((halmac_data & 0xFF00) >> 8));
-	} else {
-		PLATFORM_SDIO_CMD53_WRITE_16(pDriver_adapter, halmac_offset, halmac_data);
-	}
-
-	return HALMAC_RET_SUCCESS;
-}
-
-/**
- * halmac_reg_read_32_sdio_88xx() - read 4byte register
- * @pHalmac_adapter : the adapter of halmac
- * @halmac_offset : register offset
- * Author : KaiYuan Chang/Ivan Lin
- * Return : HALMAC_RET_STATUS
- * More details of status code can be found in prototype document
- */
-u32
-halmac_reg_read_32_sdio_88xx(
-	IN PHALMAC_ADAPTER pHalmac_adapter,
-	IN u32 halmac_offset
-)
-{
-	VOID *pDriver_adapter = NULL;
-	HALMAC_RET_STATUS status = HALMAC_RET_SUCCESS;
-	u32 halmac_offset_old = 0;
-
-	union {
-		u32	dword;
-		u8	byte[4];
-	} value32 = { 0x00000000 };
-
-	if (halmac_adapter_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_ADAPTER_INVALID;
-
-	if (halmac_api_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_API_INVALID;
-
-	pDriver_adapter = pHalmac_adapter->pDriver_adapter;
-	halmac_offset_old = halmac_offset;
-
-	if (0 == (halmac_offset & 0xFFFF0000))
-		halmac_offset |= WLAN_IOREG_OFFSET;
-
-	status = halmac_convert_to_sdio_bus_offset_88xx(pHalmac_adapter, &halmac_offset);
-	if (status != HALMAC_RET_SUCCESS) {
-		PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_ERR, "[ERR]halmac_reg_read_32_sdio_88xx error = %x\n", status);
-		return status;
-	}
-
-	if (pHalmac_adapter->halmac_state.mac_power == HALMAC_MAC_POWER_OFF || (halmac_offset & (4 - 1)) != 0) {
-		PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_COMMON, HALMAC_DBG_TRACE, "[TRACE]use cmd52, offset = %x\n", halmac_offset);
-		value32.byte[0] = PLATFORM_SDIO_CMD52_READ(pDriver_adapter, halmac_offset);
-		value32.byte[1] = PLATFORM_SDIO_CMD52_READ(pDriver_adapter, halmac_offset + 1);
-		value32.byte[2] = PLATFORM_SDIO_CMD52_READ(pDriver_adapter, halmac_offset + 2);
-		value32.byte[3] = PLATFORM_SDIO_CMD52_READ(pDriver_adapter, halmac_offset + 3);
-		value32.dword = rtk_le32_to_cpu(value32.dword);
-	} else {
-		if (pHalmac_adapter->sdio_hw_info.io_hi_speed_flag != 0) {
-			if ((halmac_offset_old & 0xffffef00) == 0x00000000) {
-				value32.byte[0] = PLATFORM_SDIO_CMD52_READ(pDriver_adapter, halmac_offset);
-				value32.byte[1] = PLATFORM_SDIO_CMD52_READ(pDriver_adapter, halmac_offset + 1);
-				value32.byte[2] = PLATFORM_SDIO_CMD52_READ(pDriver_adapter, halmac_offset + 2);
-				value32.byte[3] = PLATFORM_SDIO_CMD52_READ(pDriver_adapter, halmac_offset + 3);
-				value32.dword = rtk_le32_to_cpu(value32.dword);
-			} else {
-				value32.dword = PLATFORM_SDIO_CMD53_READ_32(pDriver_adapter, halmac_offset);
-			}
-		} else {
-			value32.dword = PLATFORM_SDIO_CMD53_READ_32(pDriver_adapter, halmac_offset);
-		}
-	}
-
-	return value32.dword;
-}
-
-/**
- * halmac_reg_write_32_sdio_88xx() - write 4byte register
- * @pHalmac_adapter : the adapter of halmac
- * @halmac_offset : register offset
- * @halmac_data : register value
- * Author : KaiYuan Chang/Ivan Lin
- * Return : HALMAC_RET_STATUS
- * More details of status code can be found in prototype document
- */
-HALMAC_RET_STATUS
-halmac_reg_write_32_sdio_88xx(
-	IN PHALMAC_ADAPTER pHalmac_adapter,
-	IN u32 halmac_offset,
-	IN u32 halmac_data
-)
-{
-	VOID *pDriver_adapter = NULL;
-	HALMAC_RET_STATUS status = HALMAC_RET_SUCCESS;
-
-	if (halmac_adapter_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_ADAPTER_INVALID;
-
-	if (halmac_api_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_API_INVALID;
-
-	pDriver_adapter = pHalmac_adapter->pDriver_adapter;
-
-	if ((halmac_offset & 0xFFFF0000) == 0)
-		halmac_offset |= WLAN_IOREG_OFFSET;
-
-	status = halmac_convert_to_sdio_bus_offset_88xx(pHalmac_adapter, &halmac_offset);
-
-	if (status != HALMAC_RET_SUCCESS) {
-		PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_ERR, "[ERR]halmac_reg_write_32_sdio_88xx error = %x\n", status);
-		return status;
-	}
-
-	if (pHalmac_adapter->halmac_state.mac_power == HALMAC_MAC_POWER_OFF || (halmac_offset & (4 - 1)) !=  0) {
-		PLATFORM_SDIO_CMD52_WRITE(pDriver_adapter, halmac_offset, (u8)(halmac_data & 0xFF));
-		PLATFORM_SDIO_CMD52_WRITE(pDriver_adapter, halmac_offset + 1, (u8)((halmac_data & 0xFF00) >> 8));
-		PLATFORM_SDIO_CMD52_WRITE(pDriver_adapter, halmac_offset + 2, (u8)((halmac_data & 0xFF0000) >> 16));
-		PLATFORM_SDIO_CMD52_WRITE(pDriver_adapter, halmac_offset + 3, (u8)((halmac_data & 0xFF000000) >> 24));
-	} else {
-		PLATFORM_SDIO_CMD53_WRITE_32(pDriver_adapter, halmac_offset, halmac_data);
-	}
-
-	return HALMAC_RET_SUCCESS;
-}
-
-/**
- * halmac_reg_read_nbyte_sdio_88xx() - read n byte register
- * @pHalmac_adapter : the adapter of halmac
- * @halmac_offset : register offset
+ * sdio_reg_rn_88xx() - read n byte register
+ * @adapter : the adapter of halmac
+ * @offset : register offset
  * @halmac_size : register value size
- * @halmac_data : register value
+ * @value : register value
  * Author : Soar
- * Return : HALMAC_RET_STATUS
+ * Return : enum halmac_ret_status
  * More details of status code can be found in prototype document
  */
-HALMAC_RET_STATUS
-halmac_reg_read_nbyte_sdio_88xx(
-	IN PHALMAC_ADAPTER pHalmac_adapter,
-	IN u32 halmac_offset,
-	IN u32 halmac_size,
-	OUT u8 *halmac_data
-)
+enum halmac_ret_status
+sdio_reg_rn_88xx(struct halmac_adapter *adapter, u32 offset, u32 size,
+		 u8 *value)
 {
-	VOID *pDriver_adapter = NULL;
-	HALMAC_RET_STATUS status = HALMAC_RET_SUCCESS;
+	enum halmac_ret_status status = HALMAC_RET_SUCCESS;
 
-	if (halmac_adapter_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_ADAPTER_INVALID;
-
-	if (halmac_api_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_API_INVALID;
-
-	pDriver_adapter = pHalmac_adapter->pDriver_adapter;
-
-	if (0 == (halmac_offset & 0xFFFF0000)) {
-		PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_ERR, "[ERR]halmac_offset error = 0x%x\n", halmac_offset);
+	if (0 == (offset & 0xFFFF0000)) {
+		PLTFM_MSG_ERR("[ERR]offset 0x%x\n", offset);
 		return HALMAC_RET_FAIL;
 	}
 
-	status = halmac_convert_to_sdio_bus_offset_88xx(pHalmac_adapter, &halmac_offset);
+	status = cnv_to_sdio_bus_offset_88xx(adapter, &offset);
 	if (status != HALMAC_RET_SUCCESS) {
-		PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_ERR, "[ERR]halmac_reg_read_nbyte_sdio_88xx error = %x\n", status);
+		PLTFM_MSG_ERR("[ERR]convert offset\n");
 		return status;
 	}
 
-	if (pHalmac_adapter->halmac_state.mac_power == HALMAC_MAC_POWER_OFF) {
-		PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_ERR, "[ERR]halmac_state error = 0x%x\n", pHalmac_adapter->halmac_state.mac_power);
+	if (adapter->halmac_state.mac_pwr == HALMAC_MAC_POWER_OFF) {
+		PLTFM_MSG_ERR("[ERR]power off\n");
 		return HALMAC_RET_FAIL;
 	}
 
-	PLATFORM_SDIO_CMD53_READ_N(pDriver_adapter, halmac_offset, halmac_size, halmac_data);
+	PLTFM_SDIO_CMD53_RN(offset, size, value);
 
 	return HALMAC_RET_SUCCESS;
 }
 
 /**
- * halmac_cfg_tx_agg_align_sdio_88xx() -config sdio bus tx agg alignment
- * @pHalmac_adapter : the adapter of halmac
+ * cfg_txagg_sdio_align_88xx() -config sdio bus tx agg alignment
+ * @adapter : the adapter of halmac
  * @enable : function enable(1)/disable(0)
  * @align_size : sdio bus tx agg alignment size (2^n, n = 3~11)
  * Author : Soar Tu
- * Return : HALMAC_RET_STATUS
+ * Return : enum halmac_ret_status
  * More details of status code can be found in prototype document
  */
-HALMAC_RET_STATUS
-halmac_cfg_tx_agg_align_sdio_88xx(
-	IN PHALMAC_ADAPTER pHalmac_adapter,
-	IN u8 enable,
-	IN u16 align_size
-)
+enum halmac_ret_status
+cfg_txagg_sdio_align_88xx(struct halmac_adapter *adapter, u8 enable,
+			  u16 align_size)
 {
-	PHALMAC_API pHalmac_api;
-	VOID *pDriver_adapter = NULL;
-	u8 i, align_size_ok = 0;
+	u8 i;
+	u8 flag = 0;
+	struct halmac_api *api = (struct halmac_api *)adapter->halmac_api;
 
-	if (halmac_adapter_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_ADAPTER_INVALID;
+	PLTFM_MSG_TRACE("[TRACE]%s ===>\n", __func__);
 
-	if (halmac_api_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_API_INVALID;
-
-	pDriver_adapter = pHalmac_adapter->pDriver_adapter;
-	pHalmac_api = (PHALMAC_API)pHalmac_adapter->pHalmac_api;
-
-
-	PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_TRACE, "[TRACE]halmac_cfg_tx_agg_align_sdio_88xx ==========>\n");
-
-	if (pHalmac_adapter->chip_id == HALMAC_CHIP_ID_8822B)
+	if (adapter->chip_id == HALMAC_CHIP_ID_8822B)
 		return HALMAC_RET_NOT_SUPPORT;
 
 	if ((align_size & 0xF000) != 0) {
-		PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_ERR, "[ERR]Align size is out of range\n");
+		PLTFM_MSG_ERR("[ERR]out of range\n");
 		return HALMAC_RET_FAIL;
 	}
 
 	for (i = 3; i <= 11; i++) {
 		if (align_size == 1 << i) {
-			align_size_ok = 1;
+			flag = 1;
 			break;
 		}
 	}
-	if (align_size_ok == 0) {
-		PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_ERR, "[ERR]Align size is not 2^3 ~ 2^11\n");
+
+	if (flag == 0) {
+		PLTFM_MSG_ERR("[ERR]not 2^3 ~ 2^11\n");
 		return HALMAC_RET_FAIL;
 	}
 
-	/*Keep sdio tx agg alignment size for driver query*/
-	pHalmac_adapter->hw_config_info.tx_align_size = align_size;
+	adapter->hw_cfg_info.tx_align_size = align_size;
 
 	if (enable)
-		HALMAC_REG_WRITE_16(pHalmac_adapter, REG_RQPN_CTRL_2, 0x8000 | align_size);
+		HALMAC_REG_W16(REG_RQPN_CTRL_2, 0x8000 | align_size);
 	else
-		HALMAC_REG_WRITE_16(pHalmac_adapter, REG_RQPN_CTRL_2, align_size);
+		HALMAC_REG_W16(REG_RQPN_CTRL_2, align_size);
 
-	PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_TRACE, "[TRACE]halmac_cfg_tx_agg_align_sdio_88xx <==========\n");
+	PLTFM_MSG_TRACE("[TRACE]%s <===\n", __func__);
 
 	return HALMAC_RET_SUCCESS;
 }
 
 /**
- * halmac_reg_read_indirect_32_sdio_88xx() - read MAC reg by SDIO reg
- * @pHalmac_adapter : the adapter of halmac
- * @halmac_offset : register offset
+ * sdio_indirect_reg_r32_88xx() - read MAC reg by SDIO reg
+ * @adapter : the adapter of halmac
+ * @offset : register offset
  * Author : Soar
- * Return : HALMAC_RET_STATUS
+ * Return : enum halmac_ret_status
  * More details of status code can be found in prototype document
  */
 u32
-halmac_reg_read_indirect_32_sdio_88xx(
-	IN PHALMAC_ADAPTER pHalmac_adapter,
-	IN u32 halmac_offset
-)
+sdio_indirect_reg_r32_88xx(struct halmac_adapter *adapter, u32 offset)
 {
-	u8 rtemp;
-	u32 counter = 1000;
-	VOID *pDriver_adapter = NULL;
-
-	union {
-		u32	dword;
-		u8	byte[4];
-	} value32 = { 0x00000000 };
-
-	if (halmac_adapter_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_ADAPTER_INVALID;
-
-	if (halmac_api_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_API_INVALID;
-
-	pDriver_adapter = pHalmac_adapter->pDriver_adapter;
-
-	PLATFORM_SDIO_CMD53_WRITE_32(pDriver_adapter, (HALMAC_SDIO_CMD_ADDR_SDIO_REG << 13) | (REG_SDIO_INDIRECT_REG_CFG & HALMAC_SDIO_LOCAL_MSK), halmac_offset | BIT(19) | BIT(17));
-
-	do {
-		rtemp = PLATFORM_SDIO_CMD52_READ(pDriver_adapter, (HALMAC_SDIO_CMD_ADDR_SDIO_REG << 13) | ((REG_SDIO_INDIRECT_REG_CFG + 2) & HALMAC_SDIO_LOCAL_MSK));
-		counter--;
-	} while (((rtemp & BIT(4)) != 0) && (counter > 0));
-
-	value32.dword = PLATFORM_SDIO_CMD53_READ_32(pDriver_adapter, (HALMAC_SDIO_CMD_ADDR_SDIO_REG << 13) | (REG_SDIO_INDIRECT_REG_DATA & HALMAC_SDIO_LOCAL_MSK));
-
-	return value32.dword;
+	return r_indir_sdio_88xx(adapter, offset, HALMAC_IO_DWORD);
 }
 
 /**
- * halmac_set_bulkout_num_sdio_88xx() - inform bulk-out num
- * @pHalmac_adapter : the adapter of halmac
+ * set_sdio_bulkout_num_88xx() - inform bulk-out num
+ * @adapter : the adapter of halmac
  * @bulkout_num : usb bulk-out number
  * Author : KaiYuan Chang
- * Return : HALMAC_RET_STATUS
+ * Return : enum halmac_ret_status
  * More details of status code can be found in prototype document
  */
-HALMAC_RET_STATUS
-halmac_set_bulkout_num_sdio_88xx(
-	IN PHALMAC_ADAPTER pHalmac_adapter,
-	IN u8 bulkout_num
-)
+enum halmac_ret_status
+set_sdio_bulkout_num_88xx(struct halmac_adapter *adapter, u8 num)
 {
 	return HALMAC_RET_NOT_SUPPORT;
 }
 
 /**
- * halmac_get_usb_bulkout_id_sdio_88xx() - get bulk out id for the TX packet
- * @pHalmac_adapter : the adapter of halmac
+ * get_sdio_bulkout_id_88xx() - get bulk out id for the TX packet
+ * @adapter : the adapter of halmac
  * @halmac_buf : tx packet, include txdesc
  * @halmac_size : tx packet size
  * @bulkout_id : usb bulk-out id
  * Author : KaiYuan Chang
- * Return : HALMAC_RET_STATUS
+ * Return : enum halmac_ret_status
  * More details of status code can be found in prototype document
  */
-HALMAC_RET_STATUS
-halmac_get_usb_bulkout_id_sdio_88xx(
-	IN PHALMAC_ADAPTER pHalmac_adapter,
-	IN u8 *halmac_buf,
-	IN u32 halmac_size,
-	OUT u8 *bulkout_id
-)
+enum halmac_ret_status
+get_sdio_bulkout_id_88xx(struct halmac_adapter *adapter, u8 *buf, u32 size,
+			 u8 *id)
 {
 	return HALMAC_RET_NOT_SUPPORT;
 }
 
 /**
- * halmac_sdio_cmd53_4byte_88xx() - cmd53 only for 4byte len register IO
- * @pHalmac_adapter : the adapter of halmac
+ * sdio_cmd53_4byte_88xx() - cmd53 only for 4byte len register IO
+ * @adapter : the adapter of halmac
  * @enable : 1->CMD53 only use in 4byte reg, 0 : No limitation
  * Author : Ivan Lin/KaiYuan Chang
- * Return : HALMAC_RET_STATUS
+ * Return : enum halmac_ret_status
  * More details of status code can be found in prototype document
  */
-HALMAC_RET_STATUS
-halmac_sdio_cmd53_4byte_88xx(
-	IN PHALMAC_ADAPTER pHalmac_adapter,
-	IN HALMAC_SDIO_CMD53_4BYTE_MODE cmd53_4byte_mode
-)
+enum halmac_ret_status
+sdio_cmd53_4byte_88xx(struct halmac_adapter *adapter,
+		      enum halmac_sdio_cmd53_4byte_mode mode)
 {
-	if (halmac_adapter_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_ADAPTER_INVALID;
-
-	if (halmac_api_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_API_INVALID;
-
-	if (pHalmac_adapter->halmac_interface != HALMAC_INTERFACE_SDIO)
+	if (adapter->intf != HALMAC_INTERFACE_SDIO)
 		return HALMAC_RET_WRONG_INTF;
 
-	if (pHalmac_adapter->api_registry.sdio_cmd53_4byte_en == 0)
+	if (adapter->api_registry.sdio_cmd53_4byte_en == 0)
 		return HALMAC_RET_NOT_SUPPORT;
 
-	pHalmac_adapter->sdio_cmd53_4byte = cmd53_4byte_mode;
+	adapter->sdio_cmd53_4byte = mode;
 
 	return HALMAC_RET_SUCCESS;
 }
 
 /**
- * halmac_sdio_hw_info_88xx() - info sdio hw info
- * @pHalmac_adapter : the adapter of halmac
+ * sdio_hw_info_88xx() - info sdio hw info
+ * @adapter : the adapter of halmac
  * @HALMAC_SDIO_CMD53_4BYTE_MODE :
  * clock_speed : sdio bus clock. Unit -> MHz
  * spec_ver : sdio spec version
  * Author : Ivan Lin
- * Return : HALMAC_RET_STATUS
+ * Return : enum halmac_ret_status
  * More details of status code can be found in prototype document
  */
-HALMAC_RET_STATUS
-halmac_sdio_hw_info_88xx(
-	IN PHALMAC_ADAPTER pHalmac_adapter,
-	IN PHALMAC_SDIO_HW_INFO pSdio_hw_info
-)
+enum halmac_ret_status
+sdio_hw_info_88xx(struct halmac_adapter *adapter,
+		  struct halmac_sdio_hw_info *info)
 {
-	VOID *pDriver_adapter = NULL;
-	PHALMAC_API pHalmac_api;
+	PLTFM_MSG_TRACE("[TRACE]%s ===>\n", __func__);
 
-	pDriver_adapter = pHalmac_adapter->pDriver_adapter;
-	pHalmac_api = (PHALMAC_API)pHalmac_adapter->pHalmac_api;
-
-	PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_TRACE, "[TRACE]halmac_sdio_hw_info_88xx ==========>\n");
-
-	if (halmac_adapter_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_ADAPTER_INVALID;
-
-	if (halmac_api_validate(pHalmac_adapter) != HALMAC_RET_SUCCESS)
-		return HALMAC_RET_API_INVALID;
-
-	if (pHalmac_adapter->halmac_interface != HALMAC_INTERFACE_SDIO)
+	if (adapter->intf != HALMAC_INTERFACE_SDIO)
 		return HALMAC_RET_WRONG_INTF;
 
-	PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_TRACE, "[TRACE]SDIO hw clock : %d, spec : %d\n", pSdio_hw_info->clock_speed, pSdio_hw_info->spec_ver);
+	PLTFM_MSG_TRACE("[TRACE]SDIO clock:%d, spec:%d\n",
+			info->clock_speed, info->spec_ver);
 
-	if (pSdio_hw_info->clock_speed > HALMAC_SDIO_CLOCK_SPEED_MAX_88XX)
+	if (info->clock_speed > SDIO_CLK_SPEED_MAX)
 		return HALMAC_RET_SDIO_CLOCK_ERR;
 
-	if (pSdio_hw_info->clock_speed > HALMAC_SDIO_CLK_THRESHOLD_88XX)
-		pHalmac_adapter->sdio_hw_info.io_hi_speed_flag = 1;
+	if (info->clock_speed > SDIO_CLK_HIGH_SPEED_TH)
+		adapter->sdio_hw_info.io_hi_speed_flag = 1;
 
-	pHalmac_adapter->sdio_hw_info.clock_speed = pSdio_hw_info->clock_speed;
-	pHalmac_adapter->sdio_hw_info.spec_ver = pSdio_hw_info->spec_ver;
+	adapter->sdio_hw_info.io_indir_flag = info->io_indir_flag;
+	if (info->clock_speed > SDIO_CLK_HIGH_SPEED_TH &&
+	    adapter->sdio_hw_info.io_indir_flag == 0)
+		PLTFM_MSG_WARN("[WARN]SDIO clock:%d, indir access is better\n",
+			       info->clock_speed);
 
-	PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_TRACE, "[TRACE]halmac_sdio_hw_info_88xx <==========\n");
+	adapter->sdio_hw_info.clock_speed = info->clock_speed;
+	adapter->sdio_hw_info.spec_ver = info->spec_ver;
+	adapter->sdio_hw_info.block_size = info->block_size;
+
+	PLTFM_MSG_TRACE("[TRACE]%s <===\n", __func__);
 
 	return HALMAC_RET_SUCCESS;
 }
 
-VOID
-halmac_config_sdio_tx_page_threshold_88xx(
-	IN PHALMAC_ADAPTER pHalmac_adapter,
-	IN PHALMAC_TX_PAGE_THRESHOLD_INFO pThreshold_info
-)
+void
+cfg_sdio_tx_page_threshold_88xx(struct halmac_adapter *adapter,
+				struct halmac_tx_page_threshold_info *info)
 {
-	VOID *pDriver_adapter = NULL;
-	PHALMAC_API pHalmac_api;
-	u32 threshold = pThreshold_info->threshold;
+	struct halmac_api *api = (struct halmac_api *)adapter->halmac_api;
+	u32 threshold = info->threshold;
 
-	pDriver_adapter = pHalmac_adapter->pDriver_adapter;
-	pHalmac_api = (PHALMAC_API)pHalmac_adapter->pHalmac_api;
+	PLTFM_MSG_TRACE("[TRACE]%s ===>\n", __func__);
 
-	PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_TRACE, "[TRACE]halmac_config_sdio_tx_page_threshold_88xx ==========>\n");
-
-	PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_TRACE, "[TRACE]queue %d, threshold 0x%X\n", pThreshold_info->dma_queue_sel, threshold);
-
-	if (pThreshold_info->enable == 1) {
+	if (info->enable == 1) {
 		threshold = BIT(31) | threshold;
-		PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_TRACE, "[TRACE]enable\n");
+		PLTFM_MSG_TRACE("[TRACE]enable\n");
 	} else {
 		threshold = ~(BIT(31)) & threshold;
-		PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_TRACE, "[TRACE]disable\n");
+		PLTFM_MSG_TRACE("[TRACE]disable\n");
 	}
 
-	switch (pThreshold_info->dma_queue_sel) {
+	switch (info->dma_queue_sel) {
 	case HALMAC_MAP2_HQ:
-			HALMAC_REG_WRITE_32(pHalmac_adapter, REG_TQPNT1, threshold);
+		HALMAC_REG_W32(REG_TQPNT1, threshold);
 		break;
 	case HALMAC_MAP2_NQ:
-			HALMAC_REG_WRITE_32(pHalmac_adapter, REG_TQPNT2, threshold);
+		HALMAC_REG_W32(REG_TQPNT2, threshold);
 		break;
 	case HALMAC_MAP2_LQ:
-			HALMAC_REG_WRITE_32(pHalmac_adapter, REG_TQPNT3, threshold);
+		HALMAC_REG_W32(REG_TQPNT3, threshold);
 		break;
 	case HALMAC_MAP2_EXQ:
-			HALMAC_REG_WRITE_32(pHalmac_adapter, REG_TQPNT4, threshold);
+		HALMAC_REG_W32(REG_TQPNT4, threshold);
 		break;
 	default:
 		break;
 	}
-	PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_TRACE, "[TRACE]halmac_config_sdio_tx_page_threshold_88xx <==========\n");
+	PLTFM_MSG_TRACE("[TRACE]%s <===\n", __func__);
 }
 
-/*Note: copy to halmac_convert_to_sdio_bus_offset*/
-HALMAC_RET_STATUS
-halmac_convert_to_sdio_bus_offset_88xx(
-	IN PHALMAC_ADAPTER pHalmac_adapter,
-	INOUT u32 *halmac_offset
-)
+enum halmac_ret_status
+cnv_to_sdio_bus_offset_88xx(struct halmac_adapter *adapter, u32 *offset)
 {
-	VOID *pDriver_adapter = NULL;
-
-	pDriver_adapter = pHalmac_adapter->pDriver_adapter;
-
-	switch ((*halmac_offset) & 0xFFFF0000) {
+	switch ((*offset) & 0xFFFF0000) {
 	case WLAN_IOREG_OFFSET:
-		*halmac_offset = (HALMAC_SDIO_CMD_ADDR_MAC_REG << 13) | (*halmac_offset & HALMAC_WLAN_MAC_REG_MSK);
+		*offset &= HALMAC_WLAN_MAC_REG_MSK;
+		*offset |= HALMAC_SDIO_CMD_ADDR_MAC_REG << 13;
 		break;
 	case SDIO_LOCAL_OFFSET:
-		*halmac_offset = (HALMAC_SDIO_CMD_ADDR_SDIO_REG << 13) | (*halmac_offset & HALMAC_SDIO_LOCAL_MSK);
+		*offset &= HALMAC_SDIO_LOCAL_MSK;
+		*offset |= HALMAC_SDIO_CMD_ADDR_SDIO_REG << 13;
 		break;
 	default:
-		*halmac_offset = 0xFFFFFFFF;
-		PLATFORM_MSG_PRINT(pDriver_adapter, HALMAC_MSG_INIT, HALMAC_DBG_ERR, "[ERR]Unknown base address!!\n");
+		*offset = 0xFFFFFFFF;
+		PLTFM_MSG_ERR("[ERR]base address!!\n");
 		return HALMAC_RET_CONVERT_SDIO_OFFSET_FAIL;
 	}
 
 	return HALMAC_RET_SUCCESS;
+}
+
+enum halmac_ret_status
+leave_sdio_suspend_88xx(struct halmac_adapter *adapter)
+{
+	u8 value8;
+	u32 cnt;
+	struct halmac_api *api = (struct halmac_api *)adapter->halmac_api;
+
+	value8 = HALMAC_REG_R8(REG_SDIO_HSUS_CTRL);
+	HALMAC_REG_W8(REG_SDIO_HSUS_CTRL, value8 & ~(BIT(0)));
+
+	cnt = 10000;
+	while (!(HALMAC_REG_R8(REG_SDIO_HSUS_CTRL) & 0x02)) {
+		cnt--;
+		if (cnt == 0)
+			return HALMAC_RET_SDIO_LEAVE_SUSPEND_FAIL;
+	}
+
+	value8 = HALMAC_REG_R8(REG_HCI_OPT_CTRL + 2);
+	if (adapter->sdio_hw_info.spec_ver == HALMAC_SDIO_SPEC_VER_3_00)
+		HALMAC_REG_W8(REG_HCI_OPT_CTRL + 2, value8 | BIT(2));
+	else
+		HALMAC_REG_W8(REG_HCI_OPT_CTRL + 2, value8 & ~(BIT(2)));
+
+	return HALMAC_RET_SUCCESS;
+}
+
+/*only for r_indir_sdio_88xx !!, Soar 20171222*/
+static u8
+r_indir_cmd52_88xx(struct halmac_adapter *adapter, u32 offset)
+{
+	u8 value8, tmp, cnt = 50;
+	u32 reg_cfg = REG_SDIO_INDIRECT_REG_CFG;
+	u32 reg_data = REG_SDIO_INDIRECT_REG_DATA;
+	enum halmac_ret_status status = HALMAC_RET_SUCCESS;
+
+	status = cnv_to_sdio_bus_offset_88xx(adapter, &reg_cfg);
+	if (status != HALMAC_RET_SUCCESS)
+		return status;
+	status = cnv_to_sdio_bus_offset_88xx(adapter, &reg_data);
+	if (status != HALMAC_RET_SUCCESS)
+		return status;
+
+	PLTFM_SDIO_CMD52_W(reg_cfg, (u8)offset);
+	PLTFM_SDIO_CMD52_W(reg_cfg + 1, (u8)(offset >> 8));
+	PLTFM_SDIO_CMD52_W(reg_cfg + 2, (u8)(BIT(3) | BIT(4)));
+
+	do {
+		tmp = PLTFM_SDIO_CMD52_R(reg_cfg + 2);
+		cnt--;
+	} while (((tmp & BIT(4)) == 0) && (cnt > 0));
+
+	if (((cnt & BIT(4)) == 0) && cnt == 0)
+		PLTFM_MSG_ERR("[ERR]sdio indirect CMD52 read\n");
+
+	value8 = PLTFM_SDIO_CMD52_R(reg_data);
+
+	return value8;
+}
+
+/*only for r_indir_sdio_88xx !!, Soar 20171222*/
+static u32
+r_indir_cmd53_88xx(struct halmac_adapter *adapter, u32 offset)
+{
+	u8 cnt = 50;
+	u8 value[6];
+	u32 reg_cfg = REG_SDIO_INDIRECT_REG_CFG;
+	u32 reg_data = REG_SDIO_INDIRECT_REG_DATA;
+	enum halmac_ret_status status = HALMAC_RET_SUCCESS;
+
+	union {
+		__le32 dword;
+		u8 byte[4];
+	} value32 = { 0x00000000 };
+
+	status = cnv_to_sdio_bus_offset_88xx(adapter, &reg_cfg);
+	if (status != HALMAC_RET_SUCCESS)
+		return status;
+	status = cnv_to_sdio_bus_offset_88xx(adapter, &reg_data);
+	if (status != HALMAC_RET_SUCCESS)
+		return status;
+
+	PLTFM_SDIO_CMD53_W32(reg_cfg, offset | BIT(19) | BIT(20));
+
+	do {
+		PLTFM_SDIO_CMD53_RN(reg_cfg + 2, sizeof(value), value);
+		cnt--;
+	} while (((value[0] & BIT(4)) == 0) && (cnt > 0));
+
+	if (((cnt & BIT(4)) == 0) && cnt == 0)
+		PLTFM_MSG_ERR("[ERR]sdio indirect CMD53 read\n");
+
+	value32.byte[0] = value[2];
+	value32.byte[1] = value[3];
+	value32.byte[2] = value[4];
+	value32.byte[3] = value[5];
+
+	return rtk_le32_to_cpu(value32.dword);
+}
+
+/*only for r_indir_sdio_88xx !!, Soar 20171222*/
+static u32
+r8_indir_sdio_88xx(struct halmac_adapter *adapter, u32 adr)
+{
+	union {
+		__le32 dword;
+		u8 byte[4];
+	} val = { 0x00000000 };
+
+	if (adapter->pwr_off_flow_flag == 1 ||
+	    adapter->halmac_state.mac_pwr == HALMAC_MAC_POWER_OFF) {
+		val.byte[0] = r_indir_cmd52_88xx(adapter, adr);
+		return rtk_le32_to_cpu(val.dword);
+	}
+
+	return r_indir_cmd53_88xx(adapter, adr);
+}
+
+/*only for r_indir_sdio_88xx !!, Soar 20171222*/
+static u32
+r16_indir_sdio_88xx(struct halmac_adapter *adapter, u32 adr)
+{
+	u32 reg_data = REG_SDIO_INDIRECT_REG_DATA;
+	enum halmac_ret_status status = HALMAC_RET_SUCCESS;
+
+	union {
+		__le32 dword;
+		u8 byte[4];
+	} val = { 0x00000000 };
+
+	status = cnv_to_sdio_bus_offset_88xx(adapter, &reg_data);
+	if (status != HALMAC_RET_SUCCESS)
+		return status;
+
+	if (adapter->halmac_state.mac_pwr == HALMAC_MAC_POWER_OFF) {
+		if (0 != (adr & (2 - 1))) {
+			val.byte[0] = r_indir_cmd52_88xx(adapter, adr);
+			val.byte[1] = r_indir_cmd52_88xx(adapter, adr + 1);
+		} else {
+			val.byte[0] = r_indir_cmd52_88xx(adapter, adr);
+			val.byte[1] = PLTFM_SDIO_CMD52_R(reg_data + 1);
+		}
+
+		return  rtk_le32_to_cpu(val.dword);
+	}
+
+	if (0 != (adr & (2 - 1))) {
+		val.byte[0] = (u8)r_indir_cmd53_88xx(adapter, adr);
+		val.byte[1] = (u8)r_indir_cmd53_88xx(adapter, adr + 1);
+
+		return rtk_le32_to_cpu(val.dword);
+	}
+
+	return r_indir_cmd53_88xx(adapter, adr);
+}
+
+/*only for r_indir_sdio_88xx !!, Soar 20171222*/
+static u32
+r32_indir_sdio_88xx(struct halmac_adapter *adapter, u32 adr)
+{
+	u32 reg_data = REG_SDIO_INDIRECT_REG_DATA;
+	enum halmac_ret_status status = HALMAC_RET_SUCCESS;
+
+	union {
+		__le32 dword;
+		u8 byte[4];
+	} val = { 0x00000000 };
+
+	status = cnv_to_sdio_bus_offset_88xx(adapter, &reg_data);
+	if (status != HALMAC_RET_SUCCESS)
+		return status;
+
+	if (adapter->halmac_state.mac_pwr == HALMAC_MAC_POWER_OFF) {
+		if (0 != (adr & (4 - 1))) {
+			val.byte[0] = r_indir_cmd52_88xx(adapter, adr);
+			val.byte[1] = r_indir_cmd52_88xx(adapter, adr + 1);
+			val.byte[2] = r_indir_cmd52_88xx(adapter, adr + 2);
+			val.byte[3] = r_indir_cmd52_88xx(adapter, adr + 3);
+		} else {
+			val.byte[0] = r_indir_cmd52_88xx(adapter, adr);
+			val.byte[1] = PLTFM_SDIO_CMD52_R(reg_data + 1);
+			val.byte[2] = PLTFM_SDIO_CMD52_R(reg_data + 2);
+			val.byte[3] = PLTFM_SDIO_CMD52_R(reg_data + 3);
+		}
+
+		return rtk_le32_to_cpu(val.dword);
+	}
+
+	if (0 != (adr & (4 - 1))) {
+		val.byte[0] = (u8)r_indir_cmd53_88xx(adapter, adr);
+		val.byte[1] = (u8)r_indir_cmd53_88xx(adapter, adr + 1);
+		val.byte[2] = (u8)r_indir_cmd53_88xx(adapter, adr + 2);
+		val.byte[3] = (u8)r_indir_cmd53_88xx(adapter, adr + 3);
+
+		return rtk_le32_to_cpu(val.dword);
+	}
+
+	return r_indir_cmd53_88xx(adapter, adr);
+}
+
+u32
+r_indir_sdio_88xx(struct halmac_adapter *adapter, u32 adr,
+		  enum halmac_io_size size)
+{
+	u32 value32 = 0;
+
+	PLTFM_MUTEX_LOCK(&adapter->sdio_indir_mutex);
+
+	switch (size) {
+	case HALMAC_IO_BYTE:
+		value32 = r8_indir_sdio_88xx(adapter, adr);
+		break;
+	case HALMAC_IO_WORD:
+		value32 = r16_indir_sdio_88xx(adapter, adr);
+		break;
+	case HALMAC_IO_DWORD:
+		value32 = r32_indir_sdio_88xx(adapter, adr);
+		break;
+	default:
+		break;
+	}
+
+	PLTFM_MUTEX_UNLOCK(&adapter->sdio_indir_mutex);
+
+	return value32;
+}
+
+/*only for w_indir_sdio_88xx !!, Soar 20171222*/
+static enum halmac_ret_status
+w_indir_cmd52_88xx(struct halmac_adapter *adapter, u32 adr, u32 val,
+		   enum halmac_io_size size)
+{
+	u8 tmp, cnt = 50;
+	u32 reg_cfg = REG_SDIO_INDIRECT_REG_CFG;
+	u32 reg_data = REG_SDIO_INDIRECT_REG_DATA;
+	enum halmac_ret_status status = HALMAC_RET_SUCCESS;
+
+	status = cnv_to_sdio_bus_offset_88xx(adapter, &reg_cfg);
+	if (status != HALMAC_RET_SUCCESS)
+		return status;
+	status = cnv_to_sdio_bus_offset_88xx(adapter, &reg_data);
+	if (status != HALMAC_RET_SUCCESS)
+		return status;
+
+	PLTFM_SDIO_CMD52_W(reg_cfg, (u8)adr);
+	PLTFM_SDIO_CMD52_W(reg_cfg + 1, (u8)(adr >> 8));
+	switch (size) {
+	case HALMAC_IO_BYTE:
+		PLTFM_SDIO_CMD52_W(reg_data, (u8)val);
+		PLTFM_SDIO_CMD52_W(reg_cfg + 2, (u8)(BIT(2) | BIT(4)));
+		break;
+	case HALMAC_IO_WORD:
+		PLTFM_SDIO_CMD52_W(reg_data, (u8)val);
+		PLTFM_SDIO_CMD52_W(reg_data + 1, (u8)(val >> 8));
+		PLTFM_SDIO_CMD52_W(reg_cfg + 2,
+				   (u8)(BIT(0) | BIT(2) | BIT(4)));
+		break;
+	case HALMAC_IO_DWORD:
+		PLTFM_SDIO_CMD52_W(reg_data, (u8)val);
+		PLTFM_SDIO_CMD52_W(reg_data + 1, (u8)(val >> 8));
+		PLTFM_SDIO_CMD52_W(reg_data + 2, (u8)(val >> 16));
+		PLTFM_SDIO_CMD52_W(reg_data + 3, (u8)(val >> 24));
+		PLTFM_SDIO_CMD52_W(reg_cfg + 2,
+				   (u8)(BIT(1) | BIT(2) | BIT(4)));
+		break;
+	default:
+		break;
+	}
+
+	do {
+		tmp = PLTFM_SDIO_CMD52_R(reg_cfg + 2);
+		cnt--;
+	} while (((tmp & BIT(4)) == 0) && (cnt > 0));
+
+	if (((cnt & BIT(4)) == 0) && cnt == 0)
+		PLTFM_MSG_ERR("[ERR]sdio indirect CMD52 write\n");
+
+	return status;
+}
+
+/*only for w_indir_sdio_88xx !!, Soar 20171222*/
+static enum halmac_ret_status
+w_indir_cmd53_88xx(struct halmac_adapter *adapter, u32 adr, u32 val,
+		   enum halmac_io_size size)
+{
+	u8 tmp, cnt = 50;
+	u32 reg_cfg = REG_SDIO_INDIRECT_REG_CFG;
+	u32 reg_data = REG_SDIO_INDIRECT_REG_DATA;
+	u32 value32 = 0;
+	enum halmac_ret_status status = HALMAC_RET_SUCCESS;
+
+	status = cnv_to_sdio_bus_offset_88xx(adapter, &reg_cfg);
+	if (status != HALMAC_RET_SUCCESS)
+		return status;
+	status = cnv_to_sdio_bus_offset_88xx(adapter, &reg_data);
+	if (status != HALMAC_RET_SUCCESS)
+		return status;
+
+	switch (size) {
+	case HALMAC_IO_BYTE:
+		value32 = adr | BIT(18) | BIT(20);
+		break;
+	case HALMAC_IO_WORD:
+		value32 = adr | BIT(16) | BIT(18) | BIT(20);
+		break;
+	case HALMAC_IO_DWORD:
+		value32 = adr | BIT(17) | BIT(18) | BIT(20);
+		break;
+	default:
+		return HALMAC_RET_FAIL;
+	}
+
+	PLTFM_SDIO_CMD53_W32(reg_data, val);
+	PLTFM_SDIO_CMD53_W32(reg_cfg, value32);
+
+	do {
+		tmp = PLTFM_SDIO_CMD52_R(reg_cfg + 2);
+		cnt--;
+	} while (((tmp & BIT(4)) == 0) && (cnt > 0));
+
+	if (((cnt & BIT(4)) == 0) && cnt == 0)
+		PLTFM_MSG_ERR("[ERR]sdio indirect CMD53 read\n");
+
+	return status;
+}
+
+/*only for w_indir_sdio_88xx !!, Soar 20171222*/
+static enum halmac_ret_status
+w8_indir_sdio_88xx(struct halmac_adapter *adapter, u32 adr, u32 val)
+{
+	enum halmac_ret_status status = HALMAC_RET_SUCCESS;
+
+	if (adapter->pwr_off_flow_flag == 1 ||
+	    adapter->halmac_state.mac_pwr == HALMAC_MAC_POWER_OFF)
+		status = w_indir_cmd52_88xx(adapter, adr, val, HALMAC_IO_BYTE);
+	else
+		status = w_indir_cmd53_88xx(adapter, adr, val, HALMAC_IO_BYTE);
+	return status;
+}
+
+/*only for w_indir_sdio_88xx !!, Soar 20171222*/
+static enum halmac_ret_status
+w16_indir_sdio_88xx(struct halmac_adapter *adapter, u32 adr, u32 val)
+{
+	enum halmac_ret_status status = HALMAC_RET_SUCCESS;
+
+	if (adapter->halmac_state.mac_pwr == HALMAC_MAC_POWER_OFF) {
+		if (0 != (adr & (2 - 1))) {
+			status = w_indir_cmd52_88xx(adapter, adr, val,
+						    HALMAC_IO_BYTE);
+			if (status != HALMAC_RET_SUCCESS)
+				return status;
+			status = w_indir_cmd52_88xx(adapter, adr + 1, val >> 8,
+						    HALMAC_IO_BYTE);
+		} else {
+			status = w_indir_cmd52_88xx(adapter, adr, val,
+						    HALMAC_IO_WORD);
+		}
+	} else {
+		if (0 != (adr & (2 - 1))) {
+			status = w_indir_cmd53_88xx(adapter, adr, val,
+						    HALMAC_IO_BYTE);
+			if (status != HALMAC_RET_SUCCESS)
+				return status;
+			status = w_indir_cmd53_88xx(adapter, adr + 1, val >> 8,
+						    HALMAC_IO_BYTE);
+		} else {
+			status = w_indir_cmd53_88xx(adapter, adr, val,
+						    HALMAC_IO_WORD);
+		}
+	}
+	return status;
+}
+
+/*only for w_indir_sdio_88xx !!, Soar 20171222*/
+static enum halmac_ret_status
+w32_indir_sdio_88xx(struct halmac_adapter *adapter, u32 adr, u32 val)
+{
+	enum halmac_ret_status status = HALMAC_RET_SUCCESS;
+
+	if (adapter->halmac_state.mac_pwr == HALMAC_MAC_POWER_OFF) {
+		if (0 != (adr & (4 - 1))) {
+			status = w_indir_cmd52_88xx(adapter, adr, val,
+						    HALMAC_IO_BYTE);
+			if (status != HALMAC_RET_SUCCESS)
+				return status;
+			status = w_indir_cmd52_88xx(adapter, adr + 1, val >> 8,
+						    HALMAC_IO_BYTE);
+			if (status != HALMAC_RET_SUCCESS)
+				return status;
+			status = w_indir_cmd52_88xx(adapter, adr + 2, val >> 16,
+						    HALMAC_IO_BYTE);
+			if (status != HALMAC_RET_SUCCESS)
+				return status;
+			status = w_indir_cmd52_88xx(adapter, adr + 3, val >> 24,
+						    HALMAC_IO_BYTE);
+		} else {
+			status = w_indir_cmd52_88xx(adapter, adr, val,
+						    HALMAC_IO_DWORD);
+		}
+	} else {
+		if (0 != (adr & (4 - 1))) {
+			status = w_indir_cmd53_88xx(adapter, adr, val,
+						    HALMAC_IO_BYTE);
+			if (status != HALMAC_RET_SUCCESS)
+				return status;
+			status = w_indir_cmd53_88xx(adapter, adr + 1, val >> 8,
+						    HALMAC_IO_BYTE);
+			if (status != HALMAC_RET_SUCCESS)
+				return status;
+			status = w_indir_cmd53_88xx(adapter, adr + 2, val >> 16,
+						    HALMAC_IO_BYTE);
+			if (status != HALMAC_RET_SUCCESS)
+				return status;
+			status = w_indir_cmd53_88xx(adapter, adr + 3, val >> 24,
+						    HALMAC_IO_BYTE);
+		} else {
+			status = w_indir_cmd53_88xx(adapter, adr, val,
+						    HALMAC_IO_DWORD);
+		}
+	}
+	return status;
+}
+
+enum halmac_ret_status
+w_indir_sdio_88xx(struct halmac_adapter *adapter, u32 adr, u32 val,
+		  enum halmac_io_size size)
+{
+	enum halmac_ret_status status = HALMAC_RET_SUCCESS;
+
+	PLTFM_MUTEX_LOCK(&adapter->sdio_indir_mutex);
+
+	switch (size) {
+	case HALMAC_IO_BYTE:
+		status = w8_indir_sdio_88xx(adapter, adr, val);
+		break;
+	case HALMAC_IO_WORD:
+		status = w16_indir_sdio_88xx(adapter, adr, val);
+		break;
+	case HALMAC_IO_DWORD:
+		status = w32_indir_sdio_88xx(adapter, adr, val);
+		break;
+	default:
+		break;
+	}
+
+	PLTFM_MUTEX_UNLOCK(&adapter->sdio_indir_mutex);
+
+	return status;
 }
 
 #endif /* HALMAC_88XX_SUPPORT */

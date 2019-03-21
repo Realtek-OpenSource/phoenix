@@ -62,12 +62,12 @@
 		#define CONFIG_HOSTAPD_MLME
 	#endif
 	/* #define CONFIG_FIND_BEST_CHANNEL */
+/* Bug: 43523, 20140609 avoid rtw_xmit error */
 #ifdef CONFIG_DHC_PATCH
-//Bug: 43523, 20140609 avoid rtw_xmit error to mark CONFIG_TX_MCAST2UNI
-//#define CONFIG_TX_MCAST2UNI	1	// Support IP multicast->unicast
+	/* #define CONFIG_TX_MCAST2UNI */	/* Support IP multicast->unicast */
 #else
 	#define CONFIG_TX_MCAST2UNI	/* Support IP multicast->unicast */
-#endif //CONFIG_DHC_PATCH
+#endif /* CONFIG_DHC_PATCH */
 #endif
 
 #define CONFIG_P2P
@@ -82,7 +82,7 @@
 	#define CONFIG_P2P_PS
 	#define CONFIG_P2P_OP_CHK_SOCIAL_CH
 	#define CONFIG_CFG80211_ONECHANNEL_UNDER_CONCURRENT  /* replace CONFIG_P2P_CHK_INVITE_CH_LIST flag */
-	#define CONFIG_P2P_INVITE_IOT
+	/*#define CONFIG_P2P_INVITE_IOT*/
 #endif
 
 /* Added by Kurt 20110511 */
@@ -108,14 +108,11 @@
 #define CONFIG_LAYER2_ROAMING
 #define CONFIG_LAYER2_ROAMING_RESUME
 
-/* #define CONFIG_80211D */
-
-
 /*
  * Hareware/Firmware Related Config
  */
 /* #define CONFIG_BT_COEXIST */	/* Set from Makefile */
-/* #define CONFIG_ANTENNA_DIVERSITY */	/* Set from Makefile */
+/* #define CONFIG_ANTENNA_DIVERSITY */
 /* #define SUPPORT_HW_RFOFF_DETECTED */
 
 /*#define CONFIG_RTW_LED*/
@@ -143,6 +140,9 @@
 #define CONFIG_XMIT_THREAD_MODE
 /* #define CONFIG_SDIO_TX_ENABLE_AVAL_INT */
 /* #define CONFIG_RECV_THREAD_MODE */
+#ifdef CONFIG_RECV_THREAD_MODE
+#define RTW_RECV_THREAD_HIGH_PRIORITY
+#endif/*CONFIG_RECV_THREAD_MODE*/
 
 /*
  * Others
@@ -164,7 +164,6 @@
 
 #define CONFIG_LONG_DELAY_ISSUE
 /* #define CONFIG_PATCH_JOIN_WRONG_CHANNEL */
-#define CONFIG_ATTEMPT_TO_FIX_AP_BEACON_ERROR
 
 
 /*

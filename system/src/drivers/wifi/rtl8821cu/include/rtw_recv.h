@@ -15,6 +15,10 @@
 #ifndef _RTW_RECV_H_
 #define _RTW_RECV_H_
 
+#define RTW_RX_MSDU_ACT_NONE		0
+#define RTW_RX_MSDU_ACT_INDICATE	BIT0
+#define RTW_RX_MSDU_ACT_FORWARD		BIT1
+
 #ifdef PLATFORM_OS_XP
 	#ifdef CONFIG_SDIO_HCI
 		#define NR_RECVBUFF 1024/* 512 */ /* 128 */
@@ -80,20 +84,10 @@
 #define RX_CMD_QUEUE				1
 #define RX_MAX_QUEUE				2
 
-static u8 SNAP_ETH_TYPE_IPX[2] = {0x81, 0x37};
-
-static u8 SNAP_ETH_TYPE_APPLETALK_AARP[2] = {0x80, 0xf3};
-static u8 SNAP_ETH_TYPE_APPLETALK_DDP[2] = {0x80, 0x9b};
-static u8 SNAP_ETH_TYPE_TDLS[2] = {0x89, 0x0d};
-static u8 SNAP_HDR_APPLETALK_DDP[3] = {0x08, 0x00, 0x07}; /* Datagram Delivery Protocol */
-
-static u8 oui_8021h[] = {0x00, 0x00, 0xf8};
-static u8 oui_rfc1042[] = {0x00, 0x00, 0x00};
-
 #define MAX_SUBFRAME_COUNT	64
-static u8 rtw_rfc1042_header[] = { 0xaa, 0xaa, 0x03, 0x00, 0x00, 0x00 };
 /* Bridge-Tunnel header (for EtherTypes ETH_P_AARP and ETH_P_IPX) */
-static u8 rtw_bridge_tunnel_header[] = { 0xaa, 0xaa, 0x03, 0x00, 0x00, 0xf8 };
+extern u8 rtw_bridge_tunnel_header[];
+extern u8 rtw_rfc1042_header[];
 
 /* for Rx reordering buffer control */
 struct recv_reorder_ctrl {
@@ -194,6 +188,12 @@ struct rx_pkt_attrib	{
 	u8	ta[ETH_ALEN];
 	u8	ra[ETH_ALEN];
 	u8	bssid[ETH_ALEN];
+#ifdef CONFIG_RTW_MESH
+	u8	msa[ETH_ALEN]; /* mesh sa */
+	u8	mda[ETH_ALEN]; /* mesh da */
+	u8 mesh_ctrl_present;
+	u8	mesh_ctrl_len; /* length of mesh control field */
+#endif
 
 	u8	ack_policy;
 
@@ -209,9 +209,15 @@ struct rx_pkt_attrib	{
 	u32 tsfl;
 	u32	MacIDValidEntry[2];	/* 64 bits present 64 entry. */
 	u8	ppdu_cnt;
+	u32 	free_cnt;		/* free run counter */
 	struct phydm_phyinfo_struct phy_info;
 };
 
+#ifdef CONFIG_RTW_MESH
+#define RATTRIB_GET_MCTRL_LEN(rattrib) ((rattrib)->mesh_ctrl_len)
+#else
+#define RATTRIB_GET_MCTRL_LEN(rattrib) 0
+#endif
 
 /* These definition is used for Rx packet reordering. */
 #define SN_LESS(a, b)		(((a-b) & 0x800) != 0)
@@ -220,7 +226,11 @@ struct rx_pkt_attrib	{
 /* #define REORDER_ENTRY_NUM	128 */
 #define REORDER_WAIT_TIME	(50) /* (ms) */
 
-#define RECVBUFF_ALIGN_SZ 8
+#if defined(CONFIG_PLATFORM_RTK390X) && defined(CONFIG_USB_HCI)
+	#define RECVBUFF_ALIGN_SZ 32
+#else
+	#define RECVBUFF_ALIGN_SZ 8
+#endif
 
 #ifdef CONFIG_TRX_BD_ARCH
 	#define RX_WIFI_INFO_SIZE	24
@@ -484,6 +494,7 @@ struct sta_recv_priv {
 	_queue defrag_q;	 /* keeping the fragment frame until defrag */
 
 	struct	stainfo_rxcache rxcache;
+	u16	bmc_tid_rxseq[16];
 
 	/* uint	sta_rx_bytes; */
 	/* uint	sta_rx_pkts; */
@@ -867,5 +878,6 @@ extern void  mgt_dispatcher(_adapter *padapter, union recv_frame *precv_frame);
 
 u8 adapter_allow_bmc_data_rx(_adapter *adapter);
 s32 pre_recv_entry(union recv_frame *precvframe, u8 *pphy_status);
+void count_rx_stats(_adapter *padapter, union recv_frame *prframe, struct sta_info *sta);
 
 #endif

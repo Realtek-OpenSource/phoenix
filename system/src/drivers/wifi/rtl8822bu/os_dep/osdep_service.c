@@ -2131,14 +2131,14 @@ static int closeFile(struct file *fp)
 	return 0;
 }
 
-static int readFile(struct file *fp,char *buf,int len) 
-{ 
-	int rlen=0, sum=0;
+static int readFile(struct file *fp, char *buf, int len)
+{
+	int rlen = 0, sum = 0;
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,19,0))
-	if(!(fp->f_mode & FMODE_CAN_READ))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 1, 0))
+	if (!(fp->f_mode & FMODE_CAN_READ))
 #else
-	if (!fp->f_op || !fp->f_op->read) 
+	if (!fp->f_op || !fp->f_op->read)
 #endif
 		return -EPERM;
 
@@ -2148,11 +2148,11 @@ static int readFile(struct file *fp,char *buf,int len)
 #elif (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 1, 0))
 		rlen = __vfs_read(fp, buf + sum, len - sum, &fp->f_pos);
 #else
-		rlen=fp->f_op->read(fp,buf+sum,len-sum, &fp->f_pos);
+		rlen = fp->f_op->read(fp, buf + sum, len - sum, &fp->f_pos);
 #endif
-		if(rlen>0)
-			sum+=rlen;
-		else if(0 != rlen)
+		if (rlen > 0)
+			sum += rlen;
+		else if (0 != rlen)
 			return rlen;
 		else
 			break;

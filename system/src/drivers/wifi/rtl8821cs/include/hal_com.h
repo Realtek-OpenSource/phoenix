@@ -265,6 +265,8 @@ struct dbg_rx_counter {
 	u32	rx_ht_fa;
 };
 
+u8 rtw_hal_get_port(_adapter *adapter);
+
 #ifdef CONFIG_MBSSID_CAM
 	#define DBG_MBID_CAM_DUMP
 
@@ -275,7 +277,10 @@ struct dbg_rx_counter {
 	u8 rtw_get_mbid_cam_entry_num(_adapter *adapter);
 	int rtw_mbid_cam_cache_dump(void *sel, const char *fun_name , _adapter *adapter);
 	int rtw_mbid_cam_dump(void *sel, const char *fun_name, _adapter *adapter);
-	void rtw_mbid_cam_restore(_adapter *adapter);
+	void rtw_mi_set_mbid_cam(_adapter *adapter);
+	u8 rtw_mbid_camid_alloc(_adapter *adapter, u8 *mac_addr);
+	void rtw_ap_set_mbid_num(_adapter *adapter, u8 ap_num);
+	void rtw_mbid_cam_enable(_adapter *adapter);
 #endif
 
 #ifdef CONFIG_MI_WITH_MBSSID_CAM
@@ -284,6 +289,7 @@ struct dbg_rx_counter {
 	#ifdef CONFIG_SWTIMER_BASED_TXBCN
 	u16 rtw_hal_bcn_interval_adjust(_adapter *adapter, u16 bcn_interval);
 	#endif
+	void hw_var_set_opmode_mbid(_adapter *Adapter, u8 mode);
 #endif
 
 void rtw_dump_mac_rx_counters(_adapter *padapter, struct dbg_rx_counter *rx_counter);
@@ -358,6 +364,10 @@ void hal_com_config_channel_plan(
 );
 
 int hal_config_macaddr(_adapter *adapter, bool autoload_fail);
+#ifdef RTW_HALMAC
+void rtw_hal_hw_port_enable(_adapter *adapter);
+void rtw_hal_hw_port_disable(_adapter *adapter);
+#endif
 
 BOOLEAN
 HAL_IsLegalChannel(
@@ -382,7 +392,7 @@ Hal_MappingOutPipe(
 
 void rtw_dump_fw_info(void *sel, _adapter *adapter);
 void rtw_restore_hw_port_cfg(_adapter *adapter);
-void rtw_restore_mac_addr(_adapter *adapter);/*set mac addr when hal_init for all iface*/
+void rtw_mi_set_mac_addr(_adapter *adapter);/*set mac addr when hal_init for all iface*/
 void rtw_hal_dump_macaddr(void *sel, _adapter *adapter);
 
 void rtw_init_hal_com_default_value(PADAPTER Adapter);
@@ -417,6 +427,11 @@ u8 rtw_hal_rcr_check(_adapter *adapter, u32 check_bit);
 u8 rtw_hal_rcr_add(_adapter *adapter, u32 add);
 u8 rtw_hal_rcr_clear(_adapter *adapter, u32 clear);
 void rtw_hal_rcr_set_chk_bssid(_adapter *adapter, u8 self_action);
+
+void rtw_iface_enable_tsf_update(_adapter *adapter);
+void rtw_iface_disable_tsf_update(_adapter *adapter);
+void rtw_hal_periodic_tsf_update_chk(_adapter *adapter);
+void rtw_hal_periodic_tsf_update_end_timer_hdl(void *ctx);
 
 void hw_var_port_switch(_adapter *adapter);
 
@@ -492,13 +507,12 @@ void linked_info_dump(_adapter *padapter, u8 benable);
 #endif
 void rtw_store_phy_info(_adapter *padapter, union recv_frame *prframe);
 #define		HWSET_MAX_SIZE			1024
+
 #ifdef CONFIG_EFUSE_CONFIG_FILE
-	#define		EFUSE_FILE_COLUMN_NUM		16
-	u32 Hal_readPGDataFromConfigFile(PADAPTER padapter);
-	u32 Hal_ReadMACAddrFromFile(PADAPTER padapter, u8 *mac_addr);
+u32 Hal_readPGDataFromConfigFile(PADAPTER padapter);
+u32 Hal_ReadMACAddrFromFile(PADAPTER padapter, u8 *mac_addr);
 #endif /* CONFIG_EFUSE_CONFIG_FILE */
 
-int check_phy_efuse_tx_power_info_valid(PADAPTER padapter);
 int hal_efuse_macaddr_offset(_adapter *adapter);
 int Hal_GetPhyEfuseMACAddr(PADAPTER padapter, u8 *mac_addr);
 void rtw_dump_cur_efuse(PADAPTER padapter);
@@ -512,7 +526,6 @@ u8 rtw_hal_busagg_qsel_check(_adapter *padapter, u8 pre_qsel, u8 next_qsel);
 
 u8 rtw_get_current_tx_rate(_adapter *padapter, struct sta_info *psta);
 u8 rtw_get_current_tx_sgi(_adapter *padapter, struct sta_info *psta);
-void rtw_hal_construct_NullFunctionData(PADAPTER, u8 *pframe, u32 *pLength, u8 *StaAddr, u8 bQoS, u8 AC, u8 bEosp, u8 bForcePowerSave);
 
 void rtw_hal_set_fw_rsvd_page(_adapter *adapter, bool finished);
 u8 rtw_hal_get_rsvd_page_num(struct _ADAPTER *adapter);
@@ -520,6 +533,7 @@ u8 rtw_hal_get_rsvd_page_num(struct _ADAPTER *adapter);
 #ifdef CONFIG_TSF_RESET_OFFLOAD
 int rtw_hal_reset_tsf(_adapter *adapter, u8 reset_port);
 #endif
+u64 rtw_hal_get_tsftr_by_port(_adapter *adapter, u8 port);
 
 #ifdef CONFIG_TDLS
 	#ifdef CONFIG_TDLS_CH_SW
@@ -527,7 +541,7 @@ int rtw_hal_reset_tsf(_adapter *adapter, u8 reset_port);
 	#endif
 #endif
 #if defined(CONFIG_BT_COEXIST) && defined(CONFIG_FW_MULTI_PORT_SUPPORT)
-s32 rtw_hal_set_wifi_port_id_cmd(_adapter *adapter);
+s32 rtw_hal_set_wifi_btc_port_id_cmd(_adapter *adapter);
 #endif
 
 #ifdef CONFIG_GPIO_API
@@ -557,14 +571,9 @@ void rtw_hal_ch_sw_iqk_info_restore(_adapter *padapter, u8 ch_sw_use_case);
 void update_IOT_info(_adapter *padapter);
 
 void hal_set_crystal_cap(_adapter *adapter, u8 crystal_cap);
-void rtw_hal_correct_tsf(_adapter *padapter, u8 hw_port, u64 tsf);
 
 void ResumeTxBeacon(_adapter *padapter);
 void StopTxBeacon(_adapter *padapter);
-#ifdef CONFIG_MI_WITH_MBSSID_CAM /*HW port0 - MBSS*/
-	void hw_var_set_opmode_mbid(_adapter *Adapter, u8 mode);
-	u8 rtw_mbid_camid_alloc(_adapter *adapter, u8 *mac_addr);
-#endif
 
 #ifdef CONFIG_ANTENNA_DIVERSITY
 	u8	rtw_hal_antdiv_before_linked(_adapter *padapter);
@@ -594,13 +603,17 @@ void StopTxBeacon(_adapter *padapter);
 enum lps_pg_hdl_id {
 	LPS_PG_INFO_CFG = 0,
 	LPS_PG_REDLEMEM,
-	LPS_PG_RESEND_H2C,
+	LPS_PG_PHYDM_DIS,
+	LPS_PG_PHYDM_EN,
 };
 
 	u8 rtw_hal_set_lps_pg_info(_adapter *adapter);
 #endif
 
 int rtw_hal_get_rsvd_page(_adapter *adapter, u32 page_offset, u32 page_num, u8 *buffer, u32 buffer_size);
+void rtw_hal_construct_beacon(_adapter *padapter, u8 *pframe, u32 *pLength);
+void rtw_hal_construct_NullFunctionData(PADAPTER, u8 *pframe, u32 *pLength,
+				u8 bQoS, u8 AC, u8 bEosp, u8 bForcePowerSave);
 
 #ifdef CONFIG_WOWLAN
 struct rtl_wow_pattern {
@@ -644,6 +657,11 @@ void rtw_dump_fifo(void *sel, _adapter *adapter, u8 fifo_sel, u32 fifo_addr, u32
 s32 rtw_hal_set_default_port_id_cmd(_adapter *adapter, u8 mac_id);
 s32 rtw_set_default_port_id(_adapter *adapter);
 s32 rtw_set_ps_rsvd_page(_adapter *adapter);
+
+#define get_dft_portid(adapter) (adapter_to_dvobj(adapter)->dft.port_id)
+#define get_dft_macid(adapter) (adapter_to_dvobj(adapter)->dft.mac_id)
+
+/*void rtw_search_default_port(_adapter *adapter);*/
 #endif
 
 #ifdef CONFIG_P2P_PS
@@ -651,7 +669,16 @@ s32 rtw_set_ps_rsvd_page(_adapter *adapter);
 void rtw_set_p2p_ps_offload_cmd(_adapter *adapter, u8 p2p_ps_state);
 #endif
 #endif
+
+#ifdef RTW_CHANNEL_SWITCH_OFFLOAD
+void rtw_hal_switch_chnl_and_set_bw_offload(_adapter *adapter, u8 central_ch, u8 pri_ch_idx, u8 bw);
+#endif
+
 s16 translate_dbm_to_percentage(s16 signal);
+
+#ifdef CONFIG_SUPPORT_MULTI_BCN
+void rtw_ap_multi_bcn_cfg(_adapter *adapter);
+#endif
 
 #ifdef CONFIG_SWTIMER_BASED_TXBCN
 #ifdef CONFIG_BCN_RECOVERY
@@ -662,4 +689,16 @@ u8 rtw_ap_bcn_queue_empty_check(_adapter *padapter, u32 txbcn_timer_ms);
 #endif
 #endif /*CONFIG_SWTIMER_BASED_TXBCN*/
 
+#ifdef CONFIG_FW_HANDLE_TXBCN
+void rtw_ap_mbid_bcn_en(_adapter *adapter, u8 mbcn_id);
+void rtw_ap_mbid_bcn_dis(_adapter *adapter, u8 mbcn_id);
+#endif
+
+void rtw_hal_get_rf_path(struct dvobj_priv *d, enum rf_type *type,
+			 enum bb_path *tx, enum bb_path *rx);
+#ifdef CONFIG_BEAMFORMING
+#ifdef RTW_BEAMFORMING_VERSION_2
+void rtw_hal_beamforming_config_csirate(PADAPTER adapter);
+#endif
+#endif
 #endif /* __HAL_COMMON_H__ */

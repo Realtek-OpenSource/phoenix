@@ -1,0 +1,5 @@
+0x7677e0c3	rtw_disable_gpio_interrupt	/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/wifi/rtl8189es/8189es	EXPORT_SYMBOL
+0x82a4b602	rtw_register_gpio_interrupt	/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/wifi/rtl8189es/8189es	EXPORT_SYMBOL
+0x0a1411c5	rtw_config_gpio	/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/wifi/rtl8189es/8189es	EXPORT_SYMBOL
+0xdfb05a1b	rtw_get_gpio	/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/wifi/rtl8189es/8189es	EXPORT_SYMBOL
+0x49a3fc86	rtw_set_gpio_output_value	/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/wifi/rtl8189es/8189es	EXPORT_SYMBOL

@@ -14,16 +14,39 @@
  *****************************************************************************/
 
 #ifndef	__PHYDM_FEATURES_WIN_H__
-#define __PHYDM_FEATURES_WIN
+#define __PHYDM_FEATURES_WIN_H__
+
+#if (RTL8822B_SUPPORT == 1 || RTL8812A_SUPPORT == 1 || RTL8197F_SUPPORT == 1 || RTL8192F_SUPPORT == 1)/*jj add 20170822*/
+	#define DYN_ANT_WEIGHTING_SUPPORT
+#endif
+
+#if (RTL8822B_SUPPORT == 1 || RTL8821C_SUPPORT == 1)
+	#define FAHM_SUPPORT
+#endif
+	#define NHM_SUPPORT
+	#define CLM_SUPPORT
 
 #if (RTL8822B_SUPPORT == 1)
 	/*#define PHYDM_PHYSTAUS_SMP_MODE*/
 #endif
 
 /*#define PHYDM_TDMA_DIG_SUPPORT*/
-/*#define PHYDM_LNA_SAT_CHK_SUPPORT*/
 
-#if (RTL8822B_SUPPORT == 1)
+#if (RTL8197F_SUPPORT == 1) || (RTL8822B_SUPPORT == 1)
+	/*#define PHYDM_LNA_SAT_CHK_SUPPORT*/
+	#ifdef PHYDM_LNA_SAT_CHK_SUPPORT
+
+		#if (RTL8197F_SUPPORT == 1)
+		/*#define PHYDM_LNA_SAT_CHK_SUPPORT_TYPE1*/
+		#endif
+
+		#if (RTL8822B_SUPPORT == 1)
+		/*#define PHYDM_LNA_SAT_CHK_TYPE2*/
+		#endif
+	#endif
+#endif
+
+#if (RTL8822B_SUPPORT == 1 || RTL8192F_SUPPORT == 1)
 	#define	PHYDM_POWER_TRAINING_SUPPORT
 #endif
 
@@ -35,14 +58,21 @@
 	#define	PHYDM_PRIMARY_CCA
 #endif
 
-#if (RTL8188F_SUPPORT == 1 || RTL8710B_SUPPORT == 1 || RTL8821C_SUPPORT == 1 || RTL8822B_SUPPORT == 1)
+#if (RTL8188F_SUPPORT == 1 || RTL8710B_SUPPORT == 1 || RTL8821C_SUPPORT == 1 || RTL8822B_SUPPORT == 1 || RTL8192F_SUPPORT == 1)/*jj add 20170822*/
 	#define	PHYDM_DC_CANCELLATION
 #endif
 
-#if (RTL8822B_SUPPORT == 1 || RTL8197F_SUPPORT == 1)
+#if (RTL8822B_SUPPORT == 1 || RTL8197F_SUPPORT == 1 || RTL8192F_SUPPORT == 1)/*jj add 20170822*/
 	/*#define	CONFIG_ADAPTIVE_SOML*/
 #endif
 
+#if (RTL8192F_SUPPORT == 1)/*jj add 20170822*/
+	#define	CONFIG_ADAPTIVE_SOML
+#endif
+
+#if (RTL8192F_SUPPORT == 1)
+	#define	CONFIG_8912F_SPUR_CALIBRATION
+#endif
 
 /*Antenna Diversity*/
 #define	CONFIG_PHYDM_ANTENNA_DIVERSITY
@@ -50,6 +80,11 @@
 
 	#if (RTL8723B_SUPPORT == 1) || (RTL8821A_SUPPORT == 1) || (RTL8188F_SUPPORT == 1) || (RTL8821C_SUPPORT == 1)
 		#define	CONFIG_S0S1_SW_ANTENNA_DIVERSITY
+	#endif
+
+	#if (RTL8822B_SUPPORT == 1)
+		/*#define	ODM_EVM_ENHANCE_ANTDIV*/
+		/*#define	CONFIG_2T3R_ANTENNA*/
 	#endif
 
 	/* --[SmtAnt]-----------------------------------------*/
@@ -77,27 +112,29 @@
 #endif
 	/* --------------------------------------------------*/
 
-#if (RTL8822B_SUPPORT == 1)
-	/*#define	CONFIG_DYNAMIC_RX_PATH*/
-#endif
-
 #if (RTL8188E_SUPPORT == 1 || RTL8192E_SUPPORT == 1)
 	#define	CONFIG_RECEIVER_BLOCKING
 #endif
 
+#if (RTL8812A_SUPPORT == 1 || RTL8821A_SUPPORT == 1 || RTL8881A_SUPPORT == 1 || RTL8192E_SUPPORT == 1 || RTL8723B_SUPPORT == 1)
+	#define	CONFIG_RA_FW_DBG_CODE
+#endif
+
+/* #ifdef CONFIG_SUPPORT_DYNAMIC_TXPWR */
+#define CONFIG_DYNAMIC_TX_TWR
+/* #endif */
 /*#define PHYDM_DIG_MODE_DECISION_SUPPORT	*/
 #define	CONFIG_PSD_TOOL
+#define PHYDM_SUPPORT_ADAPTIVITY
 #define	PHYDM_SUPPORT_CCKPD
 #define	RA_MASK_PHYDMLIZE_WIN
 /*#define	CONFIG_PATH_DIVERSITY*/
 /*#define	CONFIG_RA_DYNAMIC_RTY_LIMIT*/
 #define CONFIG_ANT_DETECTION
-/*#define	CONFIG_RA_DBG_CMD*/
-#define	CONFIG_RA_FW_DBG_CODE
 #define	CONFIG_BB_TXBF_API
 #define	ODM_CONFIG_BT_COEXIST
 #define	PHYDM_3RD_REFORM_RA_MASK
-/*#define	PHYDM_3RD_REFORM_RSSI_MONOTOR*/
+#define	PHYDM_3RD_REFORM_RSSI_MONOTOR
 #define	CONFIG_PHYDM_DFS_MASTER
 #define	PHYDM_SUPPORT_RSSI_MONITOR
 #define	PHYDM_AUTO_DEGBUG

@@ -16,7 +16,9 @@
 #define __RTW_RF_H_
 
 #define NumRates	(13)
-
+#define	B_MODE_RATE_NUM	(4)
+#define	G_MODE_RATE_NUM	(8)
+#define	G_MODE_BASIC_RATE_NUM	(3)
 /* slot time for 11g */
 #define SHORT_SLOT_TIME					9
 #define NON_SHORT_SLOT_TIME				20

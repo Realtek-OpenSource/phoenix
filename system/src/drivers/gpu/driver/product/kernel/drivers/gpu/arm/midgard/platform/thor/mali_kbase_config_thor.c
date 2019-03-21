@@ -7,6 +7,7 @@
 #include <mali_kbase_config.h>
 #include "mali_kbase_config_platform.h"
 #include "mali_kbase_config_thor.h"
+#include <soc/realtek/rtk_chip.h>
 
 #define DEFAULT_GPU_DMC_MODE            0
 
@@ -94,10 +95,11 @@ int thor_gpu_power_on(struct kbase_device *kbdev)
 	clk_disable(kbdev->clock);
 	clk_enable(kbdev->clock);
 	reset_control_deassert(pdata->rstc);
+	udelay(200);
 
 	/* set dram access mode to dmc */
 	if (pdata->dmc)
-		gpu_reg_write(pdata, CTI_DMC_SEL, 0x00000003);
+		gpu_reg_write(pdata, CTI_DMC_SEL, 0x00000002);
 
 	/* workaround for THOR A00 */
 	if (pdata->no_cg) {
@@ -143,7 +145,10 @@ static ssize_t set_dmc(struct device *dev, struct device_attribute *attr, const 
 	if (!pdata)
 		return -EINVAL;
 
-	if ((kstrtoint(buf, 0, &dmc_val) != 0) && (dmc_val != 0 || dmc_val != 1))
+	if (kstrtoint(buf, 0, &dmc_val))
+		return -EINVAL;
+
+	if (dmc_val != 0 || dmc_val != 1)
 		return -EINVAL;
 
 	pdata->dmc = dmc_val;
@@ -182,7 +187,10 @@ static ssize_t set_no_cg(struct device *dev, struct device_attribute *attr, cons
 	if (!pdata)
 		return -EINVAL;
 
-	if ((kstrtoint(buf, 0, &no_cg_val) != 0) && (no_cg_val != 0 || no_cg_val != 1))
+	if (kstrtoint(buf, 0, &no_cg_val))
+		return -EINVAL;
+
+	if (no_cg_val != 0 || no_cg_val != 1)
 		return -EINVAL;
 
 	pdata->no_cg = no_cg_val;
@@ -214,7 +222,7 @@ static struct attribute *thor_attrs[] = {
 };
 
 static const struct attribute_group thor_attr_group = {
-	        .attrs = thor_attrs,
+	.attrs = thor_attrs,
 };
 
 static struct kbase_platform_config dummy_platform_config;
@@ -252,7 +260,10 @@ static int kbase_platform_init(struct kbase_device *kbdev)
 	}
 
 	/* workaround for THOR A00 */
-	pdata->no_cg = 1;
+	if (get_rtd_chip_revision() == RTD_CHIP_A00) {
+		dev_info(dev, "workaround for Thor A00\n");
+		pdata->no_cg = 1;
+	}
 
 	thor_gpu_power_on(kbdev);
 	clk_disable_unprepare(kbdev->clock);

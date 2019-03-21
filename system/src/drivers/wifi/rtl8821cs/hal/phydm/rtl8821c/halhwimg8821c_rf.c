@@ -11,16 +11,26 @@
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
  *
+ * The full GNU General Public License is included in this distribution in the
+ * file called LICENSE.
+ *
+ * Contact Information:
+ * wlanfae <wlanfae@realtek.com>
+ * Realtek Corporation, No. 2, Innovation Road II, Hsinchu Science Park,
+ * Hsinchu 300, Taiwan.
+ *
+ * Larry Finger <Larry.Finger@lwfinger.net>
+ *
  *****************************************************************************/
 
-/*Image2HeaderVersion: R2 1.3.2*/
+/*Image2HeaderVersion: R3 1.0*/
 #include "mp_precomp.h"
 #include "../phydm_precomp.h"
 
 #if (RTL8821C_SUPPORT == 1)
 static boolean
 check_positive(
-	struct PHY_DM_STRUCT *p_dm,
+	struct dm_struct *dm,
 	const u32	condition1,
 	const u32	condition2,
 	const u32	condition3,
@@ -29,37 +39,40 @@ check_positive(
 {
 	u32	cond1 = condition1, cond2 = condition2, cond3 = condition3, cond4 = condition4;
 
-	u8	cut_version_for_para = (p_dm->cut_version ==  ODM_CUT_A) ? 15 : p_dm->cut_version;
-	u8	pkg_type_for_para = (p_dm->package_type == 0) ? 15 : p_dm->package_type;
+	u8	cut_version_for_para = (dm->cut_version ==  ODM_CUT_A) ? 15 : dm->cut_version;
+	u8	pkg_type_for_para = (dm->package_type == 0) ? 15 : dm->package_type;
 
 	u32	driver1 = cut_version_for_para << 24 |
-			(p_dm->support_interface & 0xF0) << 16 |
-			p_dm->support_platform << 16 |
+			(dm->support_interface & 0xF0) << 16 |
+			dm->support_platform << 16 |
 			pkg_type_for_para << 12 |
-			(p_dm->support_interface & 0x0F) << 8  |
-			p_dm->rfe_type;
+			(dm->support_interface & 0x0F) << 8  |
+			dm->rfe_type;
 
-	u32	driver2 = (p_dm->type_glna & 0xFF) <<  0 |
-			(p_dm->type_gpa & 0xFF)  <<  8 |
-			(p_dm->type_alna & 0xFF) << 16 |
-			(p_dm->type_apa & 0xFF)  << 24;
+	u32	driver2 = (dm->type_glna & 0xFF) <<  0 |
+			(dm->type_gpa & 0xFF)  <<  8 |
+			(dm->type_alna & 0xFF) << 16 |
+			(dm->type_apa & 0xFF)  << 24;
 
 	u32	driver3 = 0;
 
-	u32	driver4 = (p_dm->type_glna & 0xFF00) >>  8 |
-			(p_dm->type_gpa & 0xFF00) |
-			(p_dm->type_alna & 0xFF00) << 8 |
-			(p_dm->type_apa & 0xFF00)  << 16;
+	u32	driver4 = (dm->type_glna & 0xFF00) >>  8 |
+			(dm->type_gpa & 0xFF00) |
+			(dm->type_alna & 0xFF00) << 8 |
+			(dm->type_apa & 0xFF00)  << 16;
 
-	PHYDM_DBG(p_dm, ODM_COMP_INIT,
-	("===> check_positive (cond1, cond2, cond3, cond4) = (0x%X 0x%X 0x%X 0x%X)\n", cond1, cond2, cond3, cond4));
-	PHYDM_DBG(p_dm, ODM_COMP_INIT,
-	("===> check_positive (driver1, driver2, driver3, driver4) = (0x%X 0x%X 0x%X 0x%X)\n", driver1, driver2, driver3, driver4));
+	PHYDM_DBG(dm, ODM_COMP_INIT,
+		  "===> %s (cond1, cond2, cond3, cond4) = (0x%X 0x%X 0x%X 0x%X)\n",
+		  __func__, cond1, cond2, cond3, cond4);
+	PHYDM_DBG(dm, ODM_COMP_INIT,
+		  "===> %s (driver1, driver2, driver3, driver4) = (0x%X 0x%X 0x%X 0x%X)\n",
+		  __func__, driver1, driver2, driver3, driver4);
 
-	PHYDM_DBG(p_dm, ODM_COMP_INIT,
-	("	(Platform, Interface) = (0x%X, 0x%X)\n", p_dm->support_platform, p_dm->support_interface));
-	PHYDM_DBG(p_dm, ODM_COMP_INIT,
-	("	(RFE, Package) = (0x%X, 0x%X)\n", p_dm->rfe_type, p_dm->package_type));
+	PHYDM_DBG(dm, ODM_COMP_INIT,
+		  "	(Platform, Interface) = (0x%X, 0x%X)\n",
+		  dm->support_platform, dm->support_interface);
+	PHYDM_DBG(dm, ODM_COMP_INIT, "	(RFE, Package) = (0x%X, 0x%X)\n",
+		  dm->rfe_type, dm->package_type);
 
 
 	/*============== value Defined Check ===============*/
@@ -87,7 +100,7 @@ check_positive(
 }
 static boolean
 check_negative(
-	struct PHY_DM_STRUCT *p_dm,
+	struct dm_struct *dm,
 	const u32	condition1,
 	const u32	condition2
 )
@@ -2669,19 +2682,17 @@ u32 array_mp_8821c_radioa[] = {
 };
 
 void
-odm_read_and_config_mp_8821c_radioa(
-	struct	PHY_DM_STRUCT *p_dm
-)
+odm_read_and_config_mp_8821c_radioa(struct dm_struct *dm)
 {
 	u32	i = 0;
 	u8	c_cond;
 	boolean	is_matched = true, is_skipped = false;
-	u32	array_len = sizeof(array_mp_8821c_radioa)/sizeof(u32);
+	u32	array_len = sizeof(array_mp_8821c_radioa) / sizeof(u32);
 	u32	*array = array_mp_8821c_radioa;
 
 	u32	v1 = 0, v2 = 0, pre_v1 = 0, pre_v2 = 0;
 
-	PHYDM_DBG(p_dm, ODM_COMP_INIT, ("===> odm_read_and_config_mp_8821c_radioa\n"));
+	PHYDM_DBG(dm, ODM_COMP_INIT, "===> %s\n", __func__);
 
 	while ((i + 1) < array_len) {
 		v1 = array[i];
@@ -2689,22 +2700,22 @@ odm_read_and_config_mp_8821c_radioa(
 
 		if (v1 & (BIT(31) | BIT(30))) {/*positive & negative condition*/
 			if (v1 & BIT(31)) {/* positive condition*/
-				c_cond  = (u8)((v1 & (BIT(29)|BIT(28))) >> 28);
+				c_cond  = (u8)((v1 & (BIT(29) | BIT(28))) >> 28);
 				if (c_cond == COND_ENDIF) {/*end*/
 					is_matched = true;
 					is_skipped = false;
-					PHYDM_DBG(p_dm, ODM_COMP_INIT, ("ENDIF\n"));
+					PHYDM_DBG(dm, ODM_COMP_INIT, "ENDIF\n");
 				} else if (c_cond == COND_ELSE) { /*else*/
-					is_matched = is_skipped?false:true;
-					PHYDM_DBG(p_dm, ODM_COMP_INIT, ("ELSE\n"));
+					is_matched = is_skipped ? false : true;
+					PHYDM_DBG(dm, ODM_COMP_INIT, "ELSE\n");
 				} else {/*if , else if*/
 					pre_v1 = v1;
 					pre_v2 = v2;
-					PHYDM_DBG(p_dm, ODM_COMP_INIT, ("IF or ELSE IF\n"));
+					PHYDM_DBG(dm, ODM_COMP_INIT, "IF or ELSE IF\n");
 				}
 			} else if (v1 & BIT(30)) { /*negative condition*/
 				if (is_skipped == false) {
-					if (check_positive(p_dm, pre_v1, pre_v2, v1, v2)) {
+					if (check_positive(dm, pre_v1, pre_v2, v1, v2)) {
 						is_matched = true;
 						is_skipped = true;
 					} else {
@@ -2716,7 +2727,7 @@ odm_read_and_config_mp_8821c_radioa(
 			}
 		} else {
 			if (is_matched)
-				odm_config_rf_radio_a_8821c(p_dm, v1, v2);
+				odm_config_rf_radio_a_8821c(dm, v1, v2);
 		}
 		i = i + 2;
 	}
@@ -2725,184 +2736,178 @@ odm_read_and_config_mp_8821c_radioa(
 u32
 odm_get_version_mp_8821c_radioa(void)
 {
-		return 46;
+		return 49;
 }
 
 /******************************************************************************
 *                           txpowertrack.TXT
 ******************************************************************************/
 
-u8 g_delta_swing_table_idx_mp_5gb_n_txpowertrack_8821c[][DELTA_SWINGIDX_SIZE] = {
+u8 delta_swingidx_mp_5gb_n_txpwrtrk_8821c[][DELTA_SWINGIDX_SIZE] = {
 	{0, 1, 1, 2, 3, 3, 3, 4, 4, 5, 5, 6, 6, 6, 7, 8, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12},
 	{0, 1, 1, 1, 2, 3, 3, 4, 4, 5, 5, 5, 6, 6, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
 	{0, 1, 2, 2, 3, 4, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12},
 };
-u8 g_delta_swing_table_idx_mp_5gb_p_txpowertrack_8821c[][DELTA_SWINGIDX_SIZE] = {
+u8 delta_swingidx_mp_5gb_p_txpwrtrk_8821c[][DELTA_SWINGIDX_SIZE] = {
 	{0, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
 	{0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 5, 6, 7, 7, 8, 8, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12},
 	{0, 1, 1, 1, 2, 3, 3, 3, 4, 4, 4, 5, 6, 6, 7, 7, 8, 8, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
 };
-u8 g_delta_swing_table_idx_mp_5ga_n_txpowertrack_8821c[][DELTA_SWINGIDX_SIZE] = {
+u8 delta_swingidx_mp_5ga_n_txpwrtrk_8821c[][DELTA_SWINGIDX_SIZE] = {
 	{0, 1, 1, 2, 3, 3, 3, 4, 4, 5, 5, 6, 6, 6, 7, 8, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12},
 	{0, 1, 1, 1, 2, 3, 3, 4, 4, 5, 5, 5, 6, 6, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
 	{0, 1, 2, 2, 3, 4, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12},
 };
-u8 g_delta_swing_table_idx_mp_5ga_p_txpowertrack_8821c[][DELTA_SWINGIDX_SIZE] = {
+u8 delta_swingidx_mp_5ga_p_txpwrtrk_8821c[][DELTA_SWINGIDX_SIZE] = {
 	{0, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
 	{0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 5, 6, 7, 7, 8, 8, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12},
 	{0, 1, 1, 1, 2, 3, 3, 3, 4, 4, 4, 5, 6, 6, 7, 7, 8, 8, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
 };
-u8 g_delta_swing_table_idx_mp_2gb_n_txpowertrack_8821c[]    = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
-u8 g_delta_swing_table_idx_mp_2gb_p_txpowertrack_8821c[]    = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
-u8 g_delta_swing_table_idx_mp_2ga_n_txpowertrack_8821c[]    = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
-u8 g_delta_swing_table_idx_mp_2ga_p_txpowertrack_8821c[]    = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
-u8 g_delta_swing_table_idx_mp_2g_cck_b_n_txpowertrack_8821c[] = {0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
-u8 g_delta_swing_table_idx_mp_2g_cck_b_p_txpowertrack_8821c[] = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
-u8 g_delta_swing_table_idx_mp_2g_cck_a_n_txpowertrack_8821c[] = {0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
-u8 g_delta_swing_table_idx_mp_2g_cck_a_p_txpowertrack_8821c[] = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
+u8 delta_swingidx_mp_2gb_n_txpwrtrk_8821c[]    = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
+u8 delta_swingidx_mp_2gb_p_txpwrtrk_8821c[]    = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
+u8 delta_swingidx_mp_2ga_n_txpwrtrk_8821c[]    = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
+u8 delta_swingidx_mp_2ga_p_txpwrtrk_8821c[]    = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
+u8 delta_swingidx_mp_2g_cck_b_n_txpwrtrk_8821c[] = {0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
+u8 delta_swingidx_mp_2g_cck_b_p_txpwrtrk_8821c[] = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
+u8 delta_swingidx_mp_2g_cck_a_n_txpwrtrk_8821c[] = {0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
+u8 delta_swingidx_mp_2g_cck_a_p_txpwrtrk_8821c[] = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
 
 void
-odm_read_and_config_mp_8821c_txpowertrack(
-	struct PHY_DM_STRUCT	 *p_dm
-)
+odm_read_and_config_mp_8821c_txpowertrack(struct dm_struct *dm)
 {
-	struct odm_rf_calibration_structure  *p_rf_calibrate_info = &(p_dm->rf_calibrate_info);
+	struct dm_rf_calibration_struct  *cali_info = &dm->rf_calibrate_info;
 
-	PHYDM_DBG(p_dm, ODM_COMP_INIT, ("===> ODM_ReadAndConfig_MP_mp_8821c\n"));
+	PHYDM_DBG(dm, ODM_COMP_INIT, "===> ODM_ReadAndConfig_MP_mp_8821c\n");
 
 
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2ga_p, g_delta_swing_table_idx_mp_2ga_p_txpowertrack_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2ga_n, g_delta_swing_table_idx_mp_2ga_n_txpowertrack_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2gb_p, g_delta_swing_table_idx_mp_2gb_p_txpowertrack_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2gb_n, g_delta_swing_table_idx_mp_2gb_n_txpowertrack_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2ga_p, delta_swingidx_mp_2ga_p_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2ga_n, delta_swingidx_mp_2ga_n_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2gb_p, delta_swingidx_mp_2gb_p_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2gb_n, delta_swingidx_mp_2gb_n_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE);
 
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2g_cck_a_p, g_delta_swing_table_idx_mp_2g_cck_a_p_txpowertrack_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2g_cck_a_n, g_delta_swing_table_idx_mp_2g_cck_a_n_txpowertrack_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2g_cck_b_p, g_delta_swing_table_idx_mp_2g_cck_b_p_txpowertrack_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2g_cck_b_n, g_delta_swing_table_idx_mp_2g_cck_b_n_txpowertrack_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_a_p, delta_swingidx_mp_2g_cck_a_p_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_a_n, delta_swingidx_mp_2g_cck_a_n_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_b_p, delta_swingidx_mp_2g_cck_b_p_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_b_n, delta_swingidx_mp_2g_cck_b_n_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE);
 
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_5ga_p, g_delta_swing_table_idx_mp_5ga_p_txpowertrack_8821c, DELTA_SWINGIDX_SIZE*3);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_5ga_n, g_delta_swing_table_idx_mp_5ga_n_txpowertrack_8821c, DELTA_SWINGIDX_SIZE*3);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_5gb_p, g_delta_swing_table_idx_mp_5gb_p_txpowertrack_8821c, DELTA_SWINGIDX_SIZE*3);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_5gb_n, g_delta_swing_table_idx_mp_5gb_n_txpowertrack_8821c, DELTA_SWINGIDX_SIZE*3);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_5ga_p, delta_swingidx_mp_5ga_p_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE * 3);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_5ga_n, delta_swingidx_mp_5ga_n_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE * 3);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_5gb_p, delta_swingidx_mp_5gb_p_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE * 3);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_5gb_n, delta_swingidx_mp_5gb_n_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE * 3);
 }
 
 /******************************************************************************
 *                           txpowertrack_type0x20.TXT
 ******************************************************************************/
 
-u8 g_delta_swing_table_idx_mp_5gb_n_txpowertrack_type0x20_8821c[][DELTA_SWINGIDX_SIZE] = {
+u8 delta_swingidx_mp_5gb_n_txpwrtrk_type0x20_8821c[][DELTA_SWINGIDX_SIZE] = {
 	{0, 1, 1, 2, 3, 3, 3, 4, 4, 5, 5, 6, 6, 6, 7, 8, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12},
 	{0, 1, 1, 1, 2, 3, 3, 4, 4, 5, 5, 5, 6, 6, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
 	{0, 1, 2, 2, 3, 4, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12},
 };
-u8 g_delta_swing_table_idx_mp_5gb_p_txpowertrack_type0x20_8821c[][DELTA_SWINGIDX_SIZE] = {
+u8 delta_swingidx_mp_5gb_p_txpwrtrk_type0x20_8821c[][DELTA_SWINGIDX_SIZE] = {
 	{0, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
 	{0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 5, 6, 7, 7, 8, 8, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12},
 	{0, 1, 1, 1, 2, 3, 3, 3, 4, 4, 4, 5, 6, 6, 7, 7, 8, 8, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
 };
-u8 g_delta_swing_table_idx_mp_5ga_n_txpowertrack_type0x20_8821c[][DELTA_SWINGIDX_SIZE] = {
+u8 delta_swingidx_mp_5ga_n_txpwrtrk_type0x20_8821c[][DELTA_SWINGIDX_SIZE] = {
 	{0, 0, 1, 1, 2, 3, 3, 4, 4, 5, 5, 6, 6, 6, 7, 8, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12},
 	{0, 0, 1, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
 	{0, 1, 2, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
 };
-u8 g_delta_swing_table_idx_mp_5ga_p_txpowertrack_type0x20_8821c[][DELTA_SWINGIDX_SIZE] = {
+u8 delta_swingidx_mp_5ga_p_txpwrtrk_type0x20_8821c[][DELTA_SWINGIDX_SIZE] = {
 	{1, 1, 2, 2, 2, 3, 3, 4, 5, 5, 5, 6, 6, 7, 8, 8, 8, 9, 9, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12},
 	{0, 1, 2, 2, 3, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 8, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12},
 	{0, 1, 1, 1, 2, 3, 3, 3, 4, 4, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
 };
-u8 g_delta_swing_table_idx_mp_2gb_n_txpowertrack_type0x20_8821c[]    = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
-u8 g_delta_swing_table_idx_mp_2gb_p_txpowertrack_type0x20_8821c[]    = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
-u8 g_delta_swing_table_idx_mp_2ga_n_txpowertrack_type0x20_8821c[]    = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
-u8 g_delta_swing_table_idx_mp_2ga_p_txpowertrack_type0x20_8821c[]    = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
-u8 g_delta_swing_table_idx_mp_2g_cck_b_n_txpowertrack_type0x20_8821c[] = {0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
-u8 g_delta_swing_table_idx_mp_2g_cck_b_p_txpowertrack_type0x20_8821c[] = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
-u8 g_delta_swing_table_idx_mp_2g_cck_a_n_txpowertrack_type0x20_8821c[] = {0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
-u8 g_delta_swing_table_idx_mp_2g_cck_a_p_txpowertrack_type0x20_8821c[] = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
+u8 delta_swingidx_mp_2gb_n_txpwrtrk_type0x20_8821c[]    = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
+u8 delta_swingidx_mp_2gb_p_txpwrtrk_type0x20_8821c[]    = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
+u8 delta_swingidx_mp_2ga_n_txpwrtrk_type0x20_8821c[]    = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
+u8 delta_swingidx_mp_2ga_p_txpwrtrk_type0x20_8821c[]    = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
+u8 delta_swingidx_mp_2g_cck_b_n_txpwrtrk_type0x20_8821c[] = {0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
+u8 delta_swingidx_mp_2g_cck_b_p_txpwrtrk_type0x20_8821c[] = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
+u8 delta_swingidx_mp_2g_cck_a_n_txpwrtrk_type0x20_8821c[] = {0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
+u8 delta_swingidx_mp_2g_cck_a_p_txpwrtrk_type0x20_8821c[] = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
 
 void
-odm_read_and_config_mp_8821c_txpowertrack_type0x20(
-	struct PHY_DM_STRUCT	 *p_dm
-)
+odm_read_and_config_mp_8821c_txpowertrack_type0x20(struct dm_struct *dm)
 {
-	struct odm_rf_calibration_structure  *p_rf_calibrate_info = &(p_dm->rf_calibrate_info);
+	struct dm_rf_calibration_struct  *cali_info = &dm->rf_calibrate_info;
 
-	PHYDM_DBG(p_dm, ODM_COMP_INIT, ("===> ODM_ReadAndConfig_MP_mp_8821c\n"));
+	PHYDM_DBG(dm, ODM_COMP_INIT, "===> ODM_ReadAndConfig_MP_mp_8821c\n");
 
 
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2ga_p, g_delta_swing_table_idx_mp_2ga_p_txpowertrack_type0x20_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2ga_n, g_delta_swing_table_idx_mp_2ga_n_txpowertrack_type0x20_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2gb_p, g_delta_swing_table_idx_mp_2gb_p_txpowertrack_type0x20_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2gb_n, g_delta_swing_table_idx_mp_2gb_n_txpowertrack_type0x20_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2ga_p, delta_swingidx_mp_2ga_p_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2ga_n, delta_swingidx_mp_2ga_n_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2gb_p, delta_swingidx_mp_2gb_p_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2gb_n, delta_swingidx_mp_2gb_n_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE);
 
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2g_cck_a_p, g_delta_swing_table_idx_mp_2g_cck_a_p_txpowertrack_type0x20_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2g_cck_a_n, g_delta_swing_table_idx_mp_2g_cck_a_n_txpowertrack_type0x20_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2g_cck_b_p, g_delta_swing_table_idx_mp_2g_cck_b_p_txpowertrack_type0x20_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2g_cck_b_n, g_delta_swing_table_idx_mp_2g_cck_b_n_txpowertrack_type0x20_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_a_p, delta_swingidx_mp_2g_cck_a_p_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_a_n, delta_swingidx_mp_2g_cck_a_n_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_b_p, delta_swingidx_mp_2g_cck_b_p_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_b_n, delta_swingidx_mp_2g_cck_b_n_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE);
 
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_5ga_p, g_delta_swing_table_idx_mp_5ga_p_txpowertrack_type0x20_8821c, DELTA_SWINGIDX_SIZE*3);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_5ga_n, g_delta_swing_table_idx_mp_5ga_n_txpowertrack_type0x20_8821c, DELTA_SWINGIDX_SIZE*3);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_5gb_p, g_delta_swing_table_idx_mp_5gb_p_txpowertrack_type0x20_8821c, DELTA_SWINGIDX_SIZE*3);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_5gb_n, g_delta_swing_table_idx_mp_5gb_n_txpowertrack_type0x20_8821c, DELTA_SWINGIDX_SIZE*3);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_5ga_p, delta_swingidx_mp_5ga_p_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE * 3);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_5ga_n, delta_swingidx_mp_5ga_n_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE * 3);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_5gb_p, delta_swingidx_mp_5gb_p_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE * 3);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_5gb_n, delta_swingidx_mp_5gb_n_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE * 3);
 }
 
 /******************************************************************************
 *                           txpowertrack_type0x28.TXT
 ******************************************************************************/
 
-u8 g_delta_swing_table_idx_mp_5gb_n_txpowertrack_type0x28_8821c[][DELTA_SWINGIDX_SIZE] = {
+u8 delta_swingidx_mp_5gb_n_txpwrtrk_type0x28_8821c[][DELTA_SWINGIDX_SIZE] = {
 	{0, 1, 1, 2, 3, 3, 3, 4, 4, 5, 5, 6, 6, 6, 7, 8, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12},
 	{0, 1, 1, 1, 2, 3, 3, 4, 4, 5, 5, 5, 6, 6, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
 	{0, 1, 2, 2, 3, 4, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12},
 };
-u8 g_delta_swing_table_idx_mp_5gb_p_txpowertrack_type0x28_8821c[][DELTA_SWINGIDX_SIZE] = {
+u8 delta_swingidx_mp_5gb_p_txpwrtrk_type0x28_8821c[][DELTA_SWINGIDX_SIZE] = {
 	{0, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
 	{0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 5, 6, 7, 7, 8, 8, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12},
 	{0, 1, 1, 1, 2, 3, 3, 3, 4, 4, 4, 5, 6, 6, 7, 7, 8, 8, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
 };
-u8 g_delta_swing_table_idx_mp_5ga_n_txpowertrack_type0x28_8821c[][DELTA_SWINGIDX_SIZE] = {
+u8 delta_swingidx_mp_5ga_n_txpwrtrk_type0x28_8821c[][DELTA_SWINGIDX_SIZE] = {
 	{0, 1, 3, 3, 4, 5, 5, 6, 7, 8, 8, 9, 10, 10, 11, 12, 12, 12, 14, 15, 15, 16, 16, 17, 18, 18, 18, 18, 18, 18},
 	{0, 1, 2, 3, 4, 4, 5, 7, 7, 8, 8, 9, 10, 10, 11, 12, 12, 13, 14, 14, 15, 16, 16, 17, 18, 18, 18, 18, 18, 18},
 	{0, 1, 2, 3, 4, 6, 6, 6, 6, 7, 8, 9, 10, 11, 11, 12, 12, 13, 14, 14, 15, 16, 16, 17, 18, 18, 18, 18, 18, 18},
 };
-u8 g_delta_swing_table_idx_mp_5ga_p_txpowertrack_type0x28_8821c[][DELTA_SWINGIDX_SIZE] = {
+u8 delta_swingidx_mp_5ga_p_txpwrtrk_type0x28_8821c[][DELTA_SWINGIDX_SIZE] = {
 	{0, 1, 2, 3, 3, 3, 4, 5, 7, 7, 8, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 16, 16, 17, 17, 17, 17, 17, 17, 17},
 	{0, 1, 2, 3, 3, 4, 4, 5, 6, 7, 8, 9, 10, 10, 11, 13, 13, 14, 15, 15, 16, 16, 17, 17, 17, 17, 17, 17, 17, 17},
 	{0, 1, 2, 2, 3, 4, 4, 5, 6, 7, 7, 8, 8, 9, 10, 10, 11, 12, 13, 14, 14, 14, 14, 15, 16, 16, 16, 16, 16, 16},
 };
-u8 g_delta_swing_table_idx_mp_2gb_n_txpowertrack_type0x28_8821c[]    = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
-u8 g_delta_swing_table_idx_mp_2gb_p_txpowertrack_type0x28_8821c[]    = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
-u8 g_delta_swing_table_idx_mp_2ga_n_txpowertrack_type0x28_8821c[]    = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
-u8 g_delta_swing_table_idx_mp_2ga_p_txpowertrack_type0x28_8821c[]    = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
-u8 g_delta_swing_table_idx_mp_2g_cck_b_n_txpowertrack_type0x28_8821c[] = {0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
-u8 g_delta_swing_table_idx_mp_2g_cck_b_p_txpowertrack_type0x28_8821c[] = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
-u8 g_delta_swing_table_idx_mp_2g_cck_a_n_txpowertrack_type0x28_8821c[] = {0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
-u8 g_delta_swing_table_idx_mp_2g_cck_a_p_txpowertrack_type0x28_8821c[] = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
+u8 delta_swingidx_mp_2gb_n_txpwrtrk_type0x28_8821c[]    = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
+u8 delta_swingidx_mp_2gb_p_txpwrtrk_type0x28_8821c[]    = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
+u8 delta_swingidx_mp_2ga_n_txpwrtrk_type0x28_8821c[]    = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
+u8 delta_swingidx_mp_2ga_p_txpwrtrk_type0x28_8821c[]    = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
+u8 delta_swingidx_mp_2g_cck_b_n_txpwrtrk_type0x28_8821c[] = {0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
+u8 delta_swingidx_mp_2g_cck_b_p_txpwrtrk_type0x28_8821c[] = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
+u8 delta_swingidx_mp_2g_cck_a_n_txpwrtrk_type0x28_8821c[] = {0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
+u8 delta_swingidx_mp_2g_cck_a_p_txpwrtrk_type0x28_8821c[] = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
 
 void
-odm_read_and_config_mp_8821c_txpowertrack_type0x28(
-	struct PHY_DM_STRUCT	 *p_dm
-)
+odm_read_and_config_mp_8821c_txpowertrack_type0x28(struct dm_struct *dm)
 {
-	struct odm_rf_calibration_structure  *p_rf_calibrate_info = &(p_dm->rf_calibrate_info);
+	struct dm_rf_calibration_struct  *cali_info = &dm->rf_calibrate_info;
 
-	PHYDM_DBG(p_dm, ODM_COMP_INIT, ("===> ODM_ReadAndConfig_MP_mp_8821c\n"));
+	PHYDM_DBG(dm, ODM_COMP_INIT, "===> ODM_ReadAndConfig_MP_mp_8821c\n");
 
 
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2ga_p, g_delta_swing_table_idx_mp_2ga_p_txpowertrack_type0x28_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2ga_n, g_delta_swing_table_idx_mp_2ga_n_txpowertrack_type0x28_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2gb_p, g_delta_swing_table_idx_mp_2gb_p_txpowertrack_type0x28_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2gb_n, g_delta_swing_table_idx_mp_2gb_n_txpowertrack_type0x28_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2ga_p, delta_swingidx_mp_2ga_p_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2ga_n, delta_swingidx_mp_2ga_n_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2gb_p, delta_swingidx_mp_2gb_p_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2gb_n, delta_swingidx_mp_2gb_n_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE);
 
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2g_cck_a_p, g_delta_swing_table_idx_mp_2g_cck_a_p_txpowertrack_type0x28_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2g_cck_a_n, g_delta_swing_table_idx_mp_2g_cck_a_n_txpowertrack_type0x28_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2g_cck_b_p, g_delta_swing_table_idx_mp_2g_cck_b_p_txpowertrack_type0x28_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_2g_cck_b_n, g_delta_swing_table_idx_mp_2g_cck_b_n_txpowertrack_type0x28_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_a_p, delta_swingidx_mp_2g_cck_a_p_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_a_n, delta_swingidx_mp_2g_cck_a_n_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_b_p, delta_swingidx_mp_2g_cck_b_p_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_b_n, delta_swingidx_mp_2g_cck_b_n_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE);
 
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_5ga_p, g_delta_swing_table_idx_mp_5ga_p_txpowertrack_type0x28_8821c, DELTA_SWINGIDX_SIZE*3);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_5ga_n, g_delta_swing_table_idx_mp_5ga_n_txpowertrack_type0x28_8821c, DELTA_SWINGIDX_SIZE*3);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_5gb_p, g_delta_swing_table_idx_mp_5gb_p_txpowertrack_type0x28_8821c, DELTA_SWINGIDX_SIZE*3);
-	odm_move_memory(p_dm, p_rf_calibrate_info->delta_swing_table_idx_5gb_n, g_delta_swing_table_idx_mp_5gb_n_txpowertrack_type0x28_8821c, DELTA_SWINGIDX_SIZE*3);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_5ga_p, delta_swingidx_mp_5ga_p_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE * 3);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_5ga_n, delta_swingidx_mp_5ga_n_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE * 3);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_5gb_p, delta_swingidx_mp_5gb_p_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE * 3);
+	odm_move_memory(dm, cali_info->delta_swing_table_idx_5gb_n, delta_swingidx_mp_5gb_n_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE * 3);
 }
 
 /******************************************************************************
@@ -2916,796 +2921,917 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"IC", "2.4G", "20M", "CCK", "1T", "01", "30",
 	"KCC", "2.4G", "20M", "CCK", "1T", "01", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "01", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "01", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "02", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "02", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "02", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "02", "32",
 	"KCC", "2.4G", "20M", "CCK", "1T", "02", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "02", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "02", "32",
 	"FCC", "2.4G", "20M", "CCK", "1T", "03", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "03", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "03", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "03", "32",
 	"KCC", "2.4G", "20M", "CCK", "1T", "03", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "03", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "03", "32",
 	"FCC", "2.4G", "20M", "CCK", "1T", "04", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "04", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "04", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "04", "32",
 	"KCC", "2.4G", "20M", "CCK", "1T", "04", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "04", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "04", "32",
 	"FCC", "2.4G", "20M", "CCK", "1T", "05", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "05", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "05", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "05", "32",
 	"KCC", "2.4G", "20M", "CCK", "1T", "05", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "05", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "05", "32",
 	"FCC", "2.4G", "20M", "CCK", "1T", "06", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "06", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "06", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "06", "32",
 	"KCC", "2.4G", "20M", "CCK", "1T", "06", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "06", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "06", "32",
 	"FCC", "2.4G", "20M", "CCK", "1T", "07", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "07", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "07", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "07", "32",
 	"KCC", "2.4G", "20M", "CCK", "1T", "07", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "07", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "07", "32",
 	"FCC", "2.4G", "20M", "CCK", "1T", "08", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "08", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "08", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "08", "32",
 	"KCC", "2.4G", "20M", "CCK", "1T", "08", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "08", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "08", "32",
 	"FCC", "2.4G", "20M", "CCK", "1T", "09", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "09", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "09", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "09", "32",
 	"KCC", "2.4G", "20M", "CCK", "1T", "09", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "09", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "09", "32",
 	"FCC", "2.4G", "20M", "CCK", "1T", "10", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "10", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "10", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "10", "32",
 	"KCC", "2.4G", "20M", "CCK", "1T", "10", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "10", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "10", "32",
 	"FCC", "2.4G", "20M", "CCK", "1T", "11", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "11", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "11", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "11", "32",
 	"KCC", "2.4G", "20M", "CCK", "1T", "11", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "11", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "11", "32",
 	"FCC", "2.4G", "20M", "CCK", "1T", "12", "24",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "12", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "12", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "12", "24",
 	"KCC", "2.4G", "20M", "CCK", "1T", "12", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "12", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "12", "24",
 	"FCC", "2.4G", "20M", "CCK", "1T", "13", "16",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "13", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "13", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "13", "16",
 	"KCC", "2.4G", "20M", "CCK", "1T", "13", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "13", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "13", "16",
 	"FCC", "2.4G", "20M", "CCK", "1T", "14", "63",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "14", "63",
 	"MKK", "2.4G", "20M", "CCK", "1T", "14", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "14", "63",
 	"KCC", "2.4G", "20M", "CCK", "1T", "14", "63",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "14", "63",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "14", "63",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "01", "30",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "01", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "01", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "01", "30",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "01", "32",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "01", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "01", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "02", "32",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "02", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "02", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "02", "32",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "02", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "02", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "02", "32",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "03", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "03", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "03", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "03", "34",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "03", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "03", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "03", "34",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "04", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "04", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "04", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "04", "34",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "04", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "04", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "04", "34",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "05", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "05", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "05", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "05", "34",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "05", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "05", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "05", "34",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "06", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "06", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "06", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "06", "34",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "06", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "06", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "06", "34",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "07", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "07", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "07", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "07", "34",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "07", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "07", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "07", "34",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "08", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "08", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "08", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "08", "34",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "08", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "08", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "08", "34",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "09", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "09", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "09", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "09", "34",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "09", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "09", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "09", "34",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "10", "32",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "10", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "10", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "10", "32",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "10", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "10", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "10", "32",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "11", "30",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "11", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "11", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "11", "30",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "11", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "11", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "11", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "12", "28",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "12", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "12", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "12", "28",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "12", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "12", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "12", "28",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "13", "16",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "13", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "13", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "13", "16",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "13", "32",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "13", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "13", "16",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "14", "63",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "14", "63",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "14", "63",
 	"IC", "2.4G", "20M", "OFDM", "1T", "14", "63",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "14", "63",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "14", "63",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "14", "63",
 	"FCC", "2.4G", "20M", "HT", "1T", "01", "26",
 	"ETSI", "2.4G", "20M", "HT", "1T", "01", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "01", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "01", "26",
 	"KCC", "2.4G", "20M", "HT", "1T", "01", "32",
 	"ACMA", "2.4G", "20M", "HT", "1T", "01", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "01", "26",
 	"FCC", "2.4G", "20M", "HT", "1T", "02", "30",
 	"ETSI", "2.4G", "20M", "HT", "1T", "02", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "02", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "02", "30",
 	"KCC", "2.4G", "20M", "HT", "1T", "02", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "02", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "02", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "03", "32",
 	"ETSI", "2.4G", "20M", "HT", "1T", "03", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "03", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "03", "32",
 	"KCC", "2.4G", "20M", "HT", "1T", "03", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "03", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "03", "32",
 	"FCC", "2.4G", "20M", "HT", "1T", "04", "34",
 	"ETSI", "2.4G", "20M", "HT", "1T", "04", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "04", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "04", "34",
 	"KCC", "2.4G", "20M", "HT", "1T", "04", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "04", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "04", "34",
 	"FCC", "2.4G", "20M", "HT", "1T", "05", "34",
 	"ETSI", "2.4G", "20M", "HT", "1T", "05", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "05", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "05", "34",
 	"KCC", "2.4G", "20M", "HT", "1T", "05", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "05", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "05", "34",
 	"FCC", "2.4G", "20M", "HT", "1T", "06", "34",
 	"ETSI", "2.4G", "20M", "HT", "1T", "06", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "06", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "06", "34",
 	"KCC", "2.4G", "20M", "HT", "1T", "06", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "06", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "06", "34",
 	"FCC", "2.4G", "20M", "HT", "1T", "07", "34",
 	"ETSI", "2.4G", "20M", "HT", "1T", "07", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "07", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "07", "34",
 	"KCC", "2.4G", "20M", "HT", "1T", "07", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "07", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "07", "34",
 	"FCC", "2.4G", "20M", "HT", "1T", "08", "34",
 	"ETSI", "2.4G", "20M", "HT", "1T", "08", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "08", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "08", "34",
 	"KCC", "2.4G", "20M", "HT", "1T", "08", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "08", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "08", "34",
 	"FCC", "2.4G", "20M", "HT", "1T", "09", "32",
 	"ETSI", "2.4G", "20M", "HT", "1T", "09", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "09", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "09", "32",
 	"KCC", "2.4G", "20M", "HT", "1T", "09", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "09", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "09", "32",
 	"FCC", "2.4G", "20M", "HT", "1T", "10", "30",
 	"ETSI", "2.4G", "20M", "HT", "1T", "10", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "10", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "10", "30",
 	"KCC", "2.4G", "20M", "HT", "1T", "10", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "10", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "10", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "11", "28",
 	"ETSI", "2.4G", "20M", "HT", "1T", "11", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "11", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "11", "28",
 	"KCC", "2.4G", "20M", "HT", "1T", "11", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "11", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "11", "28",
 	"FCC", "2.4G", "20M", "HT", "1T", "12", "26",
 	"ETSI", "2.4G", "20M", "HT", "1T", "12", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "12", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "12", "26",
 	"KCC", "2.4G", "20M", "HT", "1T", "12", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "12", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "12", "26",
 	"FCC", "2.4G", "20M", "HT", "1T", "13", "12",
 	"ETSI", "2.4G", "20M", "HT", "1T", "13", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "13", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "13", "12",
 	"KCC", "2.4G", "20M", "HT", "1T", "13", "32",
 	"ACMA", "2.4G", "20M", "HT", "1T", "13", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "13", "12",
 	"FCC", "2.4G", "20M", "HT", "1T", "14", "63",
 	"ETSI", "2.4G", "20M", "HT", "1T", "14", "63",
 	"MKK", "2.4G", "20M", "HT", "1T", "14", "63",
 	"IC", "2.4G", "20M", "HT", "1T", "14", "63",
 	"KCC", "2.4G", "20M", "HT", "1T", "14", "63",
 	"ACMA", "2.4G", "20M", "HT", "1T", "14", "63",
+	"CHILE", "2.4G", "20M", "HT", "1T", "14", "63",
 	"FCC", "2.4G", "40M", "HT", "1T", "01", "63",
 	"ETSI", "2.4G", "40M", "HT", "1T", "01", "63",
 	"MKK", "2.4G", "40M", "HT", "1T", "01", "63",
 	"IC", "2.4G", "40M", "HT", "1T", "01", "63",
 	"KCC", "2.4G", "40M", "HT", "1T", "01", "63",
 	"ACMA", "2.4G", "40M", "HT", "1T", "01", "63",
+	"CHILE", "2.4G", "40M", "HT", "1T", "01", "63",
 	"FCC", "2.4G", "40M", "HT", "1T", "02", "63",
 	"ETSI", "2.4G", "40M", "HT", "1T", "02", "63",
 	"MKK", "2.4G", "40M", "HT", "1T", "02", "63",
 	"IC", "2.4G", "40M", "HT", "1T", "02", "63",
 	"KCC", "2.4G", "40M", "HT", "1T", "02", "63",
 	"ACMA", "2.4G", "40M", "HT", "1T", "02", "63",
+	"CHILE", "2.4G", "40M", "HT", "1T", "02", "63",
 	"FCC", "2.4G", "40M", "HT", "1T", "03", "26",
 	"ETSI", "2.4G", "40M", "HT", "1T", "03", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "03", "30",
 	"IC", "2.4G", "40M", "HT", "1T", "03", "26",
 	"KCC", "2.4G", "40M", "HT", "1T", "03", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "03", "30",
+	"CHILE", "2.4G", "40M", "HT", "1T", "03", "26",
 	"FCC", "2.4G", "40M", "HT", "1T", "04", "26",
 	"ETSI", "2.4G", "40M", "HT", "1T", "04", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "04", "30",
 	"IC", "2.4G", "40M", "HT", "1T", "04", "26",
 	"KCC", "2.4G", "40M", "HT", "1T", "04", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "04", "30",
+	"CHILE", "2.4G", "40M", "HT", "1T", "04", "26",
 	"FCC", "2.4G", "40M", "HT", "1T", "05", "30",
 	"ETSI", "2.4G", "40M", "HT", "1T", "05", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "05", "30",
 	"IC", "2.4G", "40M", "HT", "1T", "05", "30",
 	"KCC", "2.4G", "40M", "HT", "1T", "05", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "05", "30",
+	"CHILE", "2.4G", "40M", "HT", "1T", "05", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "06", "30",
 	"ETSI", "2.4G", "40M", "HT", "1T", "06", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "06", "30",
 	"IC", "2.4G", "40M", "HT", "1T", "06", "30",
 	"KCC", "2.4G", "40M", "HT", "1T", "06", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "06", "30",
+	"CHILE", "2.4G", "40M", "HT", "1T", "06", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "07", "30",
 	"ETSI", "2.4G", "40M", "HT", "1T", "07", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "07", "30",
 	"IC", "2.4G", "40M", "HT", "1T", "07", "30",
 	"KCC", "2.4G", "40M", "HT", "1T", "07", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "07", "30",
+	"CHILE", "2.4G", "40M", "HT", "1T", "07", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "08", "26",
 	"ETSI", "2.4G", "40M", "HT", "1T", "08", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "08", "30",
 	"IC", "2.4G", "40M", "HT", "1T", "08", "26",
 	"KCC", "2.4G", "40M", "HT", "1T", "08", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "08", "30",
+	"CHILE", "2.4G", "40M", "HT", "1T", "08", "26",
 	"FCC", "2.4G", "40M", "HT", "1T", "09", "26",
 	"ETSI", "2.4G", "40M", "HT", "1T", "09", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "09", "30",
 	"IC", "2.4G", "40M", "HT", "1T", "09", "26",
 	"KCC", "2.4G", "40M", "HT", "1T", "09", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "09", "30",
+	"CHILE", "2.4G", "40M", "HT", "1T", "09", "26",
 	"FCC", "2.4G", "40M", "HT", "1T", "10", "28",
 	"ETSI", "2.4G", "40M", "HT", "1T", "10", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "10", "30",
 	"IC", "2.4G", "40M", "HT", "1T", "10", "28",
 	"KCC", "2.4G", "40M", "HT", "1T", "10", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "10", "30",
+	"CHILE", "2.4G", "40M", "HT", "1T", "10", "28",
 	"FCC", "2.4G", "40M", "HT", "1T", "11", "20",
 	"ETSI", "2.4G", "40M", "HT", "1T", "11", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "11", "30",
 	"IC", "2.4G", "40M", "HT", "1T", "11", "20",
 	"KCC", "2.4G", "40M", "HT", "1T", "11", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "11", "30",
+	"CHILE", "2.4G", "40M", "HT", "1T", "11", "20",
 	"FCC", "2.4G", "40M", "HT", "1T", "12", "63",
 	"ETSI", "2.4G", "40M", "HT", "1T", "12", "63",
 	"MKK", "2.4G", "40M", "HT", "1T", "12", "63",
 	"IC", "2.4G", "40M", "HT", "1T", "12", "63",
 	"KCC", "2.4G", "40M", "HT", "1T", "12", "63",
 	"ACMA", "2.4G", "40M", "HT", "1T", "12", "63",
+	"CHILE", "2.4G", "40M", "HT", "1T", "12", "63",
 	"FCC", "2.4G", "40M", "HT", "1T", "13", "63",
 	"ETSI", "2.4G", "40M", "HT", "1T", "13", "63",
 	"MKK", "2.4G", "40M", "HT", "1T", "13", "63",
 	"IC", "2.4G", "40M", "HT", "1T", "13", "63",
 	"KCC", "2.4G", "40M", "HT", "1T", "13", "63",
 	"ACMA", "2.4G", "40M", "HT", "1T", "13", "63",
+	"CHILE", "2.4G", "40M", "HT", "1T", "13", "63",
 	"FCC", "2.4G", "40M", "HT", "1T", "14", "63",
 	"ETSI", "2.4G", "40M", "HT", "1T", "14", "63",
 	"MKK", "2.4G", "40M", "HT", "1T", "14", "63",
 	"IC", "2.4G", "40M", "HT", "1T", "14", "63",
 	"KCC", "2.4G", "40M", "HT", "1T", "14", "63",
 	"ACMA", "2.4G", "40M", "HT", "1T", "14", "63",
+	"CHILE", "2.4G", "40M", "HT", "1T", "14", "63",
 	"FCC", "5G", "20M", "OFDM", "1T", "36", "31",
 	"ETSI", "5G", "20M", "OFDM", "1T", "36", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "36", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "36", "31",
 	"KCC", "5G", "20M", "OFDM", "1T", "36", "29",
 	"ACMA", "5G", "20M", "OFDM", "1T", "36", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "36", "29",
 	"FCC", "5G", "20M", "OFDM", "1T", "40", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "40", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "40", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "40", "31",
 	"KCC", "5G", "20M", "OFDM", "1T", "40", "28",
 	"ACMA", "5G", "20M", "OFDM", "1T", "40", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "40", "29",
 	"FCC", "5G", "20M", "OFDM", "1T", "44", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "44", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "44", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "44", "31",
 	"KCC", "5G", "20M", "OFDM", "1T", "44", "28",
 	"ACMA", "5G", "20M", "OFDM", "1T", "44", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "44", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "48", "31",
 	"ETSI", "5G", "20M", "OFDM", "1T", "48", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "48", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "48", "31",
 	"KCC", "5G", "20M", "OFDM", "1T", "48", "27",
 	"ACMA", "5G", "20M", "OFDM", "1T", "48", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "48", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "52", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "52", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "52", "33",
-	"IC", "5G", "20M", "OFDM", "1T", "52", "33",
+	"IC", "5G", "20M", "OFDM", "1T", "52", "32",
 	"KCC", "5G", "20M", "OFDM", "1T", "52", "16",
 	"ACMA", "5G", "20M", "OFDM", "1T", "52", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "52", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "56", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "56", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "56", "33",
-	"IC", "5G", "20M", "OFDM", "1T", "56", "33",
+	"IC", "5G", "20M", "OFDM", "1T", "56", "32",
 	"KCC", "5G", "20M", "OFDM", "1T", "56", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "56", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "56", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "60", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "60", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "60", "33",
-	"IC", "5G", "20M", "OFDM", "1T", "60", "33",
+	"IC", "5G", "20M", "OFDM", "1T", "60", "32",
 	"KCC", "5G", "20M", "OFDM", "1T", "60", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "60", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "60", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "64", "30",
 	"ETSI", "5G", "20M", "OFDM", "1T", "64", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "64", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "64", "30",
 	"KCC", "5G", "20M", "OFDM", "1T", "64", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "64", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "64", "29",
 	"FCC", "5G", "20M", "OFDM", "1T", "100", "30",
 	"ETSI", "5G", "20M", "OFDM", "1T", "100", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "100", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "100", "30",
 	"KCC", "5G", "20M", "OFDM", "1T", "100", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "100", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "100", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "104", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "104", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "104", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "104", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "104", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "104", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "104", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "108", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "108", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "108", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "108", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "108", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "108", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "108", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "112", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "112", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "112", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "112", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "112", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "112", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "112", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "116", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "116", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "116", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "116", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "116", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "116", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "116", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "120", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "120", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "120", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "120", "63",
 	"KCC", "5G", "20M", "OFDM", "1T", "120", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "120", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "120", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "124", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "124", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "124", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "124", "63",
 	"KCC", "5G", "20M", "OFDM", "1T", "124", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "124", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "124", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "128", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "128", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "128", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "128", "63",
 	"KCC", "5G", "20M", "OFDM", "1T", "128", "63",
 	"ACMA", "5G", "20M", "OFDM", "1T", "128", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "128", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "132", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "132", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "132", "33",
-	"IC", "5G", "20M", "OFDM", "1T", "132", "63",
+	"IC", "5G", "20M", "OFDM", "1T", "132", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "132", "63",
 	"ACMA", "5G", "20M", "OFDM", "1T", "132", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "132", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "136", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "136", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "136", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "136", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "136", "63",
 	"ACMA", "5G", "20M", "OFDM", "1T", "136", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "136", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "140", "31",
 	"ETSI", "5G", "20M", "OFDM", "1T", "140", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "140", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "140", "31",
 	"KCC", "5G", "20M", "OFDM", "1T", "140", "63",
 	"ACMA", "5G", "20M", "OFDM", "1T", "140", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "140", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "144", "30",
 	"ETSI", "5G", "20M", "OFDM", "1T", "144", "63",
 	"MKK", "5G", "20M", "OFDM", "1T", "144", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "144", "30",
 	"KCC", "5G", "20M", "OFDM", "1T", "144", "63",
 	"ACMA", "5G", "20M", "OFDM", "1T", "144", "63",
+	"CHILE", "5G", "20M", "OFDM", "1T", "144", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "149", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "149", "63",
 	"MKK", "5G", "20M", "OFDM", "1T", "149", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "149", "30",
 	"KCC", "5G", "20M", "OFDM", "1T", "149", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "149", "33",
+	"CHILE", "5G", "20M", "OFDM", "1T", "149", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "153", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "153", "63",
 	"MKK", "5G", "20M", "OFDM", "1T", "153", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "153", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "153", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "153", "33",
+	"CHILE", "5G", "20M", "OFDM", "1T", "153", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "157", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "157", "63",
 	"MKK", "5G", "20M", "OFDM", "1T", "157", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "157", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "157", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "157", "33",
+	"CHILE", "5G", "20M", "OFDM", "1T", "157", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "161", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "161", "63",
 	"MKK", "5G", "20M", "OFDM", "1T", "161", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "161", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "161", "31",
 	"ACMA", "5G", "20M", "OFDM", "1T", "161", "33",
+	"CHILE", "5G", "20M", "OFDM", "1T", "161", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "165", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "165", "63",
 	"MKK", "5G", "20M", "OFDM", "1T", "165", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "165", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "165", "63",
 	"ACMA", "5G", "20M", "OFDM", "1T", "165", "33",
+	"CHILE", "5G", "20M", "OFDM", "1T", "165", "30",
 	"FCC", "5G", "20M", "HT", "1T", "36", "30",
 	"ETSI", "5G", "20M", "HT", "1T", "36", "32",
 	"MKK", "5G", "20M", "HT", "1T", "36", "33",
 	"IC", "5G", "20M", "HT", "1T", "36", "30",
 	"KCC", "5G", "20M", "HT", "1T", "36", "27",
 	"ACMA", "5G", "20M", "HT", "1T", "36", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "36", "30",
 	"FCC", "5G", "20M", "HT", "1T", "40", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "40", "32",
 	"MKK", "5G", "20M", "HT", "1T", "40", "33",
 	"IC", "5G", "20M", "HT", "1T", "40", "31",
 	"KCC", "5G", "20M", "HT", "1T", "40", "29",
 	"ACMA", "5G", "20M", "HT", "1T", "40", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "40", "30",
 	"FCC", "5G", "20M", "HT", "1T", "44", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "44", "32",
 	"MKK", "5G", "20M", "HT", "1T", "44", "33",
 	"IC", "5G", "20M", "HT", "1T", "44", "31",
 	"KCC", "5G", "20M", "HT", "1T", "44", "29",
 	"ACMA", "5G", "20M", "HT", "1T", "44", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "44", "30",
 	"FCC", "5G", "20M", "HT", "1T", "48", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "48", "32",
 	"MKK", "5G", "20M", "HT", "1T", "48", "33",
 	"IC", "5G", "20M", "HT", "1T", "48", "31",
 	"KCC", "5G", "20M", "HT", "1T", "48", "26",
 	"ACMA", "5G", "20M", "HT", "1T", "48", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "48", "30",
 	"FCC", "5G", "20M", "HT", "1T", "52", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "52", "32",
 	"MKK", "5G", "20M", "HT", "1T", "52", "33",
-	"IC", "5G", "20M", "HT", "1T", "52", "33",
+	"IC", "5G", "20M", "HT", "1T", "52", "32",
 	"KCC", "5G", "20M", "HT", "1T", "52", "7",
 	"ACMA", "5G", "20M", "HT", "1T", "52", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "52", "30",
 	"FCC", "5G", "20M", "HT", "1T", "56", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "56", "32",
 	"MKK", "5G", "20M", "HT", "1T", "56", "33",
-	"IC", "5G", "20M", "HT", "1T", "56", "33",
+	"IC", "5G", "20M", "HT", "1T", "56", "32",
 	"KCC", "5G", "20M", "HT", "1T", "56", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "56", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "56", "30",
 	"FCC", "5G", "20M", "HT", "1T", "60", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "60", "32",
 	"MKK", "5G", "20M", "HT", "1T", "60", "33",
-	"IC", "5G", "20M", "HT", "1T", "60", "33",
+	"IC", "5G", "20M", "HT", "1T", "60", "32",
 	"KCC", "5G", "20M", "HT", "1T", "60", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "60", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "60", "30",
 	"FCC", "5G", "20M", "HT", "1T", "64", "30",
 	"ETSI", "5G", "20M", "HT", "1T", "64", "32",
 	"MKK", "5G", "20M", "HT", "1T", "64", "33",
 	"IC", "5G", "20M", "HT", "1T", "64", "30",
 	"KCC", "5G", "20M", "HT", "1T", "64", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "64", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "64", "30",
 	"FCC", "5G", "20M", "HT", "1T", "100", "30",
 	"ETSI", "5G", "20M", "HT", "1T", "100", "32",
 	"MKK", "5G", "20M", "HT", "1T", "100", "33",
 	"IC", "5G", "20M", "HT", "1T", "100", "30",
 	"KCC", "5G", "20M", "HT", "1T", "100", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "100", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "100", "30",
 	"FCC", "5G", "20M", "HT", "1T", "104", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "104", "32",
 	"MKK", "5G", "20M", "HT", "1T", "104", "33",
 	"IC", "5G", "20M", "HT", "1T", "104", "33",
 	"KCC", "5G", "20M", "HT", "1T", "104", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "104", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "104", "30",
 	"FCC", "5G", "20M", "HT", "1T", "108", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "108", "32",
 	"MKK", "5G", "20M", "HT", "1T", "108", "33",
 	"IC", "5G", "20M", "HT", "1T", "108", "33",
 	"KCC", "5G", "20M", "HT", "1T", "108", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "108", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "108", "30",
 	"FCC", "5G", "20M", "HT", "1T", "112", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "112", "32",
 	"MKK", "5G", "20M", "HT", "1T", "112", "33",
 	"IC", "5G", "20M", "HT", "1T", "112", "33",
 	"KCC", "5G", "20M", "HT", "1T", "112", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "112", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "112", "30",
 	"FCC", "5G", "20M", "HT", "1T", "116", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "116", "32",
 	"MKK", "5G", "20M", "HT", "1T", "116", "33",
 	"IC", "5G", "20M", "HT", "1T", "116", "33",
 	"KCC", "5G", "20M", "HT", "1T", "116", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "116", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "116", "30",
 	"FCC", "5G", "20M", "HT", "1T", "120", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "120", "32",
 	"MKK", "5G", "20M", "HT", "1T", "120", "33",
 	"IC", "5G", "20M", "HT", "1T", "120", "63",
 	"KCC", "5G", "20M", "HT", "1T", "120", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "120", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "120", "30",
 	"FCC", "5G", "20M", "HT", "1T", "124", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "124", "32",
 	"MKK", "5G", "20M", "HT", "1T", "124", "33",
 	"IC", "5G", "20M", "HT", "1T", "124", "63",
 	"KCC", "5G", "20M", "HT", "1T", "124", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "124", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "124", "30",
 	"FCC", "5G", "20M", "HT", "1T", "128", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "128", "32",
 	"MKK", "5G", "20M", "HT", "1T", "128", "33",
 	"IC", "5G", "20M", "HT", "1T", "128", "63",
 	"KCC", "5G", "20M", "HT", "1T", "128", "63",
 	"ACMA", "5G", "20M", "HT", "1T", "128", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "128", "30",
 	"FCC", "5G", "20M", "HT", "1T", "132", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "132", "32",
 	"MKK", "5G", "20M", "HT", "1T", "132", "33",
-	"IC", "5G", "20M", "HT", "1T", "132", "63",
+	"IC", "5G", "20M", "HT", "1T", "132", "33",
 	"KCC", "5G", "20M", "HT", "1T", "132", "63",
 	"ACMA", "5G", "20M", "HT", "1T", "132", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "132", "30",
 	"FCC", "5G", "20M", "HT", "1T", "136", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "136", "32",
 	"MKK", "5G", "20M", "HT", "1T", "136", "33",
 	"IC", "5G", "20M", "HT", "1T", "136", "33",
 	"KCC", "5G", "20M", "HT", "1T", "136", "63",
 	"ACMA", "5G", "20M", "HT", "1T", "136", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "136", "30",
 	"FCC", "5G", "20M", "HT", "1T", "140", "29",
 	"ETSI", "5G", "20M", "HT", "1T", "140", "32",
 	"MKK", "5G", "20M", "HT", "1T", "140", "33",
 	"IC", "5G", "20M", "HT", "1T", "140", "29",
 	"KCC", "5G", "20M", "HT", "1T", "140", "63",
 	"ACMA", "5G", "20M", "HT", "1T", "140", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "140", "30",
 	"FCC", "5G", "20M", "HT", "1T", "144", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "144", "63",
 	"MKK", "5G", "20M", "HT", "1T", "144", "63",
 	"IC", "5G", "20M", "HT", "1T", "144", "27",
 	"KCC", "5G", "20M", "HT", "1T", "144", "63",
 	"ACMA", "5G", "20M", "HT", "1T", "144", "63",
+	"CHILE", "5G", "20M", "HT", "1T", "144", "30",
 	"FCC", "5G", "20M", "HT", "1T", "149", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "149", "63",
 	"MKK", "5G", "20M", "HT", "1T", "149", "63",
 	"IC", "5G", "20M", "HT", "1T", "149", "33",
 	"KCC", "5G", "20M", "HT", "1T", "149", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "149", "33",
+	"CHILE", "5G", "20M", "HT", "1T", "149", "30",
 	"FCC", "5G", "20M", "HT", "1T", "153", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "153", "63",
 	"MKK", "5G", "20M", "HT", "1T", "153", "63",
 	"IC", "5G", "20M", "HT", "1T", "153", "33",
 	"KCC", "5G", "20M", "HT", "1T", "153", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "153", "33",
+	"CHILE", "5G", "20M", "HT", "1T", "153", "30",
 	"FCC", "5G", "20M", "HT", "1T", "157", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "157", "63",
 	"MKK", "5G", "20M", "HT", "1T", "157", "63",
 	"IC", "5G", "20M", "HT", "1T", "157", "33",
 	"KCC", "5G", "20M", "HT", "1T", "157", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "157", "33",
+	"CHILE", "5G", "20M", "HT", "1T", "157", "30",
 	"FCC", "5G", "20M", "HT", "1T", "161", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "161", "63",
 	"MKK", "5G", "20M", "HT", "1T", "161", "63",
 	"IC", "5G", "20M", "HT", "1T", "161", "33",
 	"KCC", "5G", "20M", "HT", "1T", "161", "31",
 	"ACMA", "5G", "20M", "HT", "1T", "161", "33",
+	"CHILE", "5G", "20M", "HT", "1T", "161", "30",
 	"FCC", "5G", "20M", "HT", "1T", "165", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "165", "63",
 	"MKK", "5G", "20M", "HT", "1T", "165", "63",
 	"IC", "5G", "20M", "HT", "1T", "165", "33",
 	"KCC", "5G", "20M", "HT", "1T", "165", "63",
 	"ACMA", "5G", "20M", "HT", "1T", "165", "33",
+	"CHILE", "5G", "20M", "HT", "1T", "165", "30",
 	"FCC", "5G", "40M", "HT", "1T", "38", "22",
 	"ETSI", "5G", "40M", "HT", "1T", "38", "32",
 	"MKK", "5G", "40M", "HT", "1T", "38", "32",
 	"IC", "5G", "40M", "HT", "1T", "38", "22",
 	"KCC", "5G", "40M", "HT", "1T", "38", "26",
 	"ACMA", "5G", "40M", "HT", "1T", "38", "32",
+	"CHILE", "5G", "40M", "HT", "1T", "38", "22",
 	"FCC", "5G", "40M", "HT", "1T", "46", "32",
 	"ETSI", "5G", "40M", "HT", "1T", "46", "32",
 	"MKK", "5G", "40M", "HT", "1T", "46", "32",
 	"IC", "5G", "40M", "HT", "1T", "46", "32",
 	"KCC", "5G", "40M", "HT", "1T", "46", "28",
 	"ACMA", "5G", "40M", "HT", "1T", "46", "32",
+	"CHILE", "5G", "40M", "HT", "1T", "46", "30",
 	"FCC", "5G", "40M", "HT", "1T", "54", "32",
 	"ETSI", "5G", "40M", "HT", "1T", "54", "32",
 	"MKK", "5G", "40M", "HT", "1T", "54", "32",
 	"IC", "5G", "40M", "HT", "1T", "54", "32",
 	"KCC", "5G", "40M", "HT", "1T", "54", "22",
 	"ACMA", "5G", "40M", "HT", "1T", "54", "32",
+	"CHILE", "5G", "40M", "HT", "1T", "54", "30",
 	"FCC", "5G", "40M", "HT", "1T", "62", "23",
 	"ETSI", "5G", "40M", "HT", "1T", "62", "32",
 	"MKK", "5G", "40M", "HT", "1T", "62", "32",
 	"IC", "5G", "40M", "HT", "1T", "62", "23",
 	"KCC", "5G", "40M", "HT", "1T", "62", "31",
 	"ACMA", "5G", "40M", "HT", "1T", "62", "32",
+	"CHILE", "5G", "40M", "HT", "1T", "62", "23",
 	"FCC", "5G", "40M", "HT", "1T", "102", "21",
 	"ETSI", "5G", "40M", "HT", "1T", "102", "32",
 	"MKK", "5G", "40M", "HT", "1T", "102", "32",
 	"IC", "5G", "40M", "HT", "1T", "102", "21",
 	"KCC", "5G", "40M", "HT", "1T", "102", "31",
 	"ACMA", "5G", "40M", "HT", "1T", "102", "32",
+	"CHILE", "5G", "40M", "HT", "1T", "102", "30",
 	"FCC", "5G", "40M", "HT", "1T", "110", "32",
 	"ETSI", "5G", "40M", "HT", "1T", "110", "32",
 	"MKK", "5G", "40M", "HT", "1T", "110", "32",
 	"IC", "5G", "40M", "HT", "1T", "110", "32",
 	"KCC", "5G", "40M", "HT", "1T", "110", "32",
 	"ACMA", "5G", "40M", "HT", "1T", "110", "32",
+	"CHILE", "5G", "40M", "HT", "1T", "110", "30",
 	"FCC", "5G", "40M", "HT", "1T", "118", "32",
 	"ETSI", "5G", "40M", "HT", "1T", "118", "32",
 	"MKK", "5G", "40M", "HT", "1T", "118", "32",
 	"IC", "5G", "40M", "HT", "1T", "118", "63",
 	"KCC", "5G", "40M", "HT", "1T", "118", "32",
 	"ACMA", "5G", "40M", "HT", "1T", "118", "32",
+	"CHILE", "5G", "40M", "HT", "1T", "118", "30",
 	"FCC", "5G", "40M", "HT", "1T", "126", "32",
 	"ETSI", "5G", "40M", "HT", "1T", "126", "32",
 	"MKK", "5G", "40M", "HT", "1T", "126", "32",
 	"IC", "5G", "40M", "HT", "1T", "126", "63",
 	"KCC", "5G", "40M", "HT", "1T", "126", "63",
 	"ACMA", "5G", "40M", "HT", "1T", "126", "32",
+	"CHILE", "5G", "40M", "HT", "1T", "126", "30",
 	"FCC", "5G", "40M", "HT", "1T", "134", "32",
 	"ETSI", "5G", "40M", "HT", "1T", "134", "32",
 	"MKK", "5G", "40M", "HT", "1T", "134", "32",
 	"IC", "5G", "40M", "HT", "1T", "134", "32",
 	"KCC", "5G", "40M", "HT", "1T", "134", "63",
 	"ACMA", "5G", "40M", "HT", "1T", "134", "32",
+	"CHILE", "5G", "40M", "HT", "1T", "134", "30",
 	"FCC", "5G", "40M", "HT", "1T", "142", "29",
 	"ETSI", "5G", "40M", "HT", "1T", "142", "63",
 	"MKK", "5G", "40M", "HT", "1T", "142", "63",
 	"IC", "5G", "40M", "HT", "1T", "142", "29",
 	"KCC", "5G", "40M", "HT", "1T", "142", "63",
 	"ACMA", "5G", "40M", "HT", "1T", "142", "63",
+	"CHILE", "5G", "40M", "HT", "1T", "142", "30",
 	"FCC", "5G", "40M", "HT", "1T", "151", "32",
 	"ETSI", "5G", "40M", "HT", "1T", "151", "63",
 	"MKK", "5G", "40M", "HT", "1T", "151", "63",
-	"IC", "5G", "40M", "HT", "1T", "151", "31",
+	"IC", "5G", "40M", "HT", "1T", "151", "32",
 	"KCC", "5G", "40M", "HT", "1T", "151", "27",
 	"ACMA", "5G", "40M", "HT", "1T", "151", "32",
+	"CHILE", "5G", "40M", "HT", "1T", "151", "30",
 	"FCC", "5G", "40M", "HT", "1T", "159", "32",
 	"ETSI", "5G", "40M", "HT", "1T", "159", "63",
 	"MKK", "5G", "40M", "HT", "1T", "159", "63",
 	"IC", "5G", "40M", "HT", "1T", "159", "32",
 	"KCC", "5G", "40M", "HT", "1T", "159", "26",
 	"ACMA", "5G", "40M", "HT", "1T", "159", "32",
+	"CHILE", "5G", "40M", "HT", "1T", "159", "30",
 	"FCC", "5G", "80M", "VHT", "1T", "42", "19",
 	"ETSI", "5G", "80M", "VHT", "1T", "42", "32",
 	"MKK", "5G", "80M", "VHT", "1T", "42", "28",
 	"IC", "5G", "80M", "VHT", "1T", "42", "19",
 	"KCC", "5G", "80M", "VHT", "1T", "42", "25",
 	"ACMA", "5G", "80M", "VHT", "1T", "42", "32",
+	"CHILE", "5G", "80M", "VHT", "1T", "42", "19",
 	"FCC", "5G", "80M", "VHT", "1T", "58", "22",
 	"ETSI", "5G", "80M", "VHT", "1T", "58", "32",
 	"MKK", "5G", "80M", "VHT", "1T", "58", "28",
 	"IC", "5G", "80M", "VHT", "1T", "58", "22",
 	"KCC", "5G", "80M", "VHT", "1T", "58", "28",
 	"ACMA", "5G", "80M", "VHT", "1T", "58", "32",
+	"CHILE", "5G", "80M", "VHT", "1T", "58", "22",
 	"FCC", "5G", "80M", "VHT", "1T", "106", "18",
 	"ETSI", "5G", "80M", "VHT", "1T", "106", "32",
 	"MKK", "5G", "80M", "VHT", "1T", "106", "32",
 	"IC", "5G", "80M", "VHT", "1T", "106", "18",
 	"KCC", "5G", "80M", "VHT", "1T", "106", "30",
 	"ACMA", "5G", "80M", "VHT", "1T", "106", "32",
+	"CHILE", "5G", "80M", "VHT", "1T", "106", "30",
 	"FCC", "5G", "80M", "VHT", "1T", "122", "32",
 	"ETSI", "5G", "80M", "VHT", "1T", "122", "32",
 	"MKK", "5G", "80M", "VHT", "1T", "122", "32",
 	"IC", "5G", "80M", "VHT", "1T", "122", "63",
 	"KCC", "5G", "80M", "VHT", "1T", "122", "26",
 	"ACMA", "5G", "80M", "VHT", "1T", "122", "32",
+	"CHILE", "5G", "80M", "VHT", "1T", "122", "30",
 	"FCC", "5G", "80M", "VHT", "1T", "138", "28",
 	"ETSI", "5G", "80M", "VHT", "1T", "138", "63",
 	"MKK", "5G", "80M", "VHT", "1T", "138", "63",
 	"IC", "5G", "80M", "VHT", "1T", "138", "28",
 	"KCC", "5G", "80M", "VHT", "1T", "138", "63",
 	"ACMA", "5G", "80M", "VHT", "1T", "138", "63",
+	"CHILE", "5G", "80M", "VHT", "1T", "138", "30",
 	"FCC", "5G", "80M", "VHT", "1T", "155", "32",
 	"ETSI", "5G", "80M", "VHT", "1T", "155", "63",
 	"MKK", "5G", "80M", "VHT", "1T", "155", "63",
-	"IC", "5G", "80M", "VHT", "1T", "155", "26",
+	"IC", "5G", "80M", "VHT", "1T", "155", "32",
 	"KCC", "5G", "80M", "VHT", "1T", "155", "27",
-	"ACMA", "5G", "80M", "VHT", "1T", "155", "32"
+	"ACMA", "5G", "80M", "VHT", "1T", "155", "32",
+	"CHILE", "5G", "80M", "VHT", "1T", "155", "30"
 };
 
 void
-odm_read_and_config_mp_8821c_txpwr_lmt(
-	struct PHY_DM_STRUCT	*p_dm
-)
+odm_read_and_config_mp_8821c_txpwr_lmt(struct dm_struct *dm)
 {
 	u32	i = 0;
 #if (DM_ODM_SUPPORT_TYPE == ODM_IOT)
-	u32	array_len = sizeof(array_mp_8821c_txpwr_lmt)/sizeof(u8);
+	u32	array_len = sizeof(array_mp_8821c_txpwr_lmt) / sizeof(u8);
 	u8	*array = (u8 *)array_mp_8821c_txpwr_lmt;
 #else
-	u32	array_len = sizeof(array_mp_8821c_txpwr_lmt)/sizeof(u8 *);
+	u32	array_len = sizeof(array_mp_8821c_txpwr_lmt) / sizeof(u8 *);
 	u8	**array = (u8 **)array_mp_8821c_txpwr_lmt;
 #endif
 
 #if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
-	struct _ADAPTER	*adapter = p_dm->adapter;
-	HAL_DATA_TYPE	*p_hal_data = GET_HAL_DATA(adapter);
+	void	*adapter = dm->adapter;
+	HAL_DATA_TYPE	*hal_data = GET_HAL_DATA(((PADAPTER)adapter));
 
-	PlatformZeroMemory(p_hal_data->BufOfLinesPwrLmt, MAX_LINES_HWCONFIG_TXT*MAX_BYTES_LINE_HWCONFIG_TXT);
-	p_hal_data->nLinesReadPwrLmt = array_len/7;
+	PlatformZeroMemory(hal_data->BufOfLinesPwrLmt, MAX_LINES_HWCONFIG_TXT * MAX_BYTES_LINE_HWCONFIG_TXT);
+	hal_data->nLinesReadPwrLmt = array_len / 7;
 #endif
 
-	PHYDM_DBG(p_dm, ODM_COMP_INIT, ("===> odm_read_and_config_mp_8821c_txpwr_lmt\n"));
+	PHYDM_DBG(dm, ODM_COMP_INIT, "===> %s\n", __func__);
 
 	for (i = 0; i < array_len; i += 7) {
 #if (DM_ODM_SUPPORT_TYPE == ODM_IOT)
 		u8	regulation = array[i];
-		u8	band = array[i+1];
-		u8	bandwidth = array[i+2];
-		u8	rate = array[i+3];
-		u8	rf_path = array[i+4];
-		u8	chnl = array[i+5];
-		u8	val = array[i+6];
+		u8	band = array[i + 1];
+		u8	bandwidth = array[i + 2];
+		u8	rate = array[i + 3];
+		u8	rf_path = array[i + 4];
+		u8	chnl = array[i + 5];
+		u8	val = array[i + 6];
 #else
 		u8	*regulation = array[i];
-		u8	*band = array[i+1];
-		u8	*bandwidth = array[i+2];
-		u8	*rate = array[i+3];
-		u8	*rf_path = array[i+4];
-		u8	*chnl = array[i+5];
-		u8	*val = array[i+6];
+		u8	*band = array[i + 1];
+		u8	*bandwidth = array[i + 2];
+		u8	*rate = array[i + 3];
+		u8	*rf_path = array[i + 4];
+		u8	*chnl = array[i + 5];
+		u8	*val = array[i + 6];
 #endif
 
-		odm_config_bb_txpwr_lmt_8821c(p_dm, regulation, band, bandwidth, rate, rf_path, chnl, val);
+		odm_config_bb_txpwr_lmt_8821c(dm, regulation, band, bandwidth, rate, rf_path, chnl, val);
 #if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
-		rsprintf((char *)p_hal_data->BufOfLinesPwrLmt[i/7], 100, "\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\",",
+		rsprintf((char *)hal_data->BufOfLinesPwrLmt[i / 7], 100, "\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\",",
 		regulation, band, bandwidth, rate, rf_path, chnl, val);
 #endif
 	}
-
 }
 
 /******************************************************************************
@@ -3719,796 +3845,917 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"IC", "2.4G", "20M", "CCK", "1T", "01", "30",
 	"KCC", "2.4G", "20M", "CCK", "1T", "01", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "01", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "01", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "02", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "02", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "02", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "02", "32",
 	"KCC", "2.4G", "20M", "CCK", "1T", "02", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "02", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "02", "32",
 	"FCC", "2.4G", "20M", "CCK", "1T", "03", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "03", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "03", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "03", "32",
 	"KCC", "2.4G", "20M", "CCK", "1T", "03", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "03", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "03", "32",
 	"FCC", "2.4G", "20M", "CCK", "1T", "04", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "04", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "04", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "04", "32",
 	"KCC", "2.4G", "20M", "CCK", "1T", "04", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "04", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "04", "32",
 	"FCC", "2.4G", "20M", "CCK", "1T", "05", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "05", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "05", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "05", "32",
 	"KCC", "2.4G", "20M", "CCK", "1T", "05", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "05", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "05", "32",
 	"FCC", "2.4G", "20M", "CCK", "1T", "06", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "06", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "06", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "06", "32",
 	"KCC", "2.4G", "20M", "CCK", "1T", "06", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "06", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "06", "32",
 	"FCC", "2.4G", "20M", "CCK", "1T", "07", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "07", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "07", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "07", "32",
 	"KCC", "2.4G", "20M", "CCK", "1T", "07", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "07", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "07", "32",
 	"FCC", "2.4G", "20M", "CCK", "1T", "08", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "08", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "08", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "08", "32",
 	"KCC", "2.4G", "20M", "CCK", "1T", "08", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "08", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "08", "32",
 	"FCC", "2.4G", "20M", "CCK", "1T", "09", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "09", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "09", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "09", "32",
 	"KCC", "2.4G", "20M", "CCK", "1T", "09", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "09", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "09", "32",
 	"FCC", "2.4G", "20M", "CCK", "1T", "10", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "10", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "10", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "10", "32",
 	"KCC", "2.4G", "20M", "CCK", "1T", "10", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "10", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "10", "32",
 	"FCC", "2.4G", "20M", "CCK", "1T", "11", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "11", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "11", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "11", "32",
 	"KCC", "2.4G", "20M", "CCK", "1T", "11", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "11", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "11", "32",
 	"FCC", "2.4G", "20M", "CCK", "1T", "12", "24",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "12", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "12", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "12", "24",
 	"KCC", "2.4G", "20M", "CCK", "1T", "12", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "12", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "12", "24",
 	"FCC", "2.4G", "20M", "CCK", "1T", "13", "16",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "13", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "13", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "13", "16",
 	"KCC", "2.4G", "20M", "CCK", "1T", "13", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "13", "30",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "13", "16",
 	"FCC", "2.4G", "20M", "CCK", "1T", "14", "63",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "14", "63",
 	"MKK", "2.4G", "20M", "CCK", "1T", "14", "34",
 	"IC", "2.4G", "20M", "CCK", "1T", "14", "63",
 	"KCC", "2.4G", "20M", "CCK", "1T", "14", "63",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "14", "63",
+	"CHILE", "2.4G", "20M", "CCK", "1T", "14", "63",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "01", "30",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "01", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "01", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "01", "30",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "01", "32",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "01", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "01", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "02", "32",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "02", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "02", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "02", "32",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "02", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "02", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "02", "32",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "03", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "03", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "03", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "03", "34",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "03", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "03", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "03", "34",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "04", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "04", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "04", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "04", "34",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "04", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "04", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "04", "34",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "05", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "05", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "05", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "05", "34",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "05", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "05", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "05", "34",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "06", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "06", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "06", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "06", "34",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "06", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "06", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "06", "34",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "07", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "07", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "07", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "07", "34",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "07", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "07", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "07", "34",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "08", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "08", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "08", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "08", "34",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "08", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "08", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "08", "34",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "09", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "09", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "09", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "09", "34",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "09", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "09", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "09", "34",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "10", "32",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "10", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "10", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "10", "32",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "10", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "10", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "10", "32",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "11", "30",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "11", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "11", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "11", "30",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "11", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "11", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "11", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "12", "28",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "12", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "12", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "12", "28",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "12", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "12", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "12", "28",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "13", "16",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "13", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "13", "34",
 	"IC", "2.4G", "20M", "OFDM", "1T", "13", "16",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "13", "32",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "13", "30",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "13", "16",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "14", "63",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "14", "63",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "14", "63",
 	"IC", "2.4G", "20M", "OFDM", "1T", "14", "63",
 	"KCC", "2.4G", "20M", "OFDM", "1T", "14", "63",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "14", "63",
+	"CHILE", "2.4G", "20M", "OFDM", "1T", "14", "63",
 	"FCC", "2.4G", "20M", "HT", "1T", "01", "26",
 	"ETSI", "2.4G", "20M", "HT", "1T", "01", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "01", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "01", "26",
 	"KCC", "2.4G", "20M", "HT", "1T", "01", "32",
 	"ACMA", "2.4G", "20M", "HT", "1T", "01", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "01", "26",
 	"FCC", "2.4G", "20M", "HT", "1T", "02", "30",
 	"ETSI", "2.4G", "20M", "HT", "1T", "02", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "02", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "02", "30",
 	"KCC", "2.4G", "20M", "HT", "1T", "02", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "02", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "02", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "03", "32",
 	"ETSI", "2.4G", "20M", "HT", "1T", "03", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "03", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "03", "32",
 	"KCC", "2.4G", "20M", "HT", "1T", "03", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "03", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "03", "32",
 	"FCC", "2.4G", "20M", "HT", "1T", "04", "34",
 	"ETSI", "2.4G", "20M", "HT", "1T", "04", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "04", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "04", "34",
 	"KCC", "2.4G", "20M", "HT", "1T", "04", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "04", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "04", "34",
 	"FCC", "2.4G", "20M", "HT", "1T", "05", "34",
 	"ETSI", "2.4G", "20M", "HT", "1T", "05", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "05", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "05", "34",
 	"KCC", "2.4G", "20M", "HT", "1T", "05", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "05", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "05", "34",
 	"FCC", "2.4G", "20M", "HT", "1T", "06", "34",
 	"ETSI", "2.4G", "20M", "HT", "1T", "06", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "06", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "06", "34",
 	"KCC", "2.4G", "20M", "HT", "1T", "06", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "06", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "06", "34",
 	"FCC", "2.4G", "20M", "HT", "1T", "07", "34",
 	"ETSI", "2.4G", "20M", "HT", "1T", "07", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "07", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "07", "34",
 	"KCC", "2.4G", "20M", "HT", "1T", "07", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "07", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "07", "34",
 	"FCC", "2.4G", "20M", "HT", "1T", "08", "34",
 	"ETSI", "2.4G", "20M", "HT", "1T", "08", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "08", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "08", "34",
 	"KCC", "2.4G", "20M", "HT", "1T", "08", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "08", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "08", "34",
 	"FCC", "2.4G", "20M", "HT", "1T", "09", "32",
 	"ETSI", "2.4G", "20M", "HT", "1T", "09", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "09", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "09", "32",
 	"KCC", "2.4G", "20M", "HT", "1T", "09", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "09", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "09", "32",
 	"FCC", "2.4G", "20M", "HT", "1T", "10", "30",
 	"ETSI", "2.4G", "20M", "HT", "1T", "10", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "10", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "10", "30",
 	"KCC", "2.4G", "20M", "HT", "1T", "10", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "10", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "10", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "11", "28",
 	"ETSI", "2.4G", "20M", "HT", "1T", "11", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "11", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "11", "28",
 	"KCC", "2.4G", "20M", "HT", "1T", "11", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "11", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "11", "28",
 	"FCC", "2.4G", "20M", "HT", "1T", "12", "26",
 	"ETSI", "2.4G", "20M", "HT", "1T", "12", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "12", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "12", "26",
 	"KCC", "2.4G", "20M", "HT", "1T", "12", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "12", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "12", "26",
 	"FCC", "2.4G", "20M", "HT", "1T", "13", "12",
 	"ETSI", "2.4G", "20M", "HT", "1T", "13", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "13", "34",
 	"IC", "2.4G", "20M", "HT", "1T", "13", "12",
 	"KCC", "2.4G", "20M", "HT", "1T", "13", "32",
 	"ACMA", "2.4G", "20M", "HT", "1T", "13", "30",
+	"CHILE", "2.4G", "20M", "HT", "1T", "13", "12",
 	"FCC", "2.4G", "20M", "HT", "1T", "14", "63",
 	"ETSI", "2.4G", "20M", "HT", "1T", "14", "63",
 	"MKK", "2.4G", "20M", "HT", "1T", "14", "63",
 	"IC", "2.4G", "20M", "HT", "1T", "14", "63",
 	"KCC", "2.4G", "20M", "HT", "1T", "14", "63",
 	"ACMA", "2.4G", "20M", "HT", "1T", "14", "63",
+	"CHILE", "2.4G", "20M", "HT", "1T", "14", "63",
 	"FCC", "2.4G", "40M", "HT", "1T", "01", "63",
 	"ETSI", "2.4G", "40M", "HT", "1T", "01", "63",
 	"MKK", "2.4G", "40M", "HT", "1T", "01", "63",
 	"IC", "2.4G", "40M", "HT", "1T", "01", "63",
 	"KCC", "2.4G", "40M", "HT", "1T", "01", "63",
 	"ACMA", "2.4G", "40M", "HT", "1T", "01", "63",
+	"CHILE", "2.4G", "40M", "HT", "1T", "01", "63",
 	"FCC", "2.4G", "40M", "HT", "1T", "02", "63",
 	"ETSI", "2.4G", "40M", "HT", "1T", "02", "63",
 	"MKK", "2.4G", "40M", "HT", "1T", "02", "63",
 	"IC", "2.4G", "40M", "HT", "1T", "02", "63",
 	"KCC", "2.4G", "40M", "HT", "1T", "02", "63",
 	"ACMA", "2.4G", "40M", "HT", "1T", "02", "63",
+	"CHILE", "2.4G", "40M", "HT", "1T", "02", "63",
 	"FCC", "2.4G", "40M", "HT", "1T", "03", "26",
 	"ETSI", "2.4G", "40M", "HT", "1T", "03", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "03", "30",
 	"IC", "2.4G", "40M", "HT", "1T", "03", "26",
 	"KCC", "2.4G", "40M", "HT", "1T", "03", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "03", "30",
+	"CHILE", "2.4G", "40M", "HT", "1T", "03", "26",
 	"FCC", "2.4G", "40M", "HT", "1T", "04", "26",
 	"ETSI", "2.4G", "40M", "HT", "1T", "04", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "04", "30",
 	"IC", "2.4G", "40M", "HT", "1T", "04", "26",
 	"KCC", "2.4G", "40M", "HT", "1T", "04", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "04", "30",
+	"CHILE", "2.4G", "40M", "HT", "1T", "04", "26",
 	"FCC", "2.4G", "40M", "HT", "1T", "05", "30",
 	"ETSI", "2.4G", "40M", "HT", "1T", "05", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "05", "30",
 	"IC", "2.4G", "40M", "HT", "1T", "05", "30",
 	"KCC", "2.4G", "40M", "HT", "1T", "05", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "05", "30",
+	"CHILE", "2.4G", "40M", "HT", "1T", "05", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "06", "30",
 	"ETSI", "2.4G", "40M", "HT", "1T", "06", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "06", "30",
 	"IC", "2.4G", "40M", "HT", "1T", "06", "30",
 	"KCC", "2.4G", "40M", "HT", "1T", "06", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "06", "30",
+	"CHILE", "2.4G", "40M", "HT", "1T", "06", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "07", "30",
 	"ETSI", "2.4G", "40M", "HT", "1T", "07", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "07", "30",
 	"IC", "2.4G", "40M", "HT", "1T", "07", "30",
 	"KCC", "2.4G", "40M", "HT", "1T", "07", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "07", "30",
+	"CHILE", "2.4G", "40M", "HT", "1T", "07", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "08", "26",
 	"ETSI", "2.4G", "40M", "HT", "1T", "08", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "08", "30",
 	"IC", "2.4G", "40M", "HT", "1T", "08", "26",
 	"KCC", "2.4G", "40M", "HT", "1T", "08", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "08", "30",
+	"CHILE", "2.4G", "40M", "HT", "1T", "08", "26",
 	"FCC", "2.4G", "40M", "HT", "1T", "09", "26",
 	"ETSI", "2.4G", "40M", "HT", "1T", "09", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "09", "30",
 	"IC", "2.4G", "40M", "HT", "1T", "09", "26",
 	"KCC", "2.4G", "40M", "HT", "1T", "09", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "09", "30",
+	"CHILE", "2.4G", "40M", "HT", "1T", "09", "26",
 	"FCC", "2.4G", "40M", "HT", "1T", "10", "28",
 	"ETSI", "2.4G", "40M", "HT", "1T", "10", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "10", "30",
 	"IC", "2.4G", "40M", "HT", "1T", "10", "28",
 	"KCC", "2.4G", "40M", "HT", "1T", "10", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "10", "30",
+	"CHILE", "2.4G", "40M", "HT", "1T", "10", "28",
 	"FCC", "2.4G", "40M", "HT", "1T", "11", "20",
 	"ETSI", "2.4G", "40M", "HT", "1T", "11", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "11", "30",
 	"IC", "2.4G", "40M", "HT", "1T", "11", "20",
 	"KCC", "2.4G", "40M", "HT", "1T", "11", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "11", "30",
+	"CHILE", "2.4G", "40M", "HT", "1T", "11", "20",
 	"FCC", "2.4G", "40M", "HT", "1T", "12", "63",
 	"ETSI", "2.4G", "40M", "HT", "1T", "12", "63",
 	"MKK", "2.4G", "40M", "HT", "1T", "12", "63",
 	"IC", "2.4G", "40M", "HT", "1T", "12", "63",
 	"KCC", "2.4G", "40M", "HT", "1T", "12", "63",
 	"ACMA", "2.4G", "40M", "HT", "1T", "12", "63",
+	"CHILE", "2.4G", "40M", "HT", "1T", "12", "63",
 	"FCC", "2.4G", "40M", "HT", "1T", "13", "63",
 	"ETSI", "2.4G", "40M", "HT", "1T", "13", "63",
 	"MKK", "2.4G", "40M", "HT", "1T", "13", "63",
 	"IC", "2.4G", "40M", "HT", "1T", "13", "63",
 	"KCC", "2.4G", "40M", "HT", "1T", "13", "63",
 	"ACMA", "2.4G", "40M", "HT", "1T", "13", "63",
+	"CHILE", "2.4G", "40M", "HT", "1T", "13", "63",
 	"FCC", "2.4G", "40M", "HT", "1T", "14", "63",
 	"ETSI", "2.4G", "40M", "HT", "1T", "14", "63",
 	"MKK", "2.4G", "40M", "HT", "1T", "14", "63",
 	"IC", "2.4G", "40M", "HT", "1T", "14", "63",
 	"KCC", "2.4G", "40M", "HT", "1T", "14", "63",
 	"ACMA", "2.4G", "40M", "HT", "1T", "14", "63",
+	"CHILE", "2.4G", "40M", "HT", "1T", "14", "63",
 	"FCC", "5G", "20M", "OFDM", "1T", "36", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "36", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "36", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "36", "31",
 	"KCC", "5G", "20M", "OFDM", "1T", "36", "29",
 	"ACMA", "5G", "20M", "OFDM", "1T", "36", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "36", "29",
 	"FCC", "5G", "20M", "OFDM", "1T", "40", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "40", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "40", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "40", "31",
 	"KCC", "5G", "20M", "OFDM", "1T", "40", "28",
 	"ACMA", "5G", "20M", "OFDM", "1T", "40", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "40", "29",
 	"FCC", "5G", "20M", "OFDM", "1T", "44", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "44", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "44", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "44", "31",
 	"KCC", "5G", "20M", "OFDM", "1T", "44", "28",
 	"ACMA", "5G", "20M", "OFDM", "1T", "44", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "44", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "48", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "48", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "48", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "48", "31",
 	"KCC", "5G", "20M", "OFDM", "1T", "48", "27",
 	"ACMA", "5G", "20M", "OFDM", "1T", "48", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "48", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "52", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "52", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "52", "33",
-	"IC", "5G", "20M", "OFDM", "1T", "52", "33",
+	"IC", "5G", "20M", "OFDM", "1T", "52", "32",
 	"KCC", "5G", "20M", "OFDM", "1T", "52", "16",
 	"ACMA", "5G", "20M", "OFDM", "1T", "52", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "52", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "56", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "56", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "56", "33",
-	"IC", "5G", "20M", "OFDM", "1T", "56", "33",
+	"IC", "5G", "20M", "OFDM", "1T", "56", "32",
 	"KCC", "5G", "20M", "OFDM", "1T", "56", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "56", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "56", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "60", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "60", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "60", "33",
-	"IC", "5G", "20M", "OFDM", "1T", "60", "33",
+	"IC", "5G", "20M", "OFDM", "1T", "60", "32",
 	"KCC", "5G", "20M", "OFDM", "1T", "60", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "60", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "60", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "64", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "64", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "64", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "64", "30",
 	"KCC", "5G", "20M", "OFDM", "1T", "64", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "64", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "64", "29",
 	"FCC", "5G", "20M", "OFDM", "1T", "100", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "100", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "100", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "100", "30",
 	"KCC", "5G", "20M", "OFDM", "1T", "100", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "100", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "100", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "104", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "104", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "104", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "104", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "104", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "104", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "104", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "108", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "108", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "108", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "108", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "108", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "108", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "108", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "112", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "112", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "112", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "112", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "112", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "112", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "112", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "116", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "116", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "116", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "116", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "116", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "116", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "116", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "120", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "120", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "120", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "120", "63",
 	"KCC", "5G", "20M", "OFDM", "1T", "120", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "120", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "120", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "124", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "124", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "124", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "124", "63",
 	"KCC", "5G", "20M", "OFDM", "1T", "124", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "124", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "124", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "128", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "128", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "128", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "128", "63",
 	"KCC", "5G", "20M", "OFDM", "1T", "128", "63",
 	"ACMA", "5G", "20M", "OFDM", "1T", "128", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "128", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "132", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "132", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "132", "33",
-	"IC", "5G", "20M", "OFDM", "1T", "132", "63",
+	"IC", "5G", "20M", "OFDM", "1T", "132", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "132", "63",
 	"ACMA", "5G", "20M", "OFDM", "1T", "132", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "132", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "136", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "136", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "136", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "136", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "136", "63",
 	"ACMA", "5G", "20M", "OFDM", "1T", "136", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "136", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "140", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "140", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "140", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "140", "31",
 	"KCC", "5G", "20M", "OFDM", "1T", "140", "63",
 	"ACMA", "5G", "20M", "OFDM", "1T", "140", "32",
+	"CHILE", "5G", "20M", "OFDM", "1T", "140", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "144", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "144", "63",
 	"MKK", "5G", "20M", "OFDM", "1T", "144", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "144", "30",
 	"KCC", "5G", "20M", "OFDM", "1T", "144", "63",
 	"ACMA", "5G", "20M", "OFDM", "1T", "144", "63",
+	"CHILE", "5G", "20M", "OFDM", "1T", "144", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "149", "28",
 	"ETSI", "5G", "20M", "OFDM", "1T", "149", "63",
 	"MKK", "5G", "20M", "OFDM", "1T", "149", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "149", "30",
 	"KCC", "5G", "20M", "OFDM", "1T", "149", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "149", "33",
+	"CHILE", "5G", "20M", "OFDM", "1T", "149", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "153", "28",
 	"ETSI", "5G", "20M", "OFDM", "1T", "153", "63",
 	"MKK", "5G", "20M", "OFDM", "1T", "153", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "153", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "153", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "153", "33",
+	"CHILE", "5G", "20M", "OFDM", "1T", "153", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "157", "28",
 	"ETSI", "5G", "20M", "OFDM", "1T", "157", "63",
 	"MKK", "5G", "20M", "OFDM", "1T", "157", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "157", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "157", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "157", "33",
+	"CHILE", "5G", "20M", "OFDM", "1T", "157", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "161", "28",
 	"ETSI", "5G", "20M", "OFDM", "1T", "161", "63",
 	"MKK", "5G", "20M", "OFDM", "1T", "161", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "161", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "161", "31",
 	"ACMA", "5G", "20M", "OFDM", "1T", "161", "33",
+	"CHILE", "5G", "20M", "OFDM", "1T", "161", "30",
 	"FCC", "5G", "20M", "OFDM", "1T", "165", "28",
 	"ETSI", "5G", "20M", "OFDM", "1T", "165", "63",
 	"MKK", "5G", "20M", "OFDM", "1T", "165", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "165", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "165", "63",
 	"ACMA", "5G", "20M", "OFDM", "1T", "165", "33",
+	"CHILE", "5G", "20M", "OFDM", "1T", "165", "30",
 	"FCC", "5G", "20M", "HT", "1T", "36", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "36", "32",
 	"MKK", "5G", "20M", "HT", "1T", "36", "33",
 	"IC", "5G", "20M", "HT", "1T", "36", "30",
 	"KCC", "5G", "20M", "HT", "1T", "36", "27",
 	"ACMA", "5G", "20M", "HT", "1T", "36", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "36", "30",
 	"FCC", "5G", "20M", "HT", "1T", "40", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "40", "32",
 	"MKK", "5G", "20M", "HT", "1T", "40", "33",
 	"IC", "5G", "20M", "HT", "1T", "40", "31",
 	"KCC", "5G", "20M", "HT", "1T", "40", "29",
 	"ACMA", "5G", "20M", "HT", "1T", "40", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "40", "30",
 	"FCC", "5G", "20M", "HT", "1T", "44", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "44", "32",
 	"MKK", "5G", "20M", "HT", "1T", "44", "33",
 	"IC", "5G", "20M", "HT", "1T", "44", "31",
 	"KCC", "5G", "20M", "HT", "1T", "44", "29",
 	"ACMA", "5G", "20M", "HT", "1T", "44", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "44", "30",
 	"FCC", "5G", "20M", "HT", "1T", "48", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "48", "32",
 	"MKK", "5G", "20M", "HT", "1T", "48", "33",
 	"IC", "5G", "20M", "HT", "1T", "48", "31",
 	"KCC", "5G", "20M", "HT", "1T", "48", "26",
 	"ACMA", "5G", "20M", "HT", "1T", "48", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "48", "30",
 	"FCC", "5G", "20M", "HT", "1T", "52", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "52", "32",
 	"MKK", "5G", "20M", "HT", "1T", "52", "33",
-	"IC", "5G", "20M", "HT", "1T", "52", "33",
+	"IC", "5G", "20M", "HT", "1T", "52", "32",
 	"KCC", "5G", "20M", "HT", "1T", "52", "7",
 	"ACMA", "5G", "20M", "HT", "1T", "52", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "52", "30",
 	"FCC", "5G", "20M", "HT", "1T", "56", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "56", "32",
 	"MKK", "5G", "20M", "HT", "1T", "56", "33",
-	"IC", "5G", "20M", "HT", "1T", "56", "33",
+	"IC", "5G", "20M", "HT", "1T", "56", "32",
 	"KCC", "5G", "20M", "HT", "1T", "56", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "56", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "56", "30",
 	"FCC", "5G", "20M", "HT", "1T", "60", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "60", "32",
 	"MKK", "5G", "20M", "HT", "1T", "60", "33",
-	"IC", "5G", "20M", "HT", "1T", "60", "33",
+	"IC", "5G", "20M", "HT", "1T", "60", "32",
 	"KCC", "5G", "20M", "HT", "1T", "60", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "60", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "60", "30",
 	"FCC", "5G", "20M", "HT", "1T", "64", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "64", "32",
 	"MKK", "5G", "20M", "HT", "1T", "64", "33",
 	"IC", "5G", "20M", "HT", "1T", "64", "30",
 	"KCC", "5G", "20M", "HT", "1T", "64", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "64", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "64", "30",
 	"FCC", "5G", "20M", "HT", "1T", "100", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "100", "32",
 	"MKK", "5G", "20M", "HT", "1T", "100", "33",
 	"IC", "5G", "20M", "HT", "1T", "100", "30",
 	"KCC", "5G", "20M", "HT", "1T", "100", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "100", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "100", "30",
 	"FCC", "5G", "20M", "HT", "1T", "104", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "104", "32",
 	"MKK", "5G", "20M", "HT", "1T", "104", "33",
 	"IC", "5G", "20M", "HT", "1T", "104", "33",
 	"KCC", "5G", "20M", "HT", "1T", "104", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "104", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "104", "30",
 	"FCC", "5G", "20M", "HT", "1T", "108", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "108", "32",
 	"MKK", "5G", "20M", "HT", "1T", "108", "33",
 	"IC", "5G", "20M", "HT", "1T", "108", "33",
 	"KCC", "5G", "20M", "HT", "1T", "108", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "108", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "108", "30",
 	"FCC", "5G", "20M", "HT", "1T", "112", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "112", "32",
 	"MKK", "5G", "20M", "HT", "1T", "112", "33",
 	"IC", "5G", "20M", "HT", "1T", "112", "33",
 	"KCC", "5G", "20M", "HT", "1T", "112", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "112", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "112", "30",
 	"FCC", "5G", "20M", "HT", "1T", "116", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "116", "32",
 	"MKK", "5G", "20M", "HT", "1T", "116", "33",
 	"IC", "5G", "20M", "HT", "1T", "116", "33",
 	"KCC", "5G", "20M", "HT", "1T", "116", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "116", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "116", "30",
 	"FCC", "5G", "20M", "HT", "1T", "120", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "120", "32",
 	"MKK", "5G", "20M", "HT", "1T", "120", "33",
 	"IC", "5G", "20M", "HT", "1T", "120", "63",
 	"KCC", "5G", "20M", "HT", "1T", "120", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "120", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "120", "30",
 	"FCC", "5G", "20M", "HT", "1T", "124", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "124", "32",
 	"MKK", "5G", "20M", "HT", "1T", "124", "33",
 	"IC", "5G", "20M", "HT", "1T", "124", "63",
 	"KCC", "5G", "20M", "HT", "1T", "124", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "124", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "124", "30",
 	"FCC", "5G", "20M", "HT", "1T", "128", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "128", "32",
 	"MKK", "5G", "20M", "HT", "1T", "128", "33",
 	"IC", "5G", "20M", "HT", "1T", "128", "63",
 	"KCC", "5G", "20M", "HT", "1T", "128", "63",
 	"ACMA", "5G", "20M", "HT", "1T", "128", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "128", "30",
 	"FCC", "5G", "20M", "HT", "1T", "132", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "132", "32",
 	"MKK", "5G", "20M", "HT", "1T", "132", "33",
-	"IC", "5G", "20M", "HT", "1T", "132", "63",
+	"IC", "5G", "20M", "HT", "1T", "132", "33",
 	"KCC", "5G", "20M", "HT", "1T", "132", "63",
 	"ACMA", "5G", "20M", "HT", "1T", "132", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "132", "30",
 	"FCC", "5G", "20M", "HT", "1T", "136", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "136", "32",
 	"MKK", "5G", "20M", "HT", "1T", "136", "33",
 	"IC", "5G", "20M", "HT", "1T", "136", "33",
 	"KCC", "5G", "20M", "HT", "1T", "136", "63",
 	"ACMA", "5G", "20M", "HT", "1T", "136", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "136", "30",
 	"FCC", "5G", "20M", "HT", "1T", "140", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "140", "32",
 	"MKK", "5G", "20M", "HT", "1T", "140", "33",
 	"IC", "5G", "20M", "HT", "1T", "140", "29",
 	"KCC", "5G", "20M", "HT", "1T", "140", "63",
 	"ACMA", "5G", "20M", "HT", "1T", "140", "32",
+	"CHILE", "5G", "20M", "HT", "1T", "140", "30",
 	"FCC", "5G", "20M", "HT", "1T", "144", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "144", "63",
 	"MKK", "5G", "20M", "HT", "1T", "144", "63",
 	"IC", "5G", "20M", "HT", "1T", "144", "27",
 	"KCC", "5G", "20M", "HT", "1T", "144", "63",
 	"ACMA", "5G", "20M", "HT", "1T", "144", "63",
+	"CHILE", "5G", "20M", "HT", "1T", "144", "30",
 	"FCC", "5G", "20M", "HT", "1T", "149", "28",
 	"ETSI", "5G", "20M", "HT", "1T", "149", "63",
 	"MKK", "5G", "20M", "HT", "1T", "149", "63",
 	"IC", "5G", "20M", "HT", "1T", "149", "33",
 	"KCC", "5G", "20M", "HT", "1T", "149", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "149", "33",
+	"CHILE", "5G", "20M", "HT", "1T", "149", "30",
 	"FCC", "5G", "20M", "HT", "1T", "153", "28",
 	"ETSI", "5G", "20M", "HT", "1T", "153", "63",
 	"MKK", "5G", "20M", "HT", "1T", "153", "63",
 	"IC", "5G", "20M", "HT", "1T", "153", "33",
 	"KCC", "5G", "20M", "HT", "1T", "153", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "153", "33",
+	"CHILE", "5G", "20M", "HT", "1T", "153", "30",
 	"FCC", "5G", "20M", "HT", "1T", "157", "28",
 	"ETSI", "5G", "20M", "HT", "1T", "157", "63",
 	"MKK", "5G", "20M", "HT", "1T", "157", "63",
 	"IC", "5G", "20M", "HT", "1T", "157", "33",
 	"KCC", "5G", "20M", "HT", "1T", "157", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "157", "33",
+	"CHILE", "5G", "20M", "HT", "1T", "157", "30",
 	"FCC", "5G", "20M", "HT", "1T", "161", "28",
 	"ETSI", "5G", "20M", "HT", "1T", "161", "63",
 	"MKK", "5G", "20M", "HT", "1T", "161", "63",
 	"IC", "5G", "20M", "HT", "1T", "161", "33",
 	"KCC", "5G", "20M", "HT", "1T", "161", "31",
 	"ACMA", "5G", "20M", "HT", "1T", "161", "33",
+	"CHILE", "5G", "20M", "HT", "1T", "161", "30",
 	"FCC", "5G", "20M", "HT", "1T", "165", "28",
 	"ETSI", "5G", "20M", "HT", "1T", "165", "63",
 	"MKK", "5G", "20M", "HT", "1T", "165", "63",
 	"IC", "5G", "20M", "HT", "1T", "165", "33",
 	"KCC", "5G", "20M", "HT", "1T", "165", "63",
 	"ACMA", "5G", "20M", "HT", "1T", "165", "33",
+	"CHILE", "5G", "20M", "HT", "1T", "165", "30",
 	"FCC", "5G", "40M", "HT", "1T", "38", "22",
 	"ETSI", "5G", "40M", "HT", "1T", "38", "32",
 	"MKK", "5G", "40M", "HT", "1T", "38", "32",
 	"IC", "5G", "40M", "HT", "1T", "38", "22",
 	"KCC", "5G", "40M", "HT", "1T", "38", "26",
 	"ACMA", "5G", "40M", "HT", "1T", "38", "32",
+	"CHILE", "5G", "40M", "HT", "1T", "38", "22",
 	"FCC", "5G", "40M", "HT", "1T", "46", "24",
 	"ETSI", "5G", "40M", "HT", "1T", "46", "32",
 	"MKK", "5G", "40M", "HT", "1T", "46", "32",
 	"IC", "5G", "40M", "HT", "1T", "46", "32",
 	"KCC", "5G", "40M", "HT", "1T", "46", "28",
 	"ACMA", "5G", "40M", "HT", "1T", "46", "32",
+	"CHILE", "5G", "40M", "HT", "1T", "46", "30",
 	"FCC", "5G", "40M", "HT", "1T", "54", "27",
 	"ETSI", "5G", "40M", "HT", "1T", "54", "32",
 	"MKK", "5G", "40M", "HT", "1T", "54", "32",
 	"IC", "5G", "40M", "HT", "1T", "54", "32",
 	"KCC", "5G", "40M", "HT", "1T", "54", "22",
 	"ACMA", "5G", "40M", "HT", "1T", "54", "32",
+	"CHILE", "5G", "40M", "HT", "1T", "54", "30",
 	"FCC", "5G", "40M", "HT", "1T", "62", "23",
 	"ETSI", "5G", "40M", "HT", "1T", "62", "32",
 	"MKK", "5G", "40M", "HT", "1T", "62", "32",
 	"IC", "5G", "40M", "HT", "1T", "62", "23",
 	"KCC", "5G", "40M", "HT", "1T", "62", "31",
 	"ACMA", "5G", "40M", "HT", "1T", "62", "32",
+	"CHILE", "5G", "40M", "HT", "1T", "62", "23",
 	"FCC", "5G", "40M", "HT", "1T", "102", "21",
 	"ETSI", "5G", "40M", "HT", "1T", "102", "32",
 	"MKK", "5G", "40M", "HT", "1T", "102", "32",
 	"IC", "5G", "40M", "HT", "1T", "102", "21",
 	"KCC", "5G", "40M", "HT", "1T", "102", "31",
 	"ACMA", "5G", "40M", "HT", "1T", "102", "32",
+	"CHILE", "5G", "40M", "HT", "1T", "102", "30",
 	"FCC", "5G", "40M", "HT", "1T", "110", "27",
 	"ETSI", "5G", "40M", "HT", "1T", "110", "32",
 	"MKK", "5G", "40M", "HT", "1T", "110", "32",
 	"IC", "5G", "40M", "HT", "1T", "110", "32",
 	"KCC", "5G", "40M", "HT", "1T", "110", "32",
 	"ACMA", "5G", "40M", "HT", "1T", "110", "32",
+	"CHILE", "5G", "40M", "HT", "1T", "110", "30",
 	"FCC", "5G", "40M", "HT", "1T", "118", "27",
 	"ETSI", "5G", "40M", "HT", "1T", "118", "32",
 	"MKK", "5G", "40M", "HT", "1T", "118", "32",
 	"IC", "5G", "40M", "HT", "1T", "118", "63",
 	"KCC", "5G", "40M", "HT", "1T", "118", "32",
 	"ACMA", "5G", "40M", "HT", "1T", "118", "32",
+	"CHILE", "5G", "40M", "HT", "1T", "118", "30",
 	"FCC", "5G", "40M", "HT", "1T", "126", "27",
 	"ETSI", "5G", "40M", "HT", "1T", "126", "32",
 	"MKK", "5G", "40M", "HT", "1T", "126", "32",
 	"IC", "5G", "40M", "HT", "1T", "126", "63",
 	"KCC", "5G", "40M", "HT", "1T", "126", "63",
 	"ACMA", "5G", "40M", "HT", "1T", "126", "32",
+	"CHILE", "5G", "40M", "HT", "1T", "126", "30",
 	"FCC", "5G", "40M", "HT", "1T", "134", "27",
 	"ETSI", "5G", "40M", "HT", "1T", "134", "32",
 	"MKK", "5G", "40M", "HT", "1T", "134", "32",
 	"IC", "5G", "40M", "HT", "1T", "134", "32",
 	"KCC", "5G", "40M", "HT", "1T", "134", "63",
 	"ACMA", "5G", "40M", "HT", "1T", "134", "32",
+	"CHILE", "5G", "40M", "HT", "1T", "134", "30",
 	"FCC", "5G", "40M", "HT", "1T", "142", "27",
 	"ETSI", "5G", "40M", "HT", "1T", "142", "63",
 	"MKK", "5G", "40M", "HT", "1T", "142", "63",
 	"IC", "5G", "40M", "HT", "1T", "142", "29",
 	"KCC", "5G", "40M", "HT", "1T", "142", "63",
 	"ACMA", "5G", "40M", "HT", "1T", "142", "63",
+	"CHILE", "5G", "40M", "HT", "1T", "142", "30",
 	"FCC", "5G", "40M", "HT", "1T", "151", "28",
 	"ETSI", "5G", "40M", "HT", "1T", "151", "63",
 	"MKK", "5G", "40M", "HT", "1T", "151", "63",
-	"IC", "5G", "40M", "HT", "1T", "151", "31",
+	"IC", "5G", "40M", "HT", "1T", "151", "32",
 	"KCC", "5G", "40M", "HT", "1T", "151", "27",
 	"ACMA", "5G", "40M", "HT", "1T", "151", "32",
+	"CHILE", "5G", "40M", "HT", "1T", "151", "30",
 	"FCC", "5G", "40M", "HT", "1T", "159", "28",
 	"ETSI", "5G", "40M", "HT", "1T", "159", "63",
 	"MKK", "5G", "40M", "HT", "1T", "159", "63",
 	"IC", "5G", "40M", "HT", "1T", "159", "32",
 	"KCC", "5G", "40M", "HT", "1T", "159", "26",
 	"ACMA", "5G", "40M", "HT", "1T", "159", "32",
+	"CHILE", "5G", "40M", "HT", "1T", "159", "30",
 	"FCC", "5G", "80M", "VHT", "1T", "42", "19",
 	"ETSI", "5G", "80M", "VHT", "1T", "42", "32",
 	"MKK", "5G", "80M", "VHT", "1T", "42", "28",
 	"IC", "5G", "80M", "VHT", "1T", "42", "19",
 	"KCC", "5G", "80M", "VHT", "1T", "42", "25",
 	"ACMA", "5G", "80M", "VHT", "1T", "42", "32",
+	"CHILE", "5G", "80M", "VHT", "1T", "42", "19",
 	"FCC", "5G", "80M", "VHT", "1T", "58", "22",
 	"ETSI", "5G", "80M", "VHT", "1T", "58", "32",
 	"MKK", "5G", "80M", "VHT", "1T", "58", "28",
 	"IC", "5G", "80M", "VHT", "1T", "58", "22",
 	"KCC", "5G", "80M", "VHT", "1T", "58", "28",
 	"ACMA", "5G", "80M", "VHT", "1T", "58", "32",
+	"CHILE", "5G", "80M", "VHT", "1T", "58", "22",
 	"FCC", "5G", "80M", "VHT", "1T", "106", "18",
 	"ETSI", "5G", "80M", "VHT", "1T", "106", "32",
 	"MKK", "5G", "80M", "VHT", "1T", "106", "32",
 	"IC", "5G", "80M", "VHT", "1T", "106", "18",
 	"KCC", "5G", "80M", "VHT", "1T", "106", "30",
 	"ACMA", "5G", "80M", "VHT", "1T", "106", "32",
+	"CHILE", "5G", "80M", "VHT", "1T", "106", "30",
 	"FCC", "5G", "80M", "VHT", "1T", "122", "27",
 	"ETSI", "5G", "80M", "VHT", "1T", "122", "32",
 	"MKK", "5G", "80M", "VHT", "1T", "122", "32",
 	"IC", "5G", "80M", "VHT", "1T", "122", "63",
 	"KCC", "5G", "80M", "VHT", "1T", "122", "26",
 	"ACMA", "5G", "80M", "VHT", "1T", "122", "32",
+	"CHILE", "5G", "80M", "VHT", "1T", "122", "30",
 	"FCC", "5G", "80M", "VHT", "1T", "138", "27",
 	"ETSI", "5G", "80M", "VHT", "1T", "138", "63",
 	"MKK", "5G", "80M", "VHT", "1T", "138", "63",
 	"IC", "5G", "80M", "VHT", "1T", "138", "28",
 	"KCC", "5G", "80M", "VHT", "1T", "138", "63",
 	"ACMA", "5G", "80M", "VHT", "1T", "138", "63",
+	"CHILE", "5G", "80M", "VHT", "1T", "138", "30",
 	"FCC", "5G", "80M", "VHT", "1T", "155", "28",
 	"ETSI", "5G", "80M", "VHT", "1T", "155", "63",
 	"MKK", "5G", "80M", "VHT", "1T", "155", "63",
-	"IC", "5G", "80M", "VHT", "1T", "155", "26",
+	"IC", "5G", "80M", "VHT", "1T", "155", "32",
 	"KCC", "5G", "80M", "VHT", "1T", "155", "27",
-	"ACMA", "5G", "80M", "VHT", "1T", "155", "32"
+	"ACMA", "5G", "80M", "VHT", "1T", "155", "32",
+	"CHILE", "5G", "80M", "VHT", "1T", "155", "30"
 };
 
 void
-odm_read_and_config_mp_8821c_txpwr_lmt_fccsar(
-	struct PHY_DM_STRUCT	*p_dm
-)
+odm_read_and_config_mp_8821c_txpwr_lmt_fccsar(struct dm_struct *dm)
 {
 	u32	i = 0;
 #if (DM_ODM_SUPPORT_TYPE == ODM_IOT)
-	u32	array_len = sizeof(array_mp_8821c_txpwr_lmt_fccsar)/sizeof(u8);
+	u32	array_len = sizeof(array_mp_8821c_txpwr_lmt_fccsar) / sizeof(u8);
 	u8	*array = (u8 *)array_mp_8821c_txpwr_lmt_fccsar;
 #else
-	u32	array_len = sizeof(array_mp_8821c_txpwr_lmt_fccsar)/sizeof(u8 *);
+	u32	array_len = sizeof(array_mp_8821c_txpwr_lmt_fccsar) / sizeof(u8 *);
 	u8	**array = (u8 **)array_mp_8821c_txpwr_lmt_fccsar;
 #endif
 
 #if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
-	struct _ADAPTER	*adapter = p_dm->adapter;
-	HAL_DATA_TYPE	*p_hal_data = GET_HAL_DATA(adapter);
+	void	*adapter = dm->adapter;
+	HAL_DATA_TYPE	*hal_data = GET_HAL_DATA(((PADAPTER)adapter));
 
-	PlatformZeroMemory(p_hal_data->BufOfLinesPwrLmt, MAX_LINES_HWCONFIG_TXT*MAX_BYTES_LINE_HWCONFIG_TXT);
-	p_hal_data->nLinesReadPwrLmt = array_len/7;
+	PlatformZeroMemory(hal_data->BufOfLinesPwrLmt, MAX_LINES_HWCONFIG_TXT * MAX_BYTES_LINE_HWCONFIG_TXT);
+	hal_data->nLinesReadPwrLmt = array_len / 7;
 #endif
 
-	PHYDM_DBG(p_dm, ODM_COMP_INIT, ("===> odm_read_and_config_mp_8821c_txpwr_lmt_fccsar\n"));
+	PHYDM_DBG(dm, ODM_COMP_INIT, "===> %s\n", __func__);
 
 	for (i = 0; i < array_len; i += 7) {
 #if (DM_ODM_SUPPORT_TYPE == ODM_IOT)
 		u8	regulation = array[i];
-		u8	band = array[i+1];
-		u8	bandwidth = array[i+2];
-		u8	rate = array[i+3];
-		u8	rf_path = array[i+4];
-		u8	chnl = array[i+5];
-		u8	val = array[i+6];
+		u8	band = array[i + 1];
+		u8	bandwidth = array[i + 2];
+		u8	rate = array[i + 3];
+		u8	rf_path = array[i + 4];
+		u8	chnl = array[i + 5];
+		u8	val = array[i + 6];
 #else
 		u8	*regulation = array[i];
-		u8	*band = array[i+1];
-		u8	*bandwidth = array[i+2];
-		u8	*rate = array[i+3];
-		u8	*rf_path = array[i+4];
-		u8	*chnl = array[i+5];
-		u8	*val = array[i+6];
+		u8	*band = array[i + 1];
+		u8	*bandwidth = array[i + 2];
+		u8	*rate = array[i + 3];
+		u8	*rf_path = array[i + 4];
+		u8	*chnl = array[i + 5];
+		u8	*val = array[i + 6];
 #endif
 
-		odm_config_bb_txpwr_lmt_8821c(p_dm, regulation, band, bandwidth, rate, rf_path, chnl, val);
+		odm_config_bb_txpwr_lmt_8821c(dm, regulation, band, bandwidth, rate, rf_path, chnl, val);
 #if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
-		rsprintf((char *)p_hal_data->BufOfLinesPwrLmt[i/7], 100, "\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\",",
+		rsprintf((char *)hal_data->BufOfLinesPwrLmt[i / 7], 100, "\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\",",
 		regulation, band, bandwidth, rate, rf_path, chnl, val);
 #endif
 	}
-
 }
 
 #endif /* end of HWIMG_SUPPORT*/

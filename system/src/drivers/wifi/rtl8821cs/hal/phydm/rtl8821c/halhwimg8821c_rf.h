@@ -11,9 +11,19 @@
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
  *
+ * The full GNU General Public License is included in this distribution in the
+ * file called LICENSE.
+ *
+ * Contact Information:
+ * wlanfae <wlanfae@realtek.com>
+ * Realtek Corporation, No. 2, Innovation Road II, Hsinchu Science Park,
+ * Hsinchu 300, Taiwan.
+ *
+ * Larry Finger <Larry.Finger@lwfinger.net>
+ *
  *****************************************************************************/
 
-/*Image2HeaderVersion: R2 1.3.2*/
+/*Image2HeaderVersion: R3 1.0*/
 #if (RTL8821C_SUPPORT == 1)
 #ifndef __INC_MP_RF_HW_IMG_8821C_H
 #define __INC_MP_RF_HW_IMG_8821C_H
@@ -24,19 +34,17 @@
 ******************************************************************************/
 
 void
-odm_read_and_config_mp_8821c_radioa(/* tc: Test Chip, mp: mp Chip*/
-	struct	PHY_DM_STRUCT *p_dm
-);
-u32	odm_get_version_mp_8821c_radioa(void);
+odm_read_and_config_mp_8821c_radioa( /* tc: Test Chip, mp: mp Chip*/
+				    struct dm_struct *dm);
+u32 odm_get_version_mp_8821c_radioa(void);
 
 /******************************************************************************
 *                           txpowertrack.TXT
 ******************************************************************************/
 
 void
-odm_read_and_config_mp_8821c_txpowertrack(/* tc: Test Chip, mp: mp Chip*/
-	struct	PHY_DM_STRUCT *p_dm
-);
+odm_read_and_config_mp_8821c_txpowertrack( /* tc: Test Chip, mp: mp Chip*/
+					  struct dm_struct *dm);
 u32	odm_get_version_mp_8821c_txpowertrack(void);
 
 /******************************************************************************
@@ -44,9 +52,9 @@ u32	odm_get_version_mp_8821c_txpowertrack(void);
 ******************************************************************************/
 
 void
-odm_read_and_config_mp_8821c_txpowertrack_type0x20(/* tc: Test Chip, mp: mp Chip*/
-	struct	PHY_DM_STRUCT *p_dm
-);
+odm_read_and_config_mp_8821c_txpowertrack_type0x20(
+						   /* tc: Test Chip, mp: mp Chip*/
+						   struct dm_struct *dm);
 u32	odm_get_version_mp_8821c_txpowertrack_type0x20(void);
 
 /******************************************************************************
@@ -54,9 +62,9 @@ u32	odm_get_version_mp_8821c_txpowertrack_type0x20(void);
 ******************************************************************************/
 
 void
-odm_read_and_config_mp_8821c_txpowertrack_type0x28(/* tc: Test Chip, mp: mp Chip*/
-	struct	PHY_DM_STRUCT *p_dm
-);
+odm_read_and_config_mp_8821c_txpowertrack_type0x28(
+						   /* tc: Test Chip, mp: mp Chip*/
+						   struct dm_struct *dm);
 u32	odm_get_version_mp_8821c_txpowertrack_type0x28(void);
 
 /******************************************************************************
@@ -64,9 +72,8 @@ u32	odm_get_version_mp_8821c_txpowertrack_type0x28(void);
 ******************************************************************************/
 
 void
-odm_read_and_config_mp_8821c_txpwr_lmt(/* tc: Test Chip, mp: mp Chip*/
-	struct	PHY_DM_STRUCT *p_dm
-);
+odm_read_and_config_mp_8821c_txpwr_lmt( /* tc: Test Chip, mp: mp Chip*/
+				       struct dm_struct *dm);
 u32	odm_get_version_mp_8821c_txpwr_lmt(void);
 
 /******************************************************************************
@@ -74,9 +81,8 @@ u32	odm_get_version_mp_8821c_txpwr_lmt(void);
 ******************************************************************************/
 
 void
-odm_read_and_config_mp_8821c_txpwr_lmt_fccsar(/* tc: Test Chip, mp: mp Chip*/
-	struct	PHY_DM_STRUCT *p_dm
-);
+odm_read_and_config_mp_8821c_txpwr_lmt_fccsar( /* tc: Test Chip, mp: mp Chip*/
+					      struct dm_struct *dm);
 u32	odm_get_version_mp_8821c_txpwr_lmt_fccsar(void);
 
 #endif

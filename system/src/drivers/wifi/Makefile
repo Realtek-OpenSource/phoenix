@@ -56,7 +56,7 @@ DIRS=$(USBDIRS) $(SDIODIRS) $(PCIDIRS)
 all: $(DIRS)
 
 $(DIRS):
-	@if test -d $@; then cd $@; $(MAKE) $(TARGET) CROSS=$(_CROSS) all; fi
+	@if test -d $@; then cd $@; $(MAKE) $(TARGET) CROSS="$(_CROSS)" all; fi
 
 clean:
 	@for dir in $(DIRS); do \

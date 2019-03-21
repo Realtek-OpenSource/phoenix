@@ -1,12 +1,12 @@
-cmd_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_core_linux.o := ccache arm-linux-gnueabi-gcc -Wp,-MD,/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/.mali_kbase_core_linux.o.d  -nostdinc -isystem /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/bin/../lib/gcc/arm-linux-gnueabi/6.4.1/include -I./arch/arm/include -I./arch/arm/include/generated/uapi -I./arch/arm/include/generated  -I./include -I./arch/arm/include/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-rtd16xx/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-PIE -fno-dwarf2-cfi-asm -fno-omit-frame-pointer -mapcs -mno-sched-prolog -fno-ipa-sra -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=7 -march=armv8-a -msoft-float -Uarm -fno-delete-null-pointer-checks -Wno-frame-address -O2 --param=allow-store-data-races=0 -DCC_HAVE_ASM_GOTO -Wframe-larger-than=1024 -fstack-protector-strong -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fno-merge-all-constants -fmerge-constants -fno-stack-check -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -Werror=incompatible-pointer-types -DMALI_CUSTOMER_RELEASE=1 -DMALI_KERNEL_TEST_API=0 -DMALI_UNIT_TEST=0 -DMALI_MOCK_TEST=0 -DMALI_COVERAGE=0 -DMALI_RELEASE_NAME=\""r13p0-01rel0"\" -DMALI_GCC_WORKAROUND_MIDCOM_4598=0 -DCONFIG_MALI_DEVFREQ=1 -DMALI_KBASE_PLATFORM_PATH=/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/platform/thor -I./drivers/staging/android -I/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard -I/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/platform_dummy -I -I/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/../../../base -I./include/linux -I/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu -DMALI_CUSTOMER_RELEASE=1 -DMALI_KERNEL_TEST_API=0 -DMALI_UNIT_TEST=0 -DMALI_MOCK_TEST=0 -DMALI_COVERAGE=0 -DMALI_RELEASE_NAME=\""r13p0-01rel0"\" -DMALI_GCC_WORKAROUND_MIDCOM_4598=0 -DCONFIG_MALI_DEVFREQ=1 -DMALI_KBASE_PLATFORM_PATH=/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/platform/thor -I./drivers/staging/android -I/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard -I/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/platform_dummy -I/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/../../../base -I./include/linux -I/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard -I/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/platform/thor -I/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu -I/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/../../../../include -I/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/../../../../tests/include   -DMODULE  -DKBUILD_BASENAME='"mali_kbase_core_linux"'  -DKBUILD_MODNAME='"mali_kbase"' -c -o /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/.tmp_mali_kbase_core_linux.o /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_core_linux.c
+cmd_/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_core_linux.o := ccache arm-linux-gnueabi-gcc -Wp,-MD,/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/.mali_kbase_core_linux.o.d  -nostdinc -isystem /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/bin/../lib/gcc/arm-linux-gnueabi/6.4.1/include -I./arch/arm/include -I./arch/arm/include/generated/uapi -I./arch/arm/include/generated  -I./include -I./arch/arm/include/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-rtd16xx/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-PIE -fno-dwarf2-cfi-asm -fno-omit-frame-pointer -mapcs -mno-sched-prolog -fno-ipa-sra -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=7 -march=armv8-a -msoft-float -Uarm -fno-delete-null-pointer-checks -Wno-frame-address -O2 --param=allow-store-data-races=0 -DCC_HAVE_ASM_GOTO -Wframe-larger-than=1024 -fstack-protector-strong -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fno-merge-all-constants -fmerge-constants -fno-stack-check -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -Werror=incompatible-pointer-types -DMALI_CUSTOMER_RELEASE=1 -DMALI_USE_CSF=0 -DMALI_KERNEL_TEST_API=0 -DMALI_UNIT_TEST=0 -DMALI_COVERAGE=0 -DMALI_RELEASE_NAME=\""r16p0-01rel0"\" -DCONFIG_MALI_DEVFREQ=1 -DMALI_KBASE_PLATFORM_PATH=/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/platform/"thor" -I./drivers/staging/android -DMALI_KBASE_BUILD -I/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard -I/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/platform_dummy -I/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/../../../base -I./include/linux -I/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu -DMALI_CUSTOMER_RELEASE=1 -DMALI_USE_CSF=0 -DMALI_KERNEL_TEST_API=0 -DMALI_UNIT_TEST=0 -DMALI_COVERAGE=0 -DMALI_RELEASE_NAME=\""r16p0-01rel0"\" -DCONFIG_MALI_DEVFREQ=1 -DMALI_KBASE_PLATFORM_PATH=/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/platform/"thor" -I./drivers/staging/android -DMALI_KBASE_BUILD -I/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard -I/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/platform_dummy -I/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/../../../base -I./include/linux -I/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard -I/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/platform/thor -I/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu -I/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/../../../../include -I/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/../../../../tests/include   -DMODULE  -DKBUILD_BASENAME='"mali_kbase_core_linux"'  -DKBUILD_MODNAME='"mali_kbase"' -c -o /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/.tmp_mali_kbase_core_linux.o /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_core_linux.c
 
-source_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_core_linux.o := /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_core_linux.c
+source_/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_core_linux.o := /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_core_linux.c
 
-deps_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_core_linux.o := \
+deps_/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_core_linux.o := \
     $(wildcard include/config/mali/devfreq.h) \
     $(wildcard include/config/devfreq/thermal.h) \
     $(wildcard include/config/mali/no/mali.h) \
-    $(wildcard include/config/mali/job/dump.h) \
+    $(wildcard include/config/mali/cinstr/gwt.h) \
     $(wildcard include/config/sync.h) \
     $(wildcard include/config/sync/file.h) \
     $(wildcard include/config/of.h) \
@@ -15,15 +15,14 @@ deps_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_D
     $(wildcard include/config/mali/debug.h) \
     $(wildcard include/config/regulator.h) \
     $(wildcard include/config/pm/opp.h) \
-    $(wildcard include/config/mali/trace/timeline.h) \
     $(wildcard include/config/mali/fpga/bus/logger.h) \
     $(wildcard include/config/mali/gator/support.h) \
     $(wildcard include/config/mali/system/trace.h) \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase.h \
     $(wildcard include/config/gpu/tracepoints.h) \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_malisw.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_malisw.h \
   include/generated/uapi/linux/version.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_debug.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_debug.h \
   include/linux/bug.h \
     $(wildcard include/config/generic/bug.h) \
   arch/arm/include/asm/bug.h \
@@ -90,7 +89,7 @@ deps_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_D
     $(wildcard include/config/panic/timeout.h) \
     $(wildcard include/config/tracing.h) \
     $(wildcard include/config/ftrace/mcount/record.h) \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/lib/gcc/arm-linux-gnueabi/6.4.1/include/stdarg.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/lib/gcc/arm-linux-gnueabi/6.4.1/include/stdarg.h \
   include/linux/bitops.h \
   arch/arm/include/asm/bitops.h \
   include/linux/irqflags.h \
@@ -527,6 +526,7 @@ deps_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_D
     $(wildcard include/config/uevent/helper.h) \
     $(wildcard include/config/r8168.h) \
     $(wildcard include/config/r8169soc.h) \
+    $(wildcard include/config/rtd/1295/hwnat.h) \
     $(wildcard include/config/debug/kobject/release.h) \
   include/linux/sysfs.h \
   include/linux/kernfs.h \
@@ -812,14 +812,13 @@ deps_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_D
     $(wildcard include/config/debug/kmemleak.h) \
   include/linux/kasan.h \
   include/linux/vmalloc.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_base_kernel.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_base_kernel.h \
     $(wildcard include/config/cpu/page/size/log2.h) \
     $(wildcard include/config/fault.h) \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_base_mem_priv.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_profiling_gator_api.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_midg_coherency.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_gpu_id.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_linux.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_base_mem_priv.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_midg_coherency.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_gpu_id.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_linux.h \
   include/linux/platform_device.h \
     $(wildcard include/config/suspend.h) \
     $(wildcard include/config/hibernate/callbacks.h) \
@@ -885,19 +884,19 @@ deps_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_D
     $(wildcard include/config/have/mod/arch/specific.h) \
     $(wildcard include/config/modules/use/elf/rel.h) \
     $(wildcard include/config/modules/use/elf/rela.h) \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_defs.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_defs.h \
     $(wildcard include/config/pm/runtime.h) \
     $(wildcard include/config/mali/midgard/enable/trace.h) \
     $(wildcard include/config/next.h) \
     $(wildcard include/config/mali/dma/fence.h) \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_config.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_config.h \
     $(wildcard include/config/h/.h) \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_backend_config.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_base_hwconfig_features.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_backend_config.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_base_hwconfig_features.h \
     $(wildcard include/config/features/h/.h) \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_base_hwconfig_issues.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_base_hwconfig_issues.h \
     $(wildcard include/config/issues/h/.h) \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_mem_lowlevel.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_mem_lowlevel.h \
   include/linux/dma-mapping.h \
     $(wildcard include/config/have/generic/dma/coherent.h) \
     $(wildcard include/config/has/dma.h) \
@@ -931,11 +930,11 @@ deps_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_D
   include/linux/kmemcheck.h \
   arch/arm/include/asm/dma-mapping.h \
   arch/arm/include/asm/xen/hypervisor.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_mmu_hw.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_instr_defs.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_pm.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_hwaccess_pm.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_midg_regmap.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_mmu_hw.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_instr_defs.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_pm.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_hwaccess_pm.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_midg_regmap.h \
     $(wildcard include/config/start/flush/no/action.h) \
     $(wildcard include/config/start/flush/clean.h) \
     $(wildcard include/config/start/flush/clean/invalidate.h) \
@@ -969,19 +968,17 @@ deps_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_D
     $(wildcard include/config/3bit/limit/external/reads.h) \
     $(wildcard include/config/3bit/limit/external/writes/shift.h) \
     $(wildcard include/config/3bit/limit/external/writes.h) \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_pm_defs.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_pm_defs.h \
     $(wildcard include/config/mali/midgard/dvfs.h) \
-    $(wildcard include/config/mali/corestack.h) \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_pm_ca_fixed.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_pm_ca_devfreq.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_pm_always_on.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_pm_coarse_demand.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_pm_demand.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_gpuprops_types.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/protected_mode_switcher.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_pm_always_on.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_pm_coarse_demand.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_gpuprops_types.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_hwcnt_backend_gpu.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_hwcnt_backend.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/protected_mode_switcher.h \
   include/linux/mempool.h \
   include/linux/file.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_fence_defs.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_fence_defs.h \
   include/linux/fence.h \
     $(wildcard include/config/fence/trace.h) \
   include/linux/debugfs.h \
@@ -991,51 +988,55 @@ deps_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_D
     $(wildcard include/config/devfreq/gov/passive.h) \
   include/linux/pm_opp.h \
   include/linux/regulator/consumer.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_js_defs.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_hwaccess_defs.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_jm_defs.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_trace_defs.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_context.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_strings.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_mem_lowlevel.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_trace_timeline.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_js.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_debug.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_js_ctx_attr.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_utility.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_mem.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_js_defs.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_hwaccess_defs.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_jm_defs.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_trace_defs.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_context.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_strings.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_mem_lowlevel.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_js.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_debug.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_js_ctx_attr.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_utility.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_mem.h \
     $(wildcard include/config/dma/shared/buffer.h) \
     $(wildcard include/config/mali/2mb/alloc.h) \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_hw.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_pm.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_mem_linux.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_gpu_memory_debugfs.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_mem_profile_debugfs.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_debug_job_fault.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_jd_debugfs.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_gpuprops.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_gpuprops_types.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_jm.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_vinstr.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_hwcnt_reader.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_ioctl.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/ipa/mali_kbase_ipa.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_config_defaults.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_hw.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_pm.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_mem_linux.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_gpu_memory_debugfs.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_mem_profile_debugfs.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_debug_job_fault.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_jd_debugfs.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_gpuprops.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_gpuprops_types.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_jm.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_ioctl.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/ipa/mali_kbase_ipa.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_config_defaults.h \
     $(wildcard include/config/defaults/h/.h) \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/platform/thor/mali_kbase_config_platform.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_gator.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_mem_linux.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_devfreq.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/ipa/mali_kbase_ipa_debugfs.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_mem_profile_debugfs_buf_size.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_debug_mem_view.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_mem_pool_debugfs.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_regs_history_debugfs.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_hwaccess_backend.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_hwaccess_jm.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_ctx_sched.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_device_internal.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_ioctl.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/platform/thor/mali_kbase_config_platform.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_gator.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_mem_linux.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_devfreq.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/ipa/mali_kbase_ipa_debugfs.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_mem_profile_debugfs_buf_size.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_debug_mem_view.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_mem_pool_debugfs.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_regs_history_debugfs.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_hwaccess_backend.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_hwaccess_jm.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_ctx_sched.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_device_internal.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_pm_internal.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_hwaccess_pm.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_pm_ca.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_pm_policy.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_hwcnt_context.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_hwcnt_virtualizer.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_hwcnt_legacy.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_vinstr.h \
   include/linux/poll.h \
   include/uapi/linux/poll.h \
   arch/arm/include/generated/asm/poll.h \
@@ -1081,7 +1082,7 @@ deps_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_D
   include/uapi/asm-generic/mman.h \
   include/uapi/asm-generic/mman-common.h \
     $(wildcard include/config/mmap/allow/uninitialized.h) \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_sync.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_sync.h \
     $(wildcard include/config/mali/fence/debug.h) \
   include/linux/syscalls.h \
     $(wildcard include/config/ftrace/syscalls.h) \
@@ -1147,12 +1148,12 @@ deps_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_D
   include/asm-generic/local.h \
   include/linux/sync_file.h \
   include/linux/fence-array.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase.h \
   include/linux/delay.h \
   arch/arm/include/asm/delay.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_tlstream.h \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_as_fault_debugfs.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_tlstream.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_as_fault_debugfs.h \
 
-/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_core_linux.o: $(deps_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_core_linux.o)
+/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_core_linux.o: $(deps_/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_core_linux.o)
 
-$(deps_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_core_linux.o):
+$(deps_/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gpu/driver/product/kernel/drivers/gpu/arm/midgard/mali_kbase_core_linux.o):

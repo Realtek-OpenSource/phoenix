@@ -200,7 +200,7 @@ static u8 rtl8821cu_ps_func(PADAPTER padapter, HAL_INTF_PS_FUNC efunc_id, u8 *va
 #ifdef CONFIG_RTW_LED
 static void read_ledsetting(PADAPTER adapter)
 {
-	struct led_priv *ledpriv = &(adapter->ledpriv);
+	struct led_priv *ledpriv = adapter_to_led(adapter);
 
 #ifdef CONFIG_RTW_SW_LED
 	PHAL_DATA_TYPE hal;

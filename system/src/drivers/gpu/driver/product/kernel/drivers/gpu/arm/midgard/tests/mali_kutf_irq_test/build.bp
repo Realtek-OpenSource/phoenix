@@ -17,10 +17,12 @@ bob_kernel_module {
         "Kbuild",
         "mali_kutf_irq_test_main.c",
     ],
-    extra_symbols: ["mali_kbase"],
-    install_group: "IG_tests",
+    extra_symbols: [
+        "mali_kbase",
+        "kutf",
+    ],
     enabled: false,
-    unit_test_kernel_modules: {
+    base_build_kutf: {
         enabled: true,
         kbuild_options: ["CONFIG_MALI_IRQ_LATENCY=m"],
     },

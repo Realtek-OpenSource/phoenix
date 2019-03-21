@@ -140,7 +140,6 @@ void rtl8814_set_wowlan_cmd(_adapter *padapter, u8 enable);
 void rtl8814_set_FwJoinBssReport_cmd(PADAPTER padapter, u8 mstatus);
 void rtl8814_set_FwPwrMode_cmd(PADAPTER padapter, u8 PSMode);
 u8 GetTxBufferRsvdPageNum8814(_adapter *padapter, bool wowlan);
-u8 rtl8814_set_rssi_cmd(_adapter *padapter, u8 *param);
 void rtl8814_req_txrpt_cmd(PADAPTER padapter, u8 macid);
 
 #ifdef CONFIG_TDLS

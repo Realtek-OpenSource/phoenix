@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2007 - 2017 Realtek Corporation.
+ * Copyright(c) 2007 - 2017  Realtek Corporation.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -8,16 +8,25 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
+ *
+ * The full GNU General Public License is included in this distribution in the
+ * file called LICENSE.
+ *
+ * Contact Information:
+ * wlanfae <wlanfae@realtek.com>
+ * Realtek Corporation, No. 2, Innovation Road II, Hsinchu Science Park,
+ * Hsinchu 300, Taiwan.
+ *
+ * Larry Finger <Larry.Finger@lwfinger.net>
  *
  *****************************************************************************/
 
-#ifndef	__ODM_PRECOMP_H__
+#ifndef __ODM_PRECOMP_H__
 #define __ODM_PRECOMP_H__
 
 #include "phydm_types.h"
-#include "phydm_features.h"
 #include "halrf/halrf_features.h"
 
 #if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
@@ -34,6 +43,7 @@
 
 	#include "../8192cd.h"
 	#include "../8192cd_util.h"
+	#include "../8192cd_hw.h"
 	#ifdef _BIG_ENDIAN_
 		#define	ODM_ENDIAN_TYPE				ODM_ENDIAN_BIG
 	#else
@@ -55,6 +65,11 @@
 	#define	ODM_ENDIAN_TYPE				ODM_ENDIAN_LITTLE
 	#define __PACK
 	#define __WLAN_ATTRIB_PACK__
+#elif (DM_ODM_SUPPORT_TYPE == ODM_IOT)
+	#include <drv_types.h>
+	#include <wifi.h>
+	#define	ODM_ENDIAN_TYPE				ODM_ENDIAN_LITTLE
+	#define __PACK
 #endif
 
 /* 2 OutSrc Header Files */
@@ -67,49 +82,40 @@
 #include "phydm_regdefine11n.h"
 #include "phydm_interface.h"
 #include "phydm_reg.h"
+#include "halrf/halrf_debug.h"
 
 #if (DM_ODM_SUPPORT_TYPE & ODM_CE) && !defined(DM_ODM_CE_MAC80211)
 
-void
-phy_set_tx_power_limit(
-	struct PHY_DM_STRUCT	*p_dm,
-	u8	*regulation,
-	u8	*band,
-	u8	*bandwidth,
-	u8	*rate_section,
-	u8	*rf_path,
-	u8	*channel,
-	u8	*power_limit
-);
+void phy_set_tx_power_limit(
+	struct dm_struct *dm,
+	u8 *regulation,
+	u8 *band,
+	u8 *bandwidth,
+	u8 *rate_section,
+	u8 *rf_path,
+	u8 *channel,
+	u8 *power_limit);
 
 enum hal_status
 rtw_phydm_fw_iqk(
-	struct PHY_DM_STRUCT	*p_dm,
+	struct dm_struct *dm,
 	u8 clear,
-	u8 segment
-);
+	u8 segment);
 
 enum hal_status
 rtw_phydm_cfg_phy_para(
-	struct PHY_DM_STRUCT	*p_dm,
+	struct dm_struct *dm,
 	enum phydm_halmac_param config_type,
 	u32 offset,
 	u32 data,
 	u32 mask,
 	enum rf_path e_rf_path,
-	u32 delay_time
-);
+	u32 delay_time);
 
 #endif
 
-#if (DM_ODM_SUPPORT_TYPE & ODM_AP)
-	#define RTL8703B_SUPPORT		0
-	#define RTL8188F_SUPPORT		0
-	#define RTL8723D_SUPPORT		0
-#endif
-
-/* JJ ADD 20161014 */
-#if (DM_ODM_SUPPORT_TYPE & (ODM_AP|ODM_IOT))
+/* Judy ADD 20180125 */
+#if (DM_ODM_SUPPORT_TYPE & (ODM_AP | ODM_IOT))
 #define RTL8710B_SUPPORT		0
 #endif
 
@@ -120,6 +126,11 @@ rtw_phydm_cfg_phy_para(
 	#else
 		#define RTL8188E_S_SUPPORT 0
 	#endif
+#endif
+
+#if (DM_ODM_SUPPORT_TYPE & (ODM_WIN | ODM_CE))
+#define	RTL8195B_SUPPORT 0	/*Just for PHYDM API development*/
+#define	RTL8198F_SUPPORT 0	/*Just for PHYDM API development*/
 #endif
 
 #if (RTL8188E_SUPPORT == 1)
@@ -183,8 +194,8 @@ rtw_phydm_cfg_phy_para(
 		#include "rtl8812a/halhwimg8812a_mac.h"
 		#include "rtl8812a/halhwimg8812a_rf.h"
 		#include "rtl8812a/phydm_regconfig8812a.h"
-		#include "rtl8812a/phydm_rtl8812a.h"
 	#endif
+	#include "rtl8812a/phydm_rtl8812a.h"
 
 	#if (DM_ODM_SUPPORT_TYPE == ODM_CE)
 		#include "rtl8812a_hal.h"
@@ -267,27 +278,6 @@ rtw_phydm_cfg_phy_para(
 
 #if (DM_ODM_SUPPORT_TYPE == ODM_CE) && defined(DM_ODM_CE_MAC80211)
 #include "../halmac/halmac_reg2.h"
-
-#define	LDPC_HT_ENABLE_RX			BIT(0)
-#define	LDPC_HT_ENABLE_TX			BIT(1)
-#define	LDPC_HT_TEST_TX_ENABLE			BIT(2)
-#define	LDPC_HT_CAP_TX				BIT(3)
-
-#define	STBC_HT_ENABLE_RX			BIT(0)
-#define	STBC_HT_ENABLE_TX			BIT(1)
-#define	STBC_HT_TEST_TX_ENABLE			BIT(2)
-#define	STBC_HT_CAP_TX				BIT(3)
-
-
-#define	LDPC_VHT_ENABLE_RX			BIT(0)
-#define	LDPC_VHT_ENABLE_TX			BIT(1)
-#define	LDPC_VHT_TEST_TX_ENABLE			BIT(2)
-#define	LDPC_VHT_CAP_TX				BIT(3)
-
-#define	STBC_VHT_ENABLE_RX			BIT(0)
-#define	STBC_VHT_ENABLE_TX			BIT(1)
-#define	STBC_VHT_TEST_TX_ENABLE			BIT(2)
-#define	STBC_VHT_CAP_TX				BIT(3)
 #endif
 
 
@@ -353,7 +343,10 @@ rtw_phydm_cfg_phy_para(
 		#include "rtl8723d/version_rtl8723d.h"
 	#endif
 	#if (DM_ODM_SUPPORT_TYPE == ODM_CE)
+		#ifdef DM_ODM_CE_MAC80211
+		#else
 		#include "rtl8723d_hal.h"
+		#endif
 	#endif
 #endif /* 8723D End */
 
@@ -385,6 +378,7 @@ rtw_phydm_cfg_phy_para(
 	#include "rtl8197f/phydm_regconfig8197f.h"
 	#include "halrf/rtl8197f/halrf_8197f.h"
 	#include "halrf/rtl8197f/halrf_iqk_8197f.h"
+	#include "halrf/rtl8197f/halrf_dpk_8197f.h"
 #endif
 
 #if (RTL8821C_SUPPORT == 1)
@@ -396,8 +390,47 @@ rtw_phydm_cfg_phy_para(
 	#include "halrf/rtl8821c/halrf_8821c.h"
 	#include "rtl8821c/version_rtl8821c.h"
 	#if (DM_ODM_SUPPORT_TYPE == ODM_CE)
+		#ifdef DM_ODM_CE_MAC80211
+		#include "../halmac/halmac_reg_8821c.h"
+		#else
 		#include "rtl8821c_hal.h"
+		#endif
 	#endif
+#endif
+
+/*jj add 20170822*/
+#if (RTL8192F_SUPPORT == 1)
+	#include "rtl8192f/halhwimg8192f_mac.h"
+	#include "rtl8192f/halhwimg8192f_rf.h"
+	#include "rtl8192f/halhwimg8192f_bb.h"
+	#include "rtl8192f/phydm_hal_api8192f.h"
+	#include "rtl8192f/version_rtl8192f.h"
+	#include "rtl8192f/phydm_rtl8192f.h"
+	#include "rtl8192f/phydm_regconfig8192f.h"
+	#include "halrf/rtl8192f/halrf_8192f.h"
+	#if (DM_ODM_SUPPORT_TYPE == ODM_AP)
+		#include "halrf/rtl8192f/halrf_dpk_8192f.h"
+	#endif
+	#if (DM_ODM_SUPPORT_TYPE == ODM_CE)
+		#include "rtl8192f_hal.h"
+	#endif
+#endif
+
+#if (RTL8195B_SUPPORT == 1)
+	#include "rtl8195b/phydm_hal_api8195b.h"
+	#include "rtl8821c/halhwimg8821c_rf.h"
+	#include "halrf/rtl8195b/halrf_8195b.h"
+	#include <hal_data.h> /*HAL_DATA_TYPE*/
+#endif
+
+#if (RTL8198F_SUPPORT == 1)
+	#include "rtl8198f/phydm_regconfig8198f.h"
+	#include "rtl8198f/phydm_hal_api8198f.h"
+	#include "rtl8198f/halhwimg8198f_mac.h"
+	#include "rtl8198f/halhwimg8198f_rf.h"
+	#include "rtl8198f/halhwimg8198f_bb.h"
+	#include "rtl8198f/version_rtl8198f.h"
+	#include "halrf/rtl8198f/halrf_8198f.h"
 #endif
 
 #endif /* __ODM_PRECOMP_H__ */

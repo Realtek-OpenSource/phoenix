@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2007 - 2017  Realtek Corporation.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -8,15 +8,20 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
  *
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+ * The full GNU General Public License is included in this distribution in the
+ * file called LICENSE.
  *
+ * Contact Information:
+ * wlanfae <wlanfae@realtek.com>
+ * Realtek Corporation, No. 2, Innovation Road II, Hsinchu Science Park,
+ * Hsinchu 300, Taiwan.
  *
- ******************************************************************************/
+ * Larry Finger <Larry.Finger@lwfinger.net>
+ *
+ *****************************************************************************/
 
 #ifndef	__PHYDMANTDIV_H__
 #define    __PHYDMANTDIV_H__
@@ -33,7 +38,8 @@
 /*#define ANTDIV_VERSION	"3.6"*/  /*2015.11.16  Stanley  */
 /*#define ANTDIV_VERSION	"3.7"*/  /*2015.11.20  Dino Add SmartAnt FAT Patch */
 /*#define ANTDIV_VERSION	"3.8"  2015.12.21  Dino, Add SmartAnt dynamic training packet num */
-#define ANTDIV_VERSION	"3.9"  /*2016.01.05  Dino, Add SmartAnt cmd for converting single & two smtant, and add cmd for adjust truth table */
+/*#define ANTDIV_VERSION	"3.9"  2016.01.05  Dino, Add SmartAnt cmd for converting single & two smtant, and add cmd for adjust truth table */
+#define ANTDIV_VERSION	"4.0"  /*2017.05.25  Mark, Add SW antenna diversity for 8821c because HW transient issue */
 
 /* 1 ============================================================
  * 1  Definition
@@ -51,7 +57,7 @@
 #define SUPPORT_BEAM_PATTERN_NUM 4
 #define NUM_ANTENNA_8821A	2
 
-#define SUPPORT_BEAM_SET_PATTERN_NUM		8
+#define SUPPORT_BEAM_SET_PATTERN_NUM		16
 
 #define	NO_FIX_TX_ANT		0
 #define	FIX_TX_AT_MAIN	1
@@ -85,9 +91,10 @@
 #define TX_BY_DESC	1
 #define TX_BY_REG	0
 
-#define RSSI_METHOD		0
+#define RSSI_METHOD	0
 #define EVM_METHOD		1
 #define CRC32_METHOD	2
+#define TP_METHOD		3
 
 #define INIT_ANTDIV_TIMMER		0
 #define CANCEL_ANTDIV_TIMMER	1
@@ -139,7 +146,7 @@
  * 1 ============================================================ */
 
 
-struct _sw_antenna_switch_ {
+struct sw_antenna_switch {
 	u8		double_chk_flag;	/*If current antenna RSSI > "RSSI_CHECK_THRESHOLD", than check this antenna again*/
 	u8		try_flag;
 	s32		pre_rssi;
@@ -149,7 +156,7 @@ struct _sw_antenna_switch_ {
 	u8		reset_idx;
 	u8		train_time;
 	u8		train_time_flag; /*base on RSSI difference between two antennas*/
-	struct timer_list	phydm_sw_antenna_switch_timer;
+	struct phydm_timer_list	phydm_sw_antenna_switch_timer;
 	u32		pkt_cnt_sw_ant_div_by_ctrl_frame;
 	boolean		is_sw_ant_div_by_ctrl_frame;
 
@@ -208,70 +215,8 @@ struct _BF_DIV_COEX_ {
 #endif
 #endif
 
-#if (defined(CONFIG_HL_SMART_ANTENNA_TYPE1)) || (defined(CONFIG_HL_SMART_ANTENNA_TYPE2))
-struct _SMART_ANTENNA_TRAINNING_ {
-	u32	latch_time;
-	boolean	pkt_skip_statistic_en;
-	u32	fix_beam_pattern_en;
-	u32	fix_training_num_en;
-	u32	fix_beam_pattern_codeword;
-	u32	update_beam_codeword;
-	u32	ant_num; /*number of "used" smart beam antenna*/
-	u32	ant_num_total;/*number of "total" smart beam antenna*/
-	u32	first_train_ant; /*decide witch antenna to train first*/
 
-	#ifdef CONFIG_HL_SMART_ANTENNA_TYPE1
-	u32	pkt_rssi_pre[SUPPORT_RF_PATH_NUM][SUPPORT_BEAM_PATTERN_NUM];/*rssi of each path with a certain beam pattern*/
-	u8	beam_train_rssi_diff[SUPPORT_RF_PATH_NUM][SUPPORT_BEAM_PATTERN_NUM];
-	u8	beam_train_cnt[SUPPORT_RF_PATH_NUM][SUPPORT_BEAM_PATTERN_NUM];
-	u32	rfu_codeword_table[4]; /*2G beam truth table*/
-	u32	rfu_codeword_table_5g[4]; /*5G beam truth table*/
-	u32	beam_patten_num_each_ant;/*number of  beam can be switched in each antenna*/
-	u32	rx_idle_beam[SUPPORT_RF_PATH_NUM];
-	#endif
-	
-	u32	fast_training_beam_num;/*current training beam_set index*/
-	u32	pre_fast_training_beam_num;/*pre training beam_set index*/
-	u32	rfu_codeword_total_bit_num; /* total bit number of RFU protocol*/
-	u32	rfu_each_ant_bit_num; /* bit number of RFU protocol for each ant*/
-	u8	per_beam_training_pkt_num;
-	u8	decision_holding_period;
-
-	u32	pkt_rssi_sum[8][SUPPORT_BEAM_PATTERN_NUM];
-	u32	pkt_rssi_cnt[8][SUPPORT_BEAM_PATTERN_NUM];
-	u32	pre_codeword;
-	boolean	force_update_beam_en;
-	u32	beacon_counter;
-	u32	pre_beacon_counter;
-	u8	pkt_counter;		/*packet number that each beam-set should be colected in training state*/
-	u8	update_beam_idx;	/*the index announce that the beam can be updated*/
-	u8	rfu_protocol_type;
-
-	#if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
-	RT_WORK_ITEM	hl_smart_antenna_workitem;
-	RT_WORK_ITEM	hl_smart_antenna_decision_workitem;
-	#endif
-
-
-	#ifdef CONFIG_HL_SMART_ANTENNA_TYPE2
-	u8	beam_set_avg_rssi_pre[SUPPORT_BEAM_SET_PATTERN_NUM];		/*avg pre_rssi of each beam set*/
-	u8	beam_set_train_rssi_diff[SUPPORT_BEAM_SET_PATTERN_NUM];	/*rssi of a beam pattern set, ex: a set = {ant1_beam=1, ant2_beam=3}*/
-	u8	beam_set_train_cnt[SUPPORT_BEAM_SET_PATTERN_NUM];			/*training pkt num of each beam set*/
-	
-	u8	total_beam_set_num;	/*number of  beam set can be switched*/
-	u8	total_beam_set_num_2g;/*number of  beam set can be switched in 2G*/
-	u8	total_beam_set_num_5g;/*number of  beam set can be switched in 5G*/
-
-	u8	rfu_codeword_table_2g[SUPPORT_BEAM_SET_PATTERN_NUM][MAX_PATH_NUM_8822B]; /*2G beam truth table*/
-	u8	rfu_codeword_table_5g[SUPPORT_BEAM_SET_PATTERN_NUM][MAX_PATH_NUM_8822B]; /*5G beam truth table*/
-	u8	rx_idle_beam_set_idx;	/*the filanl decsion result*/
-	#endif
-	
-
-};
-#endif
-
-struct _FAST_ANTENNA_TRAINNING_ {
+struct phydm_fat_struct {
 	u8	bssid[6];
 	u8	antsel_rx_keep_0;
 	u8	antsel_rx_keep_1;
@@ -281,6 +226,7 @@ struct _FAST_ANTENNA_TRAINNING_ {
 	u32	ant_rssi_cnt[7];
 	u32	ant_ave_rssi[7];
 	u8	fat_state;
+	u8	fat_state_cnt;
 	u32	train_idx;
 	u8	antsel_a[ODM_ASSOCIATE_ENTRY_NUM];
 	u8	antsel_b[ODM_ASSOCIATE_ENTRY_NUM];
@@ -294,6 +240,7 @@ struct _FAST_ANTENNA_TRAINNING_ {
 	u16	main_ant_cnt_cck[ODM_ASSOCIATE_ENTRY_NUM];
 	u16	aux_ant_cnt_cck[ODM_ASSOCIATE_ENTRY_NUM];
 	u8	rx_idle_ant;
+	u8	rvrt_val;
 	u8	ant_div_on_off;
 	boolean	is_become_linked;
 	u32	min_max_rssi;
@@ -302,13 +249,22 @@ struct _FAST_ANTENNA_TRAINNING_ {
 	u8	ant_div_2g_5g;
 
 #ifdef ODM_EVM_ENHANCE_ANTDIV
+	/*For 1SS RX phy rate*/
 	u32	main_ant_evm_sum[ODM_ASSOCIATE_ENTRY_NUM];
 	u32	aux_ant_evm_sum[ODM_ASSOCIATE_ENTRY_NUM];
 	u32	main_ant_evm_cnt[ODM_ASSOCIATE_ENTRY_NUM];
 	u32	aux_ant_evm_cnt[ODM_ASSOCIATE_ENTRY_NUM];
-	boolean	EVM_method_enable;
+
+	/*For 2SS RX phy rate*/
+	u32	main_ant_evm_2ss_sum[ODM_ASSOCIATE_ENTRY_NUM][2];	/*2SS with A1+B*/
+	u32	aux_ant_evm_2ss_sum[ODM_ASSOCIATE_ENTRY_NUM][2];	/*2SS with A2+B*/
+	u32	main_ant_evm_2ss_cnt[ODM_ASSOCIATE_ENTRY_NUM];
+	u32	aux_ant_evm_2ss_cnt[ODM_ASSOCIATE_ENTRY_NUM];
+
+	boolean	evm_method_enable;
 	u8	target_ant_evm;
 	u8	target_ant_crc32;
+	u8	target_ant_tp;
 	u8	target_ant_enhance;
 	u8	pre_target_ant_enhance;
 	u16	main_mpdu_ok_cnt;
@@ -320,6 +276,14 @@ struct _FAST_ANTENNA_TRAINNING_ {
 	u32	aux_crc32_ok_cnt;
 	u32	main_crc32_fail_cnt;
 	u32	aux_crc32_fail_cnt;
+
+	u32	antdiv_tp_main;
+	u32	antdiv_tp_aux;
+	u32	antdiv_tp_main_cnt;
+	u32	antdiv_tp_aux_cnt;
+
+	u8	pre_antdiv_rssi;
+	u8	pre_antdiv_tp;
 #endif
 #if (DM_ODM_SUPPORT_TYPE & (ODM_WIN | ODM_CE))
 	u32    cck_ctrl_frame_cnt_main;
@@ -335,6 +299,7 @@ struct _FAST_ANTENNA_TRAINNING_ {
 	boolean	fix_ant_bfee;
 	boolean	enable_ctrl_frame_antdiv;
 	boolean	use_ctrl_frame_antdiv;
+	boolean	*is_no_csi_feedback;
 	u8	hw_antsw_occur;
 	u8	*p_force_tx_ant_by_desc;
 	u8	force_tx_ant_by_desc; /*A temp value, will hook to driver team's outer parameter later*/
@@ -349,7 +314,7 @@ struct _FAST_ANTENNA_TRAINNING_ {
 
 
 
-enum fat_state_e /*Fast antenna training*/
+enum fat_state /*Fast antenna training*/
 {
 	FAT_BEFORE_LINK_STATE	= 0,
 	FAT_PREPARE_STATE			= 1,
@@ -357,7 +322,7 @@ enum fat_state_e /*Fast antenna training*/
 	FAT_DECISION_STATE		= 3
 };
 
-enum ant_div_type_e {
+enum ant_div_type {
 	NO_ANTDIV			= 0xFF,
 	CG_TRX_HW_ANTDIV			= 0x01,
 	CGCS_RX_HW_ANTDIV		= 0x02,
@@ -378,17 +343,17 @@ enum ant_div_type_e {
 
 void
 odm_stop_antenna_switch_dm(
-	void	*p_dm_void
+	void	*dm_void
 );
 
 void
 phydm_enable_antenna_diversity(
-	void			*p_dm_void
+	void			*dm_void
 );
 
 void
 odm_set_ant_config(
-	void	*p_dm_void,
+	void	*dm_void,
 	u8		ant_setting	/* 0=A, 1=B, 2=C, .... */
 );
 
@@ -396,27 +361,46 @@ odm_set_ant_config(
 #define sw_ant_div_rest_after_link	odm_sw_ant_div_rest_after_link
 
 void odm_sw_ant_div_rest_after_link(
-	void	*p_dm_void
+	void	*dm_void
+);
+
+void
+odm_ant_div_on_off(
+	void		*dm_void,
+	u8		swch
+);
+
+void
+odm_tx_by_tx_desc_or_reg(
+	void		*dm_void,
+	u8		swch
 );
 
 #if (defined(CONFIG_PHYDM_ANTENNA_DIVERSITY))
 
 void
 phydm_antdiv_reset_statistic(
-	void	*p_dm_void,
+	void	*dm_void,
 	u32	macid
 );
 
 void
 odm_update_rx_idle_ant(
-	void		*p_dm_void,
+	void		*dm_void,
 	u8		ant
+);
+
+void
+phydm_set_antdiv_val(
+	void			*dm_void,
+	u32			*val_buf,
+	u8			val_len
 );
 
 #if (RTL8723B_SUPPORT == 1)
 void
 odm_update_rx_idle_ant_8723b(
-	void			*p_dm_void,
+	void			*dm_void,
 	u8			ant,
 	u32			default_ant,
 	u32			optional_ant
@@ -426,7 +410,7 @@ odm_update_rx_idle_ant_8723b(
 #if (RTL8188F_SUPPORT == 1)
 void
 phydm_update_rx_idle_antenna_8188F(
-	void	*p_dm_void,
+	void	*dm_void,
 	u32	default_ant
 );
 #endif
@@ -435,8 +419,16 @@ phydm_update_rx_idle_antenna_8188F(
 
 void
 phydm_set_tx_ant_pwr_8723d(
-	void			*p_dm_void,
+	void			*dm_void,
 	u8			ant
+);
+
+void
+odm_update_rx_idle_ant_8723d(
+	void			*dm_void,
+	u8			ant,
+	u32			default_ant,
+	u32			optional_ant
 );
 
 #endif
@@ -446,12 +438,12 @@ phydm_set_tx_ant_pwr_8723d(
 #if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
 void
 odm_sw_antdiv_callback(
-	struct timer_list		*p_timer
+	struct phydm_timer_list		*timer
 );
 
 void
 odm_sw_antdiv_workitem_callback(
-	void	*p_context
+	void	*context
 );
 
 
@@ -459,7 +451,7 @@ odm_sw_antdiv_workitem_callback(
 
 void
 odm_sw_antdiv_workitem_callback(
-	void	*p_context
+	void	*context
 );
 
 void
@@ -471,116 +463,74 @@ odm_sw_antdiv_callback(
 
 void
 odm_s0s1_sw_ant_div_by_ctrl_frame(
-	void			*p_dm_void,
+	void			*dm_void,
 	u8			step
 );
 
 void
 odm_antsel_statistics_of_ctrl_frame(
-	void			*p_dm_void,
+	void			*dm_void,
 	u8			antsel_tr_mux,
 	u32			rx_pwdb_all
 );
 
 void
 odm_s0s1_sw_ant_div_by_ctrl_frame_process_rssi(
-	void				*p_dm_void,
-	void		*p_phy_info_void,
-	void		*p_pkt_info_void
+	void				*dm_void,
+	void		*phy_info_void,
+	void		*pkt_info_void
 );
 
 #endif
 
 #ifdef ODM_EVM_ENHANCE_ANTDIV
 void
+phydm_evm_sw_antdiv_init(
+	void		*dm_void
+);
+
+void
 odm_evm_fast_ant_training_callback(
-	void		*p_dm_void
+	void		*dm_void
 );
 #endif
 
 void
 odm_hw_ant_div(
-	void		*p_dm_void
+	void		*dm_void
 );
 
 #if (defined(CONFIG_5G_CG_SMART_ANT_DIVERSITY)) || (defined(CONFIG_2G_CG_SMART_ANT_DIVERSITY))
 void
 odm_fast_ant_training(
-	void		*p_dm_void
+	void		*dm_void
 );
 
 void
 odm_fast_ant_training_callback(
-	void		*p_dm_void
+	void		*dm_void
 );
 
 void
 odm_fast_ant_training_work_item_callback(
-	void		*p_dm_void
+	void		*dm_void
 );
 #endif
-
-
-#if (defined(CONFIG_HL_SMART_ANTENNA_TYPE1)) || (defined(CONFIG_HL_SMART_ANTENNA_TYPE2))
-
-#if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
-void
-phydm_beam_switch_workitem_callback(
-	void	*p_context
-);
-
-void
-phydm_beam_decision_workitem_callback(
-	void	*p_context
-);
-
-#endif
-
-void
-phydm_update_beam_pattern(
-	void		*p_dm_void,
-	u32		codeword,
-	u32		codeword_length
-);
-
-#ifdef CONFIG_HL_SMART_ANTENNA_TYPE1
-void
-phydm_set_all_ant_same_beam_num(
-	void		*p_dm_void
-);
-#endif
-
-#ifdef CONFIG_HL_SMART_ANTENNA_TYPE2
-void
-phydm_set_rfu_beam_pattern_type2(
-	void		*p_dm_void
-);
-#endif
-
-void
-phydm_hl_smart_ant_debug(
-	void		*p_dm_void,
-	u32		*const dm_value,
-	u32		*_used,
-	char			*output,
-	u32		*_out_len
-);
-
-#endif/*#if (defined(CONFIG_HL_SMART_ANTENNA_TYPE1)) || (defined(CONFIG_HL_SMART_ANTENNA_TYPE2))*/
 
 void
 odm_ant_div_init(
-	void		*p_dm_void
+	void		*dm_void
 );
 
 void
 odm_ant_div(
-	void		*p_dm_void
+	void		*dm_void
 );
 
 void
 odm_antsel_statistics(
-	void			*p_dm_void,
+	void			*dm_void,
+	void			*phy_info_void,
 	u8			antsel_tr_mux,
 	u32			mac_id,
 	u32			utility,
@@ -590,9 +540,9 @@ odm_antsel_statistics(
 
 void
 odm_process_rssi_for_ant_div(
-	void		*p_dm_void,
-	void		*p_phy_info_void,
-	void		*p_pkt_info_void
+	void		*dm_void,
+	void		*phy_info_void,
+	void		*pkt_info_void
 );
 
 
@@ -600,8 +550,8 @@ odm_process_rssi_for_ant_div(
 #if (DM_ODM_SUPPORT_TYPE & (ODM_WIN | ODM_CE))
 void
 odm_set_tx_ant_by_tx_info(
-	void			*p_dm_void,
-	u8			*p_desc,
+	void			*dm_void,
+	u8			*desc,
 	u8			mac_id
 );
 
@@ -629,18 +579,18 @@ odm_set_tx_ant_by_tx_info_hal(
 
 void
 odm_ant_div_config(
-	void		*p_dm_void
+	void		*dm_void
 );
 
 void
 odm_ant_div_timers(
-	void		*p_dm_void,
+	void		*dm_void,
 	u8		state
 );
 
 void
 phydm_antdiv_debug(
-	void		*p_dm_void,
+	void		*dm_void,
 	u32		*const dm_value,
 	u32		*_used,
 	char			*output,
@@ -651,17 +601,17 @@ phydm_antdiv_debug(
 
 void
 odm_ant_div_reset(
-	void		*p_dm_void
+	void		*dm_void
 );
 
 void
 odm_antenna_diversity_init(
-	void		*p_dm_void
+	void		*dm_void
 );
 
 void
 odm_antenna_diversity(
-	void		*p_dm_void
+	void		*dm_void
 );
 
 #endif /*#ifndef	__ODMANTDIV_H__*/

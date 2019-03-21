@@ -25,23 +25,6 @@
 /*#define SDIO_DEBUG_IO 1*/
 
 /*
- * Align size to guarantee I/O would be done in one command,
- * only align TX and RX FIFO size.
- */
-static size_t sdio_cmd53_align_size(size_t len)
-{
-	u32 domain;
-
-
-	if (len <= 512)
-		return len;
-
-	len = ((len + 511) / 512) * 512;
-
-	return len;
-}
-
-/*
  * For Core I/O API
  */
 
@@ -96,7 +79,7 @@ static s32 _sdio_read_port(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *mem
 	rxaddr = rtw_halmac_sdio_get_rx_addr(d, &hal->SdioRxFIFOCnt);
 
 	/* align size to guarantee I/O would be done in one command */
-	buflen = sdio_cmd53_align_size(cnt);
+	buflen = rtw_sdio_cmd53_align_size(d, cnt);
 
 	if (buflen >= (MAX_RECVBUF_SZ + RECVBUFF_ALIGN_SZ)) {
 		RTW_INFO("%s [ERROR] buflen(%zu) > skb_len(%d), may cause memory overwrite\n"
@@ -116,16 +99,15 @@ static u32 _sdio_read_port(
 	u32 cnt,
 	u8 *mem)
 {
+	struct dvobj_priv *d = pintfhdl->pintf_dev;
 	PADAPTER padapter = pintfhdl->padapter;
-	PSDIO_DATA psdio = &adapter_to_dvobj(padapter)->intf_data;
 	HAL_DATA_TYPE	*pHalData = GET_HAL_DATA(padapter);
 	s32 err;
 
-	addr = rtw_halmac_sdio_get_rx_addr(adapter_to_dvobj(padapter), &pHalData->SdioRxFIFOCnt);
+	addr = rtw_halmac_sdio_get_rx_addr(d, &pHalData->SdioRxFIFOCnt);
 
 	cnt = _RND4(cnt);
-	if (cnt > psdio->block_transfer_len)
-		cnt = _RND(cnt, psdio->block_transfer_len);
+	cnt = rtw_sdio_cmd53_align_size(d, cnt);
 
 	err = _sd_read(pintfhdl, addr, cnt, mem);
 	/*err = sd_read(pintfhdl, addr, cnt, mem);*/
@@ -195,7 +177,7 @@ u32 rtl8821cs_write_port(struct dvobj_priv *d, u32 cnt, u8 *mem)
 		goto exit;
 
 	/* align size to guarantee I/O would be done in one command */
-	txsize = sdio_cmd53_align_size(cnt);
+	txsize = rtw_sdio_cmd53_align_size(d, cnt);
 
 	ret = rtw_sdio_write_cmd53(d, txaddr, mem, txsize);
 
@@ -257,12 +239,10 @@ static u32 sdio_write_port(
 	u8 *mem)
 {
 	PADAPTER padapter;
-	PSDIO_DATA psdio;
 	s32 err;
 	struct xmit_buf *xmitbuf = (struct xmit_buf *)mem;
 
 	padapter = pintfhdl->padapter;
-	psdio = &adapter_to_dvobj(padapter)->intf_data;
 
 	if (!rtw_is_hw_init_completed(padapter)) {
 		RTW_INFO("%s [addr=0x%x cnt=%d] padapter->hw_init_completed == _FALSE\n", __func__, addr, cnt);
@@ -277,9 +257,7 @@ static u32 sdio_write_port(
 		return _FAIL;
 	}
 
-	if (cnt > psdio->block_transfer_len)
-		cnt = _RND(cnt, psdio->block_transfer_len);
-	/*	cnt = sdio_align_size(cnt); */
+	cnt = rtw_sdio_cmd53_align_size(adapter_to_dvobj(padapter), cnt);
 
 	err = sd_write(pintfhdl, addr, cnt, xmitbuf->pdata);
 
@@ -344,7 +322,7 @@ static u32 sd_recv_rxfifo(PADAPTER padapter, u32 size, struct recv_buf **recvbuf
 	precvpriv = &padapter->recvpriv;
 	precvbuf = rtw_dequeue_recvbuf(&precvpriv->free_recv_buf_queue);
 	if (precvbuf == NULL) {
-		RTW_ERR("%s: recvbuf unavailable\n", __func__);
+		/*RTW_ERR("%s: recvbuf unavailable\n", __func__);*/
 		return RTW_RBUF_UNAVAIL;
 	}
 
@@ -402,7 +380,7 @@ static u32 sd_recv_and_drop(PADAPTER adapter, u32 size)
 	s32 ret = _FAIL;
 
 	readsize = RND4(size);
-	buflen = sdio_cmd53_align_size(readsize);
+	buflen = rtw_sdio_cmd53_align_size(adapter_to_dvobj(adapter), readsize);
 
 	if (buflen > MAX_RECVBUF_SZ + RECVBUFF_ALIGN_SZ) {
 		RTW_ERR(FUNC_ADPT_FMT" %u\n", FUNC_ADPT_ARG(adapter), readsize);
@@ -437,7 +415,7 @@ static struct recv_buf *sd_recv_rxfifo(PADAPTER padapter, u32 size)
 
 	/*1.alloc skb*/
 	/* align to block size*/
-	allocsize = _RND(readsize, adapter_to_dvobj(padapter)->intf_data.block_transfer_len);
+	allocsize = _RND(readsize, rtw_sdio_get_block_size(adapter_to_dvobj(padapter)));
 
 	ppkt = rtw_skb_alloc(allocsize);
 
@@ -461,7 +439,7 @@ static struct recv_buf *sd_recv_rxfifo(PADAPTER padapter, u32 size)
 	precvbuf = rtw_dequeue_recvbuf(&precvpriv->free_recv_buf_queue);
 	if (precvbuf == NULL) {
 		rtw_skb_free(ppkt);
-		RTW_INFO("%s: alloc recvbuf FAIL!\n", __func__);
+		/*RTW_INFO("%s: alloc recvbuf FAIL!\n", __func__);*/
 		return NULL;
 	}
 
@@ -484,7 +462,7 @@ static struct recv_buf *sd_recv_rxfifo(PADAPTER adapter, u32 size)
 {
 	struct recv_priv *recvpriv;
 	struct recv_buf	*recvbuf;
-	u32 readsz, blksz, bufsz;
+	u32 readsz, bufsz;
 	u8 *rbuf;
 	_pkt *pkt;
 	s32 ret;
@@ -497,11 +475,7 @@ static struct recv_buf *sd_recv_rxfifo(PADAPTER adapter, u32 size)
 	readsz = RND4(size);
 
 	/* round to block size */
-	blksz = adapter_to_dvobj(adapter)->intf_data.block_transfer_len;
-	if (readsz > blksz)
-		bufsz = _RND(readsz, blksz);
-	else
-		bufsz = readsz;
+	bufsz = rtw_sdio_cmd53_align_size(adapter_to_dvobj(padapter), readsz);
 
 	/*1.alloc recvbuf*/
 	recvpriv = &adapter->recvpriv;
@@ -665,7 +639,7 @@ void sd_int_dpc(PADAPTER adapter)
 					}
 
 					alloc_fail_time++;
-					RTW_ERR("%s: recv fail!(time=%d)\n", __func__, alloc_fail_time);
+					/*RTW_ERR("%s: recv fail!(time=%d)\n", __func__, alloc_fail_time);*/
 					if (alloc_fail_time >= 10) {
 						if (sd_recv_and_drop(adapter, phal_Data->SdioRxFIFOSize) == RTW_SDIO_READ_PORT_FAIL) {
 							RTW_ERR("%s: sd_recv_and_drop - SDIO read port failed\n", __func__);

@@ -24,6 +24,8 @@
 #define _KBASE_IPA_VINSTR_COMMON_H_
 
 #include "mali_kbase.h"
+#include "mali_kbase_hwcnt_virtualizer.h"
+#include "mali_kbase_hwcnt_types.h"
 
 /* Maximum number of IPA groups for an IPA model. */
 #define KBASE_IPA_MAX_GROUP_DEF_NUM  16
@@ -49,8 +51,8 @@ typedef u32 (*kbase_ipa_get_active_cycles_callback)(struct kbase_ipa_model_vinst
  * @groups_def_num:      Number of elements in the array of IPA groups.
  * @get_active_cycles:   Callback to return number of active cycles during
  *                       counter sample period
- * @vinstr_cli:          vinstr client handle
- * @vinstr_buffer:       buffer to dump hardware counters onto
+ * @hvirt_cli:           hardware counter virtualizer client handle
+ * @dump_buf:            buffer to dump hardware counters onto
  * @reference_voltage:   voltage, in mV, of the operating point used when
  *                       deriving the power model coefficients. Range approx
  *                       0.1V - 5V (~= 8V): 2^7 <= reference_voltage <= 2^13
@@ -72,8 +74,8 @@ struct kbase_ipa_model_vinstr_data {
 	const struct kbase_ipa_group *groups_def;
 	size_t groups_def_num;
 	kbase_ipa_get_active_cycles_callback get_active_cycles;
-	struct kbase_vinstr_client *vinstr_cli;
-	void *vinstr_buffer;
+	struct kbase_hwcnt_virtualizer_client *hvirt_cli;
+	struct kbase_hwcnt_dump_buffer dump_buf;
 	s32 reference_voltage;
 	s32 scaling_factor;
 	s32 min_sample_cycles;
@@ -96,11 +98,12 @@ struct kbase_ipa_group {
 };
 
 /**
- * sum_all_shader_cores() - sum a counter over all cores
- * @model_data		pointer to model data
- * @coeff		model coefficient. Unity is ~2^20, so range approx
- * +/- 4.0: -2^22 < coeff < 2^22
- * @counter     offset in bytes of the counter used to calculate energy for IPA group
+ * kbase_ipa_sum_all_shader_cores() - sum a counter over all cores
+ * @model_data:		pointer to model data
+ * @coeff:		model coefficient. Unity is ~2^20, so range approx
+ *			+/- 4.0: -2^22 < coeff < 2^22
+ * @counter		offset in bytes of the counter used to calculate energy
+ *			for IPA group
  *
  * Calculate energy estimation based on hardware counter `counter'
  * across all shader cores.
@@ -112,11 +115,29 @@ s64 kbase_ipa_sum_all_shader_cores(
 	s32 coeff, u32 counter);
 
 /**
- * sum_single_counter() - sum a single counter
- * @model_data		pointer to model data
- * @coeff		model coefficient. Unity is ~2^20, so range approx
- * +/- 4.0: -2^22 < coeff < 2^22
- * @counter     offset in bytes of the counter used to calculate energy for IPA group
+ * kbase_ipa_sum_all_memsys_blocks() - sum a counter over all mem system blocks
+ * @model_data:		pointer to model data
+ * @coeff:		model coefficient. Unity is ~2^20, so range approx
+ *			+/- 4.0: -2^22 < coeff < 2^22
+ * @counter:		offset in bytes of the counter used to calculate energy
+ *			for IPA group
+ *
+ * Calculate energy estimation based on hardware counter `counter' across all
+ * memory system blocks.
+ *
+ * Return: Sum of counter values. Range: -2^51 < ret < 2^51
+ */
+s64 kbase_ipa_sum_all_memsys_blocks(
+	struct kbase_ipa_model_vinstr_data *model_data,
+	s32 coeff, u32 counter);
+
+/**
+ * kbase_ipa_single_counter() - sum a single counter
+ * @model_data:		pointer to model data
+ * @coeff:		model coefficient. Unity is ~2^20, so range approx
+ *			+/- 4.0: -2^22 < coeff < 2^22
+ * @counter:		offset in bytes of the counter used to calculate energy
+ *			for IPA group
  *
  * Calculate energy estimation based on hardware counter `counter'.
  *

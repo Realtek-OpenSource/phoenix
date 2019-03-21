@@ -313,7 +313,6 @@ void rtw_os_xmit_schedule(_adapter *padapter)
 static bool rtw_check_xmit_resource(_adapter *padapter, _pkt *pkt)
 {
 	bool busy = _FALSE;
-	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 35))
 	u16	qidx;
 
@@ -404,9 +403,9 @@ int rtw_mlcst2unicst(_adapter *padapter, struct sk_buff *skb)
 		}
 
 		/* avoid come from STA1 and send back STA1 */
-		if (_rtw_memcmp(psta->cmn.mac_addr, &skb->data[6], 6) == _TRUE
-			|| _rtw_memcmp(psta->cmn.mac_addr, null_addr, 6) == _TRUE
-			|| _rtw_memcmp(psta->cmn.mac_addr, bc_addr, 6) == _TRUE
+		if (_rtw_memcmp(psta->cmn.mac_addr, &skb->data[6], ETH_ALEN) == _TRUE
+			|| _rtw_memcmp(psta->cmn.mac_addr, null_addr, ETH_ALEN) == _TRUE
+			|| _rtw_memcmp(psta->cmn.mac_addr, bc_addr, ETH_ALEN) == _TRUE
 		) {
 			DBG_COUNTER(padapter->tx_logs.os_tx_m2u_ignore_self);
 			continue;
@@ -417,7 +416,7 @@ int rtw_mlcst2unicst(_adapter *padapter, struct sk_buff *skb)
 		newskb = rtw_skb_copy(skb);
 
 		if (newskb) {
-			_rtw_memcpy(newskb->data, psta->cmn.mac_addr, 6);
+			_rtw_memcpy(newskb->data, psta->cmn.mac_addr, ETH_ALEN);
 			res = rtw_xmit(padapter, &newskb);
 			if (res < 0) {
 				DBG_COUNTER(padapter->tx_logs.os_tx_m2u_entry_err_xmit);
@@ -445,14 +444,9 @@ int _rtw_xmit_entry(_pkt *pkt, _nic_hdl pnetdev)
 	_adapter *padapter = (_adapter *)rtw_netdev_priv(pnetdev);
 	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
 #ifdef CONFIG_TX_MCAST2UNI
-	struct mlme_priv	*pmlmepriv = &padapter->mlmepriv;
 	extern int rtw_mc2u_disable;
 #endif /* CONFIG_TX_MCAST2UNI	 */
 	s32 res = 0;
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 35))
-	u16 queue;
-#endif
-
 
 	if (padapter->registrypriv.mp_mode) {
 		RTW_INFO("MP_TX_DROP_OS_FRAME\n");
@@ -472,7 +466,7 @@ int _rtw_xmit_entry(_pkt *pkt, _nic_hdl pnetdev)
 
 #ifdef CONFIG_TX_MCAST2UNI
 	if (!rtw_mc2u_disable
-		&& (MLME_IS_AP(padapter) || MLME_IS_MESH(padapter))
+		&& MLME_IS_AP(padapter)
 		&& (IP_MCAST_MAC(pkt->data)
 			|| ICMPV6_MCAST_MAC(pkt->data)
 			#ifdef CONFIG_TX_BCAST2UNI

@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2016 - 2017 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2016 - 2018 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -22,42 +22,44 @@
 #if HALMAC_8821C_SUPPORT
 
 enum halmac_ret_status
-halmac_mac_power_switch_8821c_sdio(
-	IN struct halmac_adapter *adapter,
-	IN enum halmac_mac_power pwr
-);
+mac_pwr_switch_sdio_8821c(struct halmac_adapter *adapter,
+			  enum halmac_mac_power pwr);
 
 enum halmac_ret_status
-halmac_tx_allowed_8821c_sdio(
-	IN struct halmac_adapter *adapter,
-	IN u8 *buf,
-	IN u32 size
-);
+tx_allowed_sdio_8821c(struct halmac_adapter *adapter, u8 *buf, u32 size);
+
+u8
+reg_r8_sdio_8821c(struct halmac_adapter *adapter, u32 offset);
 
 enum halmac_ret_status
-halmac_phy_cfg_8821c_sdio(
-	IN struct halmac_adapter *adapter,
-	IN enum halmac_intf_phy_platform pltfm
-);
+reg_w8_sdio_8821c(struct halmac_adapter *adapter, u32 offset, u8 value);
+
+u16
+reg_r16_sdio_8821c(struct halmac_adapter *adapter, u32 offset);
 
 enum halmac_ret_status
-halmac_pcie_switch_8821c_sdio(
-	IN struct halmac_adapter *adapter,
-	IN enum halmac_pcie_cfg	cfg
-);
+reg_w16_sdio_8821c(struct halmac_adapter *adapter, u32 offset, u16 val);
+
+u32
+reg_r32_sdio_8821c(struct halmac_adapter *adapter, u32 offset);
 
 enum halmac_ret_status
-halmac_interface_integration_tuning_8821c_sdio(
-	IN struct halmac_adapter *adapter
-);
+reg_w32_sdio_8821c(struct halmac_adapter *adapter, u32 offset, u32 val);
 
 enum halmac_ret_status
-halmac_get_sdio_tx_addr_8821c_sdio(
-	IN struct halmac_adapter *adapter,
-	IN u8 *buf,
-	IN u32 size,
-	OUT u32 *cmd53_addr
-);
+phy_cfg_sdio_8821c(struct halmac_adapter *adapter,
+		   enum halmac_intf_phy_platform pltfm);
+
+enum halmac_ret_status
+pcie_switch_sdio_8821c(struct halmac_adapter *adapter,
+		       enum halmac_pcie_cfg cfg);
+
+enum halmac_ret_status
+intf_tun_sdio_8821c(struct halmac_adapter *adapter);
+
+enum halmac_ret_status
+get_sdio_tx_addr_8821c(struct halmac_adapter *adapter, u8 *buf, u32 size,
+		       u32 *cmd53_addr);
 
 #endif /* HALMAC_8821C_SUPPORT */
 

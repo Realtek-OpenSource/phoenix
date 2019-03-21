@@ -94,7 +94,10 @@ query_free_page:
 	}
 
 #ifdef CONFIG_CHECK_LEAVE_LPS
-	traffic_check_for_leave_lps(adapter, _TRUE, pxmitbuf->agg_num);
+	#ifdef CONFIG_LPS_CHK_BY_TP
+	if (!adapter_to_pwrctl(adapter)->lps_chk_by_tp)
+	#endif
+		traffic_check_for_leave_lps(adapter, _TRUE, pxmitbuf->agg_num);
 #endif
 
 	if (_TRUE == rtw_is_xmit_blocked(adapter)) {

@@ -48,6 +48,17 @@
 	void	rtl8192ee_set_intf_ops(struct _io_ops	*pops);
 #endif
 
+#ifdef CONFIG_RTL8192F
+	u32	rtl8192fe_init_desc_ring(_adapter *padapter);
+	u32	rtl8192fe_free_desc_ring(_adapter *padapter);
+	void	rtl8192fe_reset_desc_ring(_adapter *padapter);
+	int	rtl8192fe_interrupt(PADAPTER Adapter);
+	void	rtl8192fe_recv_tasklet(void *priv);
+	void	rtl8192fe_prepare_bcn_tasklet(void *priv);
+	void	rtl8192fe_set_intf_ops(struct _io_ops	*pops);
+	u8 check_tx_desc_resource(_adapter *padapter, int prio);
+#endif
+
 #ifdef CONFIG_RTL8723B
 	u32	rtl8723be_init_desc_ring(_adapter *padapter);
 	u32	rtl8723be_free_desc_ring(_adapter *padapter);

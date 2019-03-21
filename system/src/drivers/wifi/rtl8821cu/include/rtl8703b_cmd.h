@@ -177,7 +177,6 @@ enum h2c_cmd_8703B {
 /* host message to firmware cmd */
 void rtl8703b_set_FwPwrMode_cmd(PADAPTER padapter, u8 Mode);
 void rtl8703b_set_FwJoinBssRpt_cmd(PADAPTER padapter, u8 mstatus);
-void rtl8703b_set_rssi_cmd(PADAPTER padapter, u8 *param);
 void rtl8703b_fw_try_ap_cmd(PADAPTER padapter, u32 need_ack);
 /* s32 rtl8703b_set_lowpwr_lps_cmd(PADAPTER padapter, u8 enable); */
 void rtl8703b_set_FwPsTuneParam_cmd(PADAPTER padapter);

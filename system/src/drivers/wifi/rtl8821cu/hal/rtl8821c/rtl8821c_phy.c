@@ -284,7 +284,7 @@ static u8 init_rf_reg(PADAPTER adapter)
 u8 rtl8821c_phy_init(PADAPTER adapter)
 {
 	PHAL_DATA_TYPE hal = GET_HAL_DATA(adapter);
-	struct PHY_DM_STRUCT *phydm = &hal->odmpriv;
+	struct dm_struct *phydm = &hal->odmpriv;
 
 	bb_rf_register_definition(adapter);
 
@@ -365,7 +365,7 @@ void rtl8821c_write_bb_reg(PADAPTER adapter, u32 addr, u32 mask, u32 val)
 
 u32 rtl8821c_read_rf_reg(PADAPTER adapter, enum rf_path path, u32 addr, u32 mask)
 {
-	struct PHY_DM_STRUCT *phydm = adapter_to_phydm(adapter);
+	struct dm_struct *phydm = adapter_to_phydm(adapter);
 	u32 val = 0;
 
 	val = config_phydm_read_rf_reg_8821c(phydm, path, addr, mask);
@@ -377,7 +377,7 @@ u32 rtl8821c_read_rf_reg(PADAPTER adapter, enum rf_path path, u32 addr, u32 mask
 
 void rtl8821c_write_rf_reg(PADAPTER adapter, enum rf_path path, u32 addr, u32 mask, u32 val)
 {
-	struct PHY_DM_STRUCT *phydm = adapter_to_phydm(adapter);
+	struct dm_struct *phydm = adapter_to_phydm(adapter);
 	u8 ret;
 
 	ret = config_phydm_write_rf_reg_8821c(phydm, path, addr, mask, val);
@@ -390,7 +390,7 @@ void rtl8821c_write_rf_reg(PADAPTER adapter, enum rf_path path, u32 addr, u32 ma
 void rtl8821c_set_tx_power_level(PADAPTER adapter, u8 channel)
 {
 	u8 path = RF_PATH_A;
-	struct PHY_DM_STRUCT *phydm = adapter_to_phydm(adapter);
+	struct dm_struct *phydm = adapter_to_phydm(adapter);
 
 	/*((hal->RFEType == 2) || (hal->RFEType == 4) || (hal->RFEType == 7))*/
 	if ((channel <= 14) && (SWITCH_TO_BTG == query_phydm_default_rf_set_8821c(phydm)))
@@ -418,7 +418,7 @@ void rtl8821c_get_tx_power_level(PADAPTER adapter, s32 *power)
  /*#define DBG_SET_TX_POWER_IDX*/
 void rtl8821c_set_tx_power_index(PADAPTER adapter, u32 powerindex, enum rf_path rfpath, u8 rate)
 {
-	struct PHY_DM_STRUCT *phydm = adapter_to_phydm(adapter);
+	struct dm_struct *phydm = adapter_to_phydm(adapter);
 	u8 shift = 0;
 	u8 hw_rate_idx;
 	static u32 index = 0;
@@ -487,7 +487,8 @@ void rtl8821c_set_tx_power_index(PADAPTER adapter, u32 powerindex, enum rf_path 
 u8 rtl8821c_get_tx_power_index(PADAPTER adapter, enum rf_path rfpath, u8 rate, u8 bandwidth, u8 channel, struct txpwr_idx_comp *tic)
 {
 	PHAL_DATA_TYPE hal = GET_HAL_DATA(adapter);
-	u8 base_idx = 0, power_idx = 0;
+	s16 power_idx;
+	u8 base_idx = 0;
 	s8 by_rate_diff = 0, limit = 0, tpt_offset = 0, extra_bias = 0;
 	u8 bIn24G = _FALSE;
 
@@ -517,7 +518,9 @@ u8 rtl8821c_get_tx_power_index(PADAPTER adapter, enum rf_path rfpath, u8 rate, u
 #endif
 #endif
 
-	if (power_idx > MAX_POWER_INDEX)
+	if (power_idx < 0)
+		power_idx = 0;
+	else if (power_idx > MAX_POWER_INDEX)
 		power_idx = MAX_POWER_INDEX;
 
 	return power_idx;
@@ -614,8 +617,8 @@ static void mac_switch_bandwidth(PADAPTER adapter, u8 pri_ch_idx)
 u32 phy_get_tx_bbswing_8812c(_adapter *adapter, BAND_TYPE band, u8 rf_path)
 {
 	HAL_DATA_TYPE	*pHalData = GET_HAL_DATA(adapter);
-	struct PHY_DM_STRUCT		*pDM_Odm = &pHalData->odmpriv;
-	struct odm_rf_calibration_structure	*pRFCalibrateInfo = &(pDM_Odm->rf_calibrate_info);
+	struct dm_struct		*pDM_Odm = &pHalData->odmpriv;
+	struct dm_rf_calibration_struct	*pRFCalibrateInfo = &(pDM_Odm->rf_calibrate_info);
 	s8	bbSwing_2G = -1 * GetRegTxBBSwing_2G(adapter);
 	s8	bbSwing_5G = -1 * GetRegTxBBSwing_5G(adapter);
 	u32	out = 0x200;
@@ -734,8 +737,8 @@ u32 phy_get_tx_bbswing_8812c(_adapter *adapter, BAND_TYPE band, u8 rf_path)
 void phy_set_bb_swing_by_band_8812c(_adapter *adapter, u8 band, u8 previous_band)
 {
 	s8 BBDiffBetweenBand = 0;
-	struct PHY_DM_STRUCT *pDM_Odm = adapter_to_phydm(adapter);
-	struct odm_rf_calibration_structure *pRFCalibrateInfo = &(pDM_Odm->rf_calibrate_info);
+	struct dm_struct *pDM_Odm = adapter_to_phydm(adapter);
+	struct dm_rf_calibration_struct *pRFCalibrateInfo = &(pDM_Odm->rf_calibrate_info);
 
 	phy_set_bb_reg(adapter, rA_TxScale_Jaguar, 0xFFE00000,
 			phy_get_tx_bbswing_8812c(adapter, (BAND_TYPE)band, RF_PATH_A)); /* 0xC1C[31:21] */
@@ -759,7 +762,7 @@ void phy_switch_wireless_band_8821c(_adapter *adapter)
 {
 	u8 ret = 0;
 	PHAL_DATA_TYPE hal_data = GET_HAL_DATA(adapter);
-	struct PHY_DM_STRUCT *pDM_Odm = &hal_data->odmpriv;
+	struct dm_struct *pDM_Odm = &hal_data->odmpriv;
 	u8 current_band = hal_data->current_band_type;
 
 	if (need_switch_band(adapter, hal_data->current_channel) == _TRUE) {
@@ -798,7 +801,7 @@ void phy_switch_wireless_band_8821c(_adapter *adapter)
 void rtl8821c_switch_chnl_and_set_bw(PADAPTER adapter)
 {
 	PHAL_DATA_TYPE hal = GET_HAL_DATA(adapter);
-	struct PHY_DM_STRUCT *pDM_Odm = &hal->odmpriv;
+	struct dm_struct *pDM_Odm = &hal->odmpriv;
 	u8 center_ch = 0, ret = 0;
 
 	if (adapter->bNotifyChannelChange) {
@@ -1093,7 +1096,7 @@ static void _config_beamformer_su(PADAPTER adapter, struct beamformer_entry *bfe
 	rtw_write8(adapter, REG_SND_PTCL_CTRL_8821C, 0xDB);
 
 	/* MAC address/Partial AID of Beamformer */
-	for (i = 0; i < 6; i++)
+	for (i = 0; i < ETH_ALEN; i++)
 		rtw_write8(adapter, addr_bfer_info+i, bfer->mac_addr[i]);
 
 	/* CSI report parameters of Beamformer */
@@ -1163,7 +1166,7 @@ static void _config_beamformer_mu(PADAPTER adapter, struct beamformer_entry *bfe
 			csi_param, bfer->aid & 0xfff, HAL_CSI_SEG_4K,
 			bfer->mac_addr);
 
-	bf_info->cur_csi_rpt_rate = HALMAC_OFDM54;
+	bf_info->cur_csi_rpt_rate = HALMAC_OFDM6;
 	rtw_halmac_bf_cfg_sounding(adapter_to_dvobj(adapter), HAL_BFEE,
 			bf_info->cur_csi_rpt_rate);
 

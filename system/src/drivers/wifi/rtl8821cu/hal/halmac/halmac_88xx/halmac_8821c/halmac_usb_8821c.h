@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2016 - 2017 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2016 - 2018 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -20,31 +20,22 @@
 
 #if HALMAC_8821C_SUPPORT
 
-extern struct halmac_intf_phy_para HALMAC_RTL8821C_USB2_PHY[];
-extern struct halmac_intf_phy_para HALMAC_RTL8821C_USB3_PHY[];
+extern struct halmac_intf_phy_para usb2_phy_param_8821c[];
+extern struct halmac_intf_phy_para usb3_phy_param_8821c[];
 
 enum halmac_ret_status
-halmac_mac_power_switch_8821c_usb(
-	IN struct halmac_adapter *adapter,
-	IN enum halmac_mac_power pwr
-);
+mac_pwr_switch_usb_8821c(struct halmac_adapter *adapter,
+			 enum halmac_mac_power pwr);
 
 enum halmac_ret_status
-halmac_phy_cfg_8821c_usb(
-	IN struct halmac_adapter *adapter,
-	IN enum halmac_intf_phy_platform pltfm
-);
+phy_cfg_usb_8821c(struct halmac_adapter *adapter,
+		  enum halmac_intf_phy_platform pltfm);
 
 enum halmac_ret_status
-halmac_pcie_switch_8821c_usb(
-	IN struct halmac_adapter *adapter,
-	IN enum halmac_pcie_cfg	cfg
-);
+pcie_switch_usb_8821c(struct halmac_adapter *adapter, enum halmac_pcie_cfg cfg);
 
 enum halmac_ret_status
-halmac_interface_integration_tuning_8821c_usb(
-	IN struct halmac_adapter *adapter
-);
+intf_tun_usb_8821c(struct halmac_adapter *adapter);
 
 #endif /* HALMAC_8821C_SUPPORT */
 

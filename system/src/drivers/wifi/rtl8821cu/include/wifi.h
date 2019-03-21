@@ -44,6 +44,7 @@
 #define WLAN_MAX_ETHFRM_LEN	1514
 #define WLAN_ETHHDR_LEN		14
 #define WLAN_WMM_LEN		24
+#define VENDOR_NAME_LEN		20
 
 #ifdef CONFIG_APPEND_VENDOR_IE_ENABLE
 #define WLAN_MAX_VENDOR_IE_LEN 255
@@ -92,6 +93,7 @@ enum WIFI_FRAME_SUBTYPE {
 	/* below is for control frame */
 	WIFI_BF_REPORT_POLL = (BIT(6) | WIFI_CTRL_TYPE),
 	WIFI_NDPA         = (BIT(6) | BIT(4) | WIFI_CTRL_TYPE),
+	WIFI_BAR            = (BIT(7) | WIFI_CTRL_TYPE),
 	WIFI_PSPOLL         = (BIT(7) | BIT(5) | WIFI_CTRL_TYPE),
 	WIFI_RTS            = (BIT(7) | BIT(5) | BIT(4) | WIFI_CTRL_TYPE),
 	WIFI_CTS            = (BIT(7) | BIT(6) | WIFI_CTRL_TYPE),
@@ -400,31 +402,26 @@ enum WIFI_REG_DOMAIN {
 	} while (0)
 
 
-#define SetPriority(pbuf, tid)	\
-	do	{	\
-		*(unsigned short *)(pbuf) |= cpu_to_le16(tid & 0xf); \
-	} while (0)
+/* QoS control field */
+#define SetPriority(qc, tid)	SET_BITS_TO_LE_2BYTE(((u8 *)(qc)), 0, 4, tid)
+#define SetEOSP(qc, eosp)		SET_BITS_TO_LE_2BYTE(((u8 *)(qc)), 4, 1, eosp)
+#define SetAckpolicy(qc, ack)	SET_BITS_TO_LE_2BYTE(((u8 *)(qc)), 5, 2, ack)
+#define SetAMsdu(qc, amsdu)		SET_BITS_TO_LE_2BYTE(((u8 *)(qc)), 7, 1, amsdu)
 
-#define GetPriority(pbuf)	((le16_to_cpu(*(unsigned short *)(pbuf))) & 0xf)
+#define GetPriority(qc)		LE_BITS_TO_2BYTE(((u8 *)(qc)), 0, 4)
+#define GetEOSP(qc)			LE_BITS_TO_2BYTE(((u8 *)(qc)), 4, 1)
+#define GetAckpolicy(qc)	LE_BITS_TO_2BYTE(((u8 *)(qc)), 5, 2)
+#define GetAMsdu(qc)		LE_BITS_TO_2BYTE(((u8 *)(qc)), 7, 1)
 
-#define SetEOSP(pbuf, eosp)	\
-	do	{	\
-		*(unsigned short *)(pbuf) |= cpu_to_le16((eosp & 1) << 4); \
-	} while (0)
+/* QoS control field (MSTA only) */
+#define set_mctrl_present(qc, p)	SET_BITS_TO_LE_2BYTE(((u8 *)(qc)), 8, 1, p)
+#define set_mps_lv(qc, lv)			SET_BITS_TO_LE_2BYTE(((u8 *)(qc)), 9, 1, lv)
+#define set_rspi(qc, rspi)			SET_BITS_TO_LE_2BYTE(((u8 *)(qc)), 10, 1, rspi)
 
-#define SetAckpolicy(pbuf, ack)	\
-	do	{	\
-		*(unsigned short *)(pbuf) |= cpu_to_le16((ack & 3) << 5); \
-	} while (0)
+#define get_mctrl_present(qc)	LE_BITS_TO_2BYTE(((u8 *)(qc)), 8, 1)
+#define get_mps_lv(qc)			LE_BITS_TO_2BYTE(((u8 *)(qc)), 9, 1)
+#define get_rspi(qc)			LE_BITS_TO_2BYTE(((u8 *)(qc)), 10, 1)
 
-#define GetAckpolicy(pbuf) (((le16_to_cpu(*(unsigned short *)pbuf)) >> 5) & 0x3)
-
-#define GetAMsdu(pbuf) (((le16_to_cpu(*(unsigned short *)pbuf)) >> 7) & 0x1)
-
-#define SetAMsdu(pbuf, amsdu)	\
-	do	{	\
-		*(unsigned short *)(pbuf) |= cpu_to_le16((amsdu & 1) << 7); \
-	} while (0)
 
 #define GetAid(pbuf)	(cpu_to_le16(*(unsigned short *)((SIZE_PTR)(pbuf) + 2)) & 0x3fff)
 
@@ -446,7 +443,7 @@ enum WIFI_REG_DOMAIN {
 	  (addr[4] == 0xff) && (addr[5] == 0xff)) ? _TRUE : _FALSE \
 	)
 
-__inline static int IS_MCAST(unsigned char *da)
+__inline static int IS_MCAST(const u8 *da)
 {
 	if ((*da) & 0x01)
 		return _TRUE;
@@ -600,19 +597,22 @@ static inline int IsFrameTypeData(unsigned char *pframe)
 #define _CHLGETXT_IE_			16
 #define _SUPPORTED_CH_IE_		36
 #define _CH_SWTICH_ANNOUNCE_	37	/* Secondary Channel Offset */
+#define	_MEAS_REQ_IE_		38
+#define	_MEAS_RSP_IE_		39
 #define _RSN_IE_2_				48
 #define _SSN_IE_1_					221
 #define _ERPINFO_IE_			42
 #define _EXT_SUPPORTEDRATES_IE_	50
 
 #define _HT_CAPABILITY_IE_			45
-#define _MDIE_						54
-#define _FTIE_						55
+#define _MDIE_					54
+#define _FTIE_					55
 #define _TIMEOUT_ITVL_IE_			56
 #define _SRC_IE_				59
 #define _HT_EXTRA_INFO_IE_			61
 #define _HT_ADD_INFO_IE_			61 /* _HT_EXTRA_INFO_IE_ */
-#define _WAPI_IE_					68
+#define _WAPI_IE_				68
+#define _EID_RRM_EN_CAP_IE_			70
 
 
 /* #define EID_BSSCoexistence			72 */ /* 20/40 BSS Coexistence
@@ -755,9 +755,8 @@ typedef	enum _ELEMENT_ID {
 #define _WEP_WPA_MIXED_PRIVACY_ 6	/*  WEP + WPA */
 #endif
 
-#ifdef CONFIG_IEEE80211W
 #define _MME_IE_LENGTH_  18
-#endif /* CONFIG_IEEE80211W */
+
 /*-----------------------------------------------------------------------------
 				Below is the definition for WMM
 ------------------------------------------------------------------------------*/
@@ -1375,10 +1374,8 @@ enum P2P_PS_MODE {
 #define	WFD_DEVINFO_PC_TDLS					0x0080
 #define	WFD_DEVINFO_HDCP_SUPPORT			0x0100
 
-#ifdef CONFIG_TX_MCAST2UNI
 #define IP_MCAST_MAC(mac)		((mac[0] == 0x01) && (mac[1] == 0x00) && (mac[2] == 0x5e))
 #define ICMPV6_MCAST_MAC(mac)	((mac[0] == 0x33) && (mac[1] == 0x33) && (mac[2] != 0xff))
-#endif /* CONFIG_TX_MCAST2UNI */
 
 #ifdef CONFIG_IOCTL_CFG80211
 /* Regulatroy Domain */

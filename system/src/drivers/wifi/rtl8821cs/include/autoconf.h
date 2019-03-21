@@ -18,7 +18,6 @@
 #define CONFIG_IQK_MONITOR
 #define DBG_C2H_MAC_HIDDEN_RPT_HANDLE	1
 /*#define DBG_H2C_CONTENT*/
-/*#define DBG_DUMP_TSF_BY_PORT*/
 
 #ifndef DBG_MEM_ALLOC
 #define DBG_MEM_ALLOC
@@ -61,9 +60,17 @@
 /*
  * Wi-Fi Functions Config
  */
-#define CONFIG_80211N_HT
+
 #define CONFIG_RECV_REORDERING_CTRL
+
+#define CONFIG_80211N_HT
 #define CONFIG_80211AC_VHT
+#ifdef CONFIG_80211AC_VHT
+	#ifndef CONFIG_80211N_HT
+		#define CONFIG_80211N_HT
+	#endif
+#endif
+
 #define CONFIG_IEEE80211_BAND_5GHZ
 
 /* Set CONFIG_IOCTL_CFG80211 from Makefile */
@@ -109,7 +116,7 @@
 	/*#define CONFIG_P2P_IPS*/
 	#define CONFIG_P2P_OP_CHK_SOCIAL_CH
 	#define CONFIG_CFG80211_ONECHANNEL_UNDER_CONCURRENT  /* Replace CONFIG_P2P_CHK_INVITE_CH_LIST flag */
-	#define CONFIG_P2P_INVITE_IOT
+	/*#define CONFIG_P2P_INVITE_IOT*/
 #endif /* CONFIG_P2P */
 
 /* Set CONFIG_TDLS from Makefile */
@@ -128,22 +135,11 @@
 	#define CONFIG_TDLS_CH_SW
 #endif /* CONFIG_TDLS */
 
-/* Set CONFIG_CONCURRENT_MODE from Makefile */
-#ifdef CONFIG_CONCURRENT_MODE
-	/*#define CONFIG_HWPORT_SWAP*/		/* Port0->Sec , Port1->Pri */
-	/*#define CONFIG_RUNTIME_PORT_SWITCH*/
-	#ifndef CONFIG_RUNTIME_PORT_SWITCH
-	/*#define CONFIG_TSF_RESET_OFFLOAD*/	/* For 2 PORT TSF SYNC.  FW offload tsf sync*/
-	#endif
-	/*#define DBG_RUNTIME_PORT_SWITCH*/
-	#define CONFIG_SCAN_BACKOP
-#endif /* CONFIG_CONCURRENT_MODE */
+
+/*#define CONFIG_RTW_80211K*/
 
 #define CONFIG_LAYER2_ROAMING
 #define CONFIG_LAYER2_ROAMING_RESUME
-
-/*#define CONFIG_80211D*/
-
 
 /*
  * Hareware/Firmware Related Config
@@ -182,12 +178,16 @@
 #define CONFIG_SDIO_RX_COPY
 
 /*#define CONFIG_RECV_THREAD_MODE*/
+#ifdef CONFIG_RECV_THREAD_MODE
+#define RTW_RECV_THREAD_HIGH_PRIORITY
+#endif/*CONFIG_RECV_THREAD_MODE*/
 
 #ifdef CONFIG_RTW_NAPI
 #define CONFIG_RTW_NAPI_DYNAMIC
 #define CONFIG_RTW_NAPI_V2
 #endif
 
+/*#define CONFIG_BEAMFORMING*/ 
 
 #define CONFIG_REDUCE_TX_CPU_LOADING
 
@@ -201,7 +201,6 @@
 /*#define CONFIG_FILE_FWIMG*/
 #define CONFIG_LONG_DELAY_ISSUE
 /*#define CONFIG_PATCH_JOIN_WRONG_CHANNEL*/
-#define CONFIG_ATTEMPT_TO_FIX_AP_BEACON_ERROR
 
 
 /*
@@ -248,13 +247,18 @@
 	#define CONFIG_LPS_LCLK
 	#endif
 
-/*	#ifdef CONFIG_LPS
+	#ifdef CONFIG_LPS
 		#define CONFIG_CHECK_LEAVE_LPS
-		#ifndef CONFIG_PLATFORM_INTEL_BYT
-			#define CONFIG_LPS_SLOW_TRANSITION
+		/*#define CONFIG_LPS_CHK_BY_TP*/
+		#ifdef CONFIG_LPS_CHK_BY_TP
+			#define LPS_TX_TP_TH		12 /*Mbps*/
+			#define LPS_RX_TP_TH	12 /*Mbps*/
+			#define LPS_BI_TP_TH		12 /*Mbps*//*TX + RX*/
+			#define LPS_TP_CHK_CNT	5 /*10s*/
+			#define LPS_CHK_PKTS_TX 100
+			#define LPS_CHK_PKTS_RX 100
 		#endif
 	#endif
-*/
 
 	#ifdef CONFIG_LPS_LCLK
 	/*#define CONFIG_DETECT_CPWM_BY_POLLING*/
@@ -263,7 +267,7 @@
 	#define LPS_RPWM_WAIT_MS 300
 	#endif
 	#define CONFIG_LPS_LCLK_WD_TIMER /* Watch Dog timer in LPS LCLK */
-	#define CONFIG_LPS_PG
+	/*#define CONFIG_LPS_PG*/
 	#endif
 
 	#ifdef CONFIG_IPS

@@ -1,10 +1,10 @@
-cmd_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gator/driver/gator_events_net.o := ccache arm-linux-gnueabi-gcc -Wp,-MD,/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gator/driver/.gator_events_net.o.d  -nostdinc -isystem /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/bin/../lib/gcc/arm-linux-gnueabi/6.4.1/include -I./arch/arm/include -I./arch/arm/include/generated/uapi -I./arch/arm/include/generated  -I./include -I./arch/arm/include/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-rtd16xx/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-PIE -fno-dwarf2-cfi-asm -fno-omit-frame-pointer -mapcs -mno-sched-prolog -fno-ipa-sra -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=7 -march=armv8-a -msoft-float -Uarm -fno-delete-null-pointer-checks -Wno-frame-address -O2 --param=allow-store-data-races=0 -DCC_HAVE_ASM_GOTO -Wframe-larger-than=1024 -fstack-protector-strong -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fno-merge-all-constants -fmerge-constants -fno-stack-check -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -Werror=incompatible-pointer-types -DOLD_BLOCK_RQ_COMPLETE=0   -DMODULE  -DKBUILD_BASENAME='"gator_events_net"'  -DKBUILD_MODNAME='"gator"' -c -o /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gator/driver/.tmp_gator_events_net.o /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gator/driver/gator_events_net.c
+cmd_/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gator/driver/gator_events_net.o := ccache arm-linux-gnueabi-gcc -Wp,-MD,/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gator/driver/.gator_events_net.o.d  -nostdinc -isystem /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/bin/../lib/gcc/arm-linux-gnueabi/6.4.1/include -I./arch/arm/include -I./arch/arm/include/generated/uapi -I./arch/arm/include/generated  -I./include -I./arch/arm/include/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-rtd16xx/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-PIE -fno-dwarf2-cfi-asm -fno-omit-frame-pointer -mapcs -mno-sched-prolog -fno-ipa-sra -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=7 -march=armv8-a -msoft-float -Uarm -fno-delete-null-pointer-checks -Wno-frame-address -O2 --param=allow-store-data-races=0 -DCC_HAVE_ASM_GOTO -Wframe-larger-than=1024 -fstack-protector-strong -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fno-merge-all-constants -fmerge-constants -fno-stack-check -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -Werror=incompatible-pointer-types -DOLD_BLOCK_RQ_COMPLETE=0   -DMODULE  -DKBUILD_BASENAME='"gator_events_net"'  -DKBUILD_MODNAME='"gator"' -c -o /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gator/driver/.tmp_gator_events_net.o /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gator/driver/gator_events_net.c
 
-source_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gator/driver/gator_events_net.o := /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gator/driver/gator_events_net.c
+source_/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gator/driver/gator_events_net.o := /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gator/driver/gator_events_net.c
 
-deps_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gator/driver/gator_events_net.o := \
+deps_/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gator/driver/gator_events_net.o := \
     $(wildcard include/config/preempt/rt/full.h) \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gator/driver/gator.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gator/driver/gator.h \
     $(wildcard include/config/perf/events.h) \
     $(wildcard include/config/hw/perf/events.h) \
     $(wildcard include/config/cpu/freq.h) \
@@ -86,7 +86,7 @@ deps_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_D
     $(wildcard include/config/panic/timeout.h) \
     $(wildcard include/config/tracing.h) \
     $(wildcard include/config/ftrace/mcount/record.h) \
-  /home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/lib/gcc/arm-linux-gnueabi/6.4.1/include/stdarg.h \
+  /home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/lib/gcc/arm-linux-gnueabi/6.4.1/include/stdarg.h \
   include/linux/bitops.h \
   arch/arm/include/asm/bitops.h \
   include/linux/irqflags.h \
@@ -512,6 +512,7 @@ deps_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_D
     $(wildcard include/config/uevent/helper.h) \
     $(wildcard include/config/r8168.h) \
     $(wildcard include/config/r8169soc.h) \
+    $(wildcard include/config/rtd/1295/hwnat.h) \
     $(wildcard include/config/debug/kobject/release.h) \
   include/linux/sysfs.h \
   include/linux/kernfs.h \
@@ -1058,6 +1059,7 @@ deps_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_D
     $(wildcard include/config/persistent/keyrings.h) \
   include/uapi/linux/neighbour.h \
   include/linux/netlink.h \
+    $(wildcard include/config/rtl/819x.h) \
   include/net/scm.h \
     $(wildcard include/config/security/network.h) \
   include/linux/security.h \
@@ -1075,6 +1077,6 @@ deps_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_D
   include/uapi/linux/pkt_sched.h \
   include/linux/hashtable.h \
 
-/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gator/driver/gator_events_net.o: $(deps_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gator/driver/gator_events_net.o)
+/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gator/driver/gator_events_net.o: $(deps_/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gator/driver/gator_events_net.o)
 
-$(deps_/home1/Kay/SDK_release/1619/181123/trunk-9.0/trunk-9.0_Mjolnir_181123_SQA_Dailybuild_AOSP/phoenix/system/src/drivers/gator/driver/gator_events_net.o):
+$(deps_/home3/Kay3/ext_git/1619_ANDROID_P_AOSP/build_script/phoenix/system/src/drivers/gator/driver/gator_events_net.o):

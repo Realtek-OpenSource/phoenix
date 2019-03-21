@@ -90,7 +90,7 @@ rtl8723ds_InitSwLeds(
 )
 {
 #if 0
-	struct led_priv *pledpriv = &(padapter->ledpriv);
+	struct led_priv *pledpriv = adapter_to_led(padapter);
 
 	pledpriv->LedControlHandler = LedControlSDIO;
 
@@ -114,7 +114,7 @@ rtl8723ds_DeInitSwLeds(
 )
 {
 #if 0
-	struct led_priv	*ledpriv = &(padapter->ledpriv);
+	struct led_priv	*ledpriv = adapter_to_led(padapter);
 
 	DeInitLed871x(&(ledpriv->SwLed0));
 	DeInitLed871x(&(ledpriv->SwLed1));

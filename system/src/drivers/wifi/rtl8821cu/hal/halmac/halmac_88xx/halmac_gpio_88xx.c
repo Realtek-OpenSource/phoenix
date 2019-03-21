@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2016 - 2017 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2016 - 2018 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -18,7 +18,7 @@
 #if HALMAC_88XX_SUPPORT
 
 /**
- * halmac_pinmux_wl_led_mode_88xx() -control wlan led gpio function
+ * pinmux_wl_led_mode_88xx() -control wlan led gpio function
  * @adapter : the adapter of halmac
  * @mode : wlan led mode
  * Author : Ivan Lin
@@ -26,15 +26,13 @@
  * More details of status code can be found in prototype document
  */
 enum halmac_ret_status
-halmac_pinmux_wl_led_mode_88xx(
-	IN struct halmac_adapter *adapter,
-	IN enum halmac_wlled_mode mode
-)
+pinmux_wl_led_mode_88xx(struct halmac_adapter *adapter,
+			enum halmac_wlled_mode mode)
 {
 	u8 value8;
-	struct halmac_api *api = (struct halmac_api *)adapter->pHalmac_api;
+	struct halmac_api *api = (struct halmac_api *)adapter->halmac_api;
 
-	PLTFM_MSG_PRINT(HALMAC_DBG_TRACE, "[TRACE]%s ===>\n", __func__);
+	PLTFM_MSG_TRACE("[TRACE]%s ===>\n", __func__);
 
 	value8 = HALMAC_REG_R8(REG_LED_CFG + 2);
 	value8 &= ~(BIT(6));
@@ -60,13 +58,13 @@ halmac_pinmux_wl_led_mode_88xx(
 
 	HALMAC_REG_W8(REG_LED_CFG + 2, value8);
 
-	PLTFM_MSG_PRINT(HALMAC_DBG_TRACE, "[TRACE]%s <===\n", __func__);
+	PLTFM_MSG_TRACE("[TRACE]%s <===\n", __func__);
 
 	return HALMAC_RET_SUCCESS;
 }
 
 /**
- * halmac_pinmux_wl_led_sw_ctrl_88xx() -control wlan led on/off
+ * pinmux_wl_led_sw_ctrl_88xx() -control wlan led on/off
  * @adapter : the adapter of halmac
  * @on : on(1), off(0)
  * Author : Ivan Lin
@@ -74,13 +72,10 @@ halmac_pinmux_wl_led_mode_88xx(
  * More details of status code can be found in prototype document
  */
 void
-halmac_pinmux_wl_led_sw_ctrl_88xx(
-	IN struct halmac_adapter *adapter,
-	IN u8 on
-)
+pinmux_wl_led_sw_ctrl_88xx(struct halmac_adapter *adapter, u8 on)
 {
 	u8 value8;
-	struct halmac_api *api = (struct halmac_api *)adapter->pHalmac_api;
+	struct halmac_api *api = (struct halmac_api *)adapter->halmac_api;
 
 	value8 = HALMAC_REG_R8(REG_LED_CFG + 2);
 	value8 = (on == 0) ? value8 | BIT(3) : value8 & ~(BIT(3));
@@ -89,7 +84,7 @@ halmac_pinmux_wl_led_sw_ctrl_88xx(
 }
 
 /**
- * halmac_pinmux_sdio_int_polarity_88xx() -control sdio int polarity
+ * pinmux_sdio_int_polarity_88xx() -control sdio int polarity
  * @adapter : the adapter of halmac
  * @low_active : low active(1), high active(0)
  * Author : Ivan Lin
@@ -97,13 +92,10 @@ halmac_pinmux_wl_led_sw_ctrl_88xx(
  * More details of status code can be found in prototype document
  */
 void
-halmac_pinmux_sdio_int_polarity_88xx(
-	IN struct halmac_adapter *adapter,
-	IN u8 low_active
-)
+pinmux_sdio_int_polarity_88xx(struct halmac_adapter *adapter, u8 low_active)
 {
 	u8 value8;
-	struct halmac_api *api = (struct halmac_api *)adapter->pHalmac_api;
+	struct halmac_api *api = (struct halmac_api *)adapter->halmac_api;
 
 	value8 = HALMAC_REG_R8(REG_SYS_SDIO_CTRL + 2);
 	value8 = (low_active == 0) ? value8 | BIT(3) : value8 & ~(BIT(3));
@@ -112,7 +104,7 @@ halmac_pinmux_sdio_int_polarity_88xx(
 }
 
 /**
- * halmac_pinmux_gpio_mode_88xx() -control gpio io mode
+ * pinmux_gpio_mode_88xx() -control gpio io mode
  * @adapter : the adapter of halmac
  * @gpio_id : gpio0~15(0~15)
  * @output : output(1), input(0)
@@ -121,16 +113,12 @@ halmac_pinmux_sdio_int_polarity_88xx(
  * More details of status code can be found in prototype document
  */
 enum halmac_ret_status
-halmac_pinmux_gpio_mode_88xx(
-	IN struct halmac_adapter *adapter,
-	IN u8 gpio_id,
-	IN u8 output
-)
+pinmux_gpio_mode_88xx(struct halmac_adapter *adapter, u8 gpio_id, u8 output)
 {
 	u16 value16;
 	u8 in_out;
 	u32 offset;
-	struct halmac_api *api = (struct halmac_api *)adapter->pHalmac_api;
+	struct halmac_api *api = (struct halmac_api *)adapter->halmac_api;
 
 	if (gpio_id <= 7)
 		offset = REG_GPIO_PIN_CTRL + 2;
@@ -151,7 +139,7 @@ halmac_pinmux_gpio_mode_88xx(
 }
 
 /**
- * halmac_pinmux_gpio_output_88xx() -control gpio output high/low
+ * pinmux_gpio_output_88xx() -control gpio output high/low
  * @adapter : the adapter of halmac
  * @gpio_id : gpio0~15(0~15)
  * @high : high(1), low(0)
@@ -160,16 +148,12 @@ halmac_pinmux_gpio_mode_88xx(
  * More details of status code can be found in prototype document
  */
 enum halmac_ret_status
-halmac_pinmux_gpio_output_88xx(
-	IN struct halmac_adapter *adapter,
-	IN u8 gpio_id,
-	IN u8 high
-)
+pinmux_gpio_output_88xx(struct halmac_adapter *adapter, u8 gpio_id, u8 high)
 {
 	u8 value8;
 	u8 hi_low;
 	u32 offset;
-	struct halmac_api *api = (struct halmac_api *)adapter->pHalmac_api;
+	struct halmac_api *api = (struct halmac_api *)adapter->halmac_api;
 
 	if (gpio_id <= 7)
 		offset = REG_GPIO_PIN_CTRL + 1;
@@ -199,15 +183,11 @@ halmac_pinmux_gpio_output_88xx(
  * More details of status code can be found in prototype document
  */
 enum halmac_ret_status
-halmac_pinmux_pin_status_88xx(
-	IN struct halmac_adapter *adapter,
-	IN u8 pin_id,
-	IN u8 *high
-)
+pinmux_pin_status_88xx(struct halmac_adapter *adapter, u8 pin_id, u8 *high)
 {
 	u8 value8;
 	u32 offset;
-	struct halmac_api *api = (struct halmac_api *)adapter->pHalmac_api;
+	struct halmac_api *api = (struct halmac_api *)adapter->halmac_api;
 
 	if (pin_id <= 7)
 		offset = REG_GPIO_PIN_CTRL;
@@ -225,20 +205,17 @@ halmac_pinmux_pin_status_88xx(
 }
 
 enum halmac_ret_status
-halmac_pinmux_parser_88xx(
-	IN struct halmac_adapter *adapter,
-	IN const struct halmac_gpio_pimux_list *list,
-	IN u32 size,
-	IN u32 gpio_id,
-	OUT u32 *cur_func
-)
+pinmux_parser_88xx(struct halmac_adapter *adapter,
+		   const struct halmac_gpio_pimux_list *list, u32 size,
+		   u32 gpio_id, u32 *cur_func)
 {
 	u32 i;
 	u8 value8;
 	const struct halmac_gpio_pimux_list *cur_list = list;
-	enum halmac_gpio_cfg_state *state =
-			&adapter->halmac_state.gpio_cfg_state;
-	struct halmac_api *api = (struct halmac_api *)adapter->pHalmac_api;
+	enum halmac_gpio_cfg_state *state;
+	struct halmac_api *api = (struct halmac_api *)adapter->halmac_api;
+
+	state = &adapter->halmac_state.gpio_cfg_state;
 
 	if (*state == HALMAC_GPIO_CFG_STATE_BUSY)
 		return HALMAC_RET_BUSY_STATE;
@@ -247,13 +224,11 @@ halmac_pinmux_parser_88xx(
 
 	for (i = 0; i < size; i++) {
 		if (gpio_id != cur_list->id) {
-			PLTFM_MSG_PRINT(HALMAC_DBG_ERR,
-					"[ERR]offset:%X, value:%X, func:%X\n",
-					cur_list->offset, cur_list->value,
-					cur_list->func);
-			PLTFM_MSG_PRINT(HALMAC_DBG_ERR,
-					"[ERR]id1 : %X, id2 : %X\n",
-					gpio_id, cur_list->id);
+			PLTFM_MSG_ERR("[ERR]offset:%X, value:%X, func:%X\n",
+				      cur_list->offset, cur_list->value,
+				      cur_list->func);
+			PLTFM_MSG_ERR("[ERR]id1 : %X, id2 : %X\n",
+				      gpio_id, cur_list->id);
 			*state = HALMAC_GPIO_CFG_STATE_IDLE;
 			return HALMAC_RET_GET_PINMUX_ERR;
 		}
@@ -275,21 +250,18 @@ halmac_pinmux_parser_88xx(
 }
 
 enum halmac_ret_status
-halmac_pinmux_switch_88xx(
-	IN struct halmac_adapter *adapter,
-	IN const struct halmac_gpio_pimux_list *list,
-	IN u32 size,
-	IN u32 gpio_id,
-	IN enum halmac_gpio_func gpio_func
-)
+pinmux_switch_88xx(struct halmac_adapter *adapter,
+		   const struct halmac_gpio_pimux_list *list, u32 size,
+		   u32 gpio_id, enum halmac_gpio_func gpio_func)
 {
 	u32 i;
 	u8 value8;
 	u16 switch_func;
 	const struct halmac_gpio_pimux_list *cur_list = list;
-	enum halmac_gpio_cfg_state *state =
-			&adapter->halmac_state.gpio_cfg_state;
-	struct halmac_api *api = (struct halmac_api *)adapter->pHalmac_api;
+	enum halmac_gpio_cfg_state *state;
+	struct halmac_api *api = (struct halmac_api *)adapter->halmac_api;
+
+	state = &adapter->halmac_state.gpio_cfg_state;
 
 	if (*state == HALMAC_GPIO_CFG_STATE_BUSY)
 		return HALMAC_RET_BUSY_STATE;
@@ -300,6 +272,10 @@ halmac_pinmux_switch_88xx(
 		break;
 	case HALMAC_GPIO_FUNC_SDIO_INT:
 		switch_func = HALMAC_SDIO_INT;
+		break;
+	case HALMAC_GPIO_FUNC_BT_HOST_WAKE1:
+	case HALMAC_GPIO_FUNC_BT_DEV_WAKE1:
+		switch_func = HALMAC_GPIO13_14_WL_CTRL_EN;
 		break;
 	case HALMAC_GPIO_FUNC_SW_IO_0:
 	case HALMAC_GPIO_FUNC_SW_IO_1:
@@ -325,13 +301,11 @@ halmac_pinmux_switch_88xx(
 
 	for (i = 0; i < size; i++) {
 		if (gpio_id != cur_list->id) {
-			PLTFM_MSG_PRINT(HALMAC_DBG_ERR,
-					"[ERR]offset:%X, value:%X, func:%X\n",
-					cur_list->offset, cur_list->value,
-					cur_list->func);
-			PLTFM_MSG_PRINT(HALMAC_DBG_ERR,
-					"[ERR]id1 : %X, id2 : %X\n",
-					gpio_id, cur_list->id);
+			PLTFM_MSG_ERR("[ERR]offset:%X, value:%X, func:%X\n",
+				      cur_list->offset, cur_list->value,
+				      cur_list->func);
+			PLTFM_MSG_ERR("[ERR]id1 : %X, id2 : %X\n",
+				      gpio_id, cur_list->id);
 			return HALMAC_RET_GET_PINMUX_ERR;
 		}
 
@@ -342,8 +316,8 @@ halmac_pinmux_switch_88xx(
 	}
 
 	if (i == size) {
-		PLTFM_MSG_PRINT(HALMAC_DBG_ERR, "[ERR]gpio func error:%X %X\n",
-				gpio_id, cur_list->id);
+		PLTFM_MSG_ERR("[ERR]gpio func error:%X %X\n",
+			      gpio_id, cur_list->id);
 		return HALMAC_RET_GET_PINMUX_ERR;
 	}
 
@@ -372,11 +346,8 @@ halmac_pinmux_switch_88xx(
 }
 
 enum halmac_ret_status
-halmac_pinmux_record_88xx(
-	IN struct halmac_adapter *adapter,
-	IN enum halmac_gpio_func gpio_func,
-	IN u8 val
-)
+pinmux_record_88xx(struct halmac_adapter *adapter,
+		   enum halmac_gpio_func gpio_func, u8 val)
 {
 	switch (gpio_func) {
 	case HALMAC_GPIO_FUNC_WL_LED:
@@ -384,6 +355,12 @@ halmac_pinmux_record_88xx(
 		break;
 	case HALMAC_GPIO_FUNC_SDIO_INT:
 		adapter->pinmux_info.sdio_int = val;
+		break;
+	case HALMAC_GPIO_FUNC_BT_HOST_WAKE1:
+		adapter->pinmux_info.bt_host_wake = val;
+		break;
+	case HALMAC_GPIO_FUNC_BT_DEV_WAKE1:
+		adapter->pinmux_info.bt_dev_wake = val;
 		break;
 	case HALMAC_GPIO_FUNC_SW_IO_0:
 		adapter->pinmux_info.sw_io_0 = val;

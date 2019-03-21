@@ -536,20 +536,6 @@ s32 rtl8821cs_recv_hdl(_adapter *padapter)
 	pHalData = GET_HAL_DATA(padapter);
 	precvpriv = &padapter->recvpriv;
 
-#ifdef CONFIG_RTW_NAPI_DYNAMIC
-	if (padapter->registrypriv.en_napi) {
-		struct dvobj_priv *d;
-		struct registry_priv *registry;
-
-		d = adapter_to_dvobj(padapter);
-		registry = &padapter->registrypriv;
-		if (d->traffic_stat.cur_rx_tp > registry->napi_threshold)
-			d->en_napi_dynamic = 1;
-		else
-			d->en_napi_dynamic = 0;
-	}
-#endif /* CONFIG_RTW_NAPI_DYNAMIC */
-
 	rtw_halmac_get_rx_desc_size(adapter_to_dvobj(padapter), &desc_size);
 
 	do {
@@ -672,6 +658,7 @@ s32 rtl8821cs_recv_hdl(_adapter *padapter)
 
 		for (i = 0; i < dvobj->iface_nums; i++) {
 			iface = dvobj->padapters[i];
+			precvpriv = &iface->recvpriv; 
 			if (rtw_if_up(iface) == _TRUE
 				&& skb_queue_len(&precvpriv->rx_napi_skb_queue))
 				napi_schedule(&iface->napi);

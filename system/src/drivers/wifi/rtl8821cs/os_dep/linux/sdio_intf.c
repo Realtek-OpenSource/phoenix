@@ -66,6 +66,11 @@ static const struct sdio_device_id sdio_ids[] = {
 #ifdef CONFIG_RTL8188F
 	{SDIO_DEVICE(0x024c, 0xF179), .driver_data = RTL8188F},
 #endif
+
+#ifdef CONFIG_RTL8188GTV
+	{SDIO_DEVICE(0x024c, 0x018C), .driver_data = RTL8188GTV},
+#endif
+
 #ifdef CONFIG_RTL8822B
 	{SDIO_DEVICE(0x024c, 0xB822), .driver_data = RTL8822B},
 #endif
@@ -74,6 +79,11 @@ static const struct sdio_device_id sdio_ids[] = {
 	{ SDIO_DEVICE(0x024c, 0xD723), .driver_data = RTL8723D},
 	{ SDIO_DEVICE(0x024c, 0xD724), .driver_data = RTL8723D},
 #endif
+
+#ifdef CONFIG_RTL8192F
+	{ SDIO_DEVICE(0x024c, 0x818C), .driver_data = RTL8192F},/*A CUT*/
+	{ SDIO_DEVICE(0x024c, 0xF192), .driver_data = RTL8192F},/*B CUT*/
+#endif /* CONFIG_RTL8192F */
 
 #ifdef CONFIG_RTL8821C
 	{SDIO_DEVICE(0x024C, 0xB821), .driver_data = RTL8821C},
@@ -220,7 +230,7 @@ static u8 gpio_hostwakeup_alloc_irq(PADAPTER padapter)
 	status = IRQF_NO_SUSPEND;
 #endif
 
-	if (HIGH_ACTIVE)
+	if (HIGH_ACTIVE_DEV2HST)
 		status |= IRQF_TRIGGER_RISING;
 	else
 		status |= IRQF_TRIGGER_FALLING;
@@ -323,7 +333,7 @@ void dump_sdio_card_info(void *sel, struct dvobj_priv *dvobj)
 
 #define SDIO_CARD_INFO_DUMP(dvobj)	dump_sdio_card_info(RTW_DBGDUMP, dvobj)
 
-static u32 sdio_init(struct dvobj_priv *dvobj)
+u32 sdio_init(struct dvobj_priv *dvobj)
 {
 	PSDIO_DATA psdio_data;
 	struct sdio_func *func;
@@ -380,7 +390,7 @@ exit:
 	return _SUCCESS;
 }
 
-static void sdio_deinit(struct dvobj_priv *dvobj)
+void sdio_deinit(struct dvobj_priv *dvobj)
 {
 	struct sdio_func *func;
 	int err;
@@ -452,6 +462,13 @@ static void rtw_decide_chip_type_by_device_id(struct dvobj_priv *dvobj, const st
 	}
 #endif
 
+#if defined(CONFIG_RTL8188GTV)
+	if (dvobj->chip_type == RTL8188GTV) {
+		dvobj->HardwareType = HARDWARE_TYPE_RTL8188GTVS;
+		RTW_INFO("CHIP TYPE: RTL8188GTV\n");
+	}
+#endif
+
 #if defined(CONFIG_RTL8822B)
 	if (dvobj->chip_type == RTL8822B) {
 		dvobj->HardwareType = HARDWARE_TYPE_RTL8822BS;
@@ -463,6 +480,13 @@ static void rtw_decide_chip_type_by_device_id(struct dvobj_priv *dvobj, const st
 	if (dvobj->chip_type == RTL8821C) {
 		dvobj->HardwareType = HARDWARE_TYPE_RTL8821CS;
 		RTW_INFO("CHIP TYPE: RTL8821C\n");
+	}
+#endif
+
+#if defined(CONFIG_RTL8192F)
+	if (dvobj->chip_type == RTL8192F) {
+		dvobj->HardwareType = HARDWARE_TYPE_RTL8192FS;
+		RTW_INFO("CHIP TYPE: RTL8192F\n");
 	}
 #endif
 }
@@ -560,6 +584,11 @@ u8 rtw_set_hal_ops(PADAPTER padapter)
 		rtl8188fs_set_hal_ops(padapter);
 #endif
 
+#if defined(CONFIG_RTL8188GTV)
+	if (rtw_get_chip_type(padapter) == RTL8188GTV)
+		rtl8188gtvs_set_hal_ops(padapter);
+#endif
+
 #if defined(CONFIG_RTL8822B)
 	if (rtw_get_chip_type(padapter) == RTL8822B)
 		rtl8822bs_set_hal_ops(padapter);
@@ -570,6 +599,11 @@ u8 rtw_set_hal_ops(PADAPTER padapter)
 		if (rtl8821cs_set_hal_ops(padapter) == _FAIL)
 			return _FAIL;
 	}
+#endif
+
+#if defined(CONFIG_RTL8192F)
+	if (rtw_get_chip_type(padapter) == RTL8192F)
+		rtl8192fs_set_hal_ops(padapter);
 #endif
 
 	if (rtw_hal_ops_check(padapter) == _FAIL)
@@ -649,11 +683,6 @@ _adapter *rtw_sdio_primary_adapter_init(struct dvobj_priv *dvobj)
 	padapter->intf_start = &sd_intf_start;
 	padapter->intf_stop = &sd_intf_stop;
 
-	padapter->intf_init = &sdio_init;
-	padapter->intf_deinit = &sdio_deinit;
-	padapter->intf_alloc_irq = &sdio_alloc_irq;
-	padapter->intf_free_irq = &sdio_free_irq;
-
 	if (rtw_init_io_priv(padapter, sdio_set_intf_ops) == _FAIL) {
 		goto free_hal_data;
 	}
@@ -704,6 +733,9 @@ free_hal_data:
 
 free_adapter:
 	if (status != _SUCCESS && padapter) {
+		#ifdef RTW_HALMAC
+		rtw_halmac_deinit_adapter(dvobj);
+		#endif
 		rtw_vmfree((u8 *)padapter, sizeof(*padapter));
 		padapter = NULL;
 	}
@@ -1050,32 +1082,28 @@ static int rtw_sdio_resume(struct device *dev)
 
 	pdbgpriv->dbg_resume_cnt++;
 
-	if (pwrpriv->bInternalAutoSuspend)
-		ret = rtw_resume_process(padapter);
-	else {
 #ifdef CONFIG_PLATFORM_INTEL_BYT
-		if (0)
+	if (0)
 #else
-		if (pwrpriv->wowlan_mode || pwrpriv->wowlan_ap_mode)
+	if (pwrpriv->wowlan_mode || pwrpriv->wowlan_ap_mode)
 #endif
-		{
+	{
+		rtw_resume_lock_suspend();
+		ret = rtw_resume_process(padapter);
+		rtw_resume_unlock_suspend();
+	} else {
+#ifdef CONFIG_RESUME_IN_WORKQUEUE
+		rtw_resume_in_workqueue(pwrpriv);
+#else
+		if (rtw_is_earlysuspend_registered(pwrpriv)) {
+			/* jeff: bypass resume here, do in late_resume */
+			rtw_set_do_late_resume(pwrpriv, _TRUE);
+		} else {
 			rtw_resume_lock_suspend();
 			ret = rtw_resume_process(padapter);
 			rtw_resume_unlock_suspend();
-		} else {
-#ifdef CONFIG_RESUME_IN_WORKQUEUE
-			rtw_resume_in_workqueue(pwrpriv);
-#else
-			if (rtw_is_earlysuspend_registered(pwrpriv)) {
-				/* jeff: bypass resume here, do in late_resume */
-				rtw_set_do_late_resume(pwrpriv, _TRUE);
-			} else {
-				rtw_resume_lock_suspend();
-				ret = rtw_resume_process(padapter);
-				rtw_resume_unlock_suspend();
-			}
-#endif
 		}
+#endif
 	}
 	pmlmeext->last_scan_time = rtw_get_current_time();
 	RTW_INFO("<========  %s return %d\n", __FUNCTION__, ret);
