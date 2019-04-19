@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2015 - 2018 Realtek Corporation.
+ * Copyright(c) 2015 - 2019 Realtek Corporation.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -5329,6 +5329,22 @@ u32 rtw_halmac_sdio_get_rx_addr(struct dvobj_priv *d, u8 *seq)
 	(*seq)++;
 	return RTW_SDIO_ADDR_RX_RX0FF_GEN(id);
 }
+
+int rtw_halmac_sdio_set_tx_format(struct dvobj_priv *d, enum halmac_sdio_tx_format format)
+{
+	struct halmac_adapter *mac;
+	struct halmac_api *api;
+	enum halmac_ret_status status;
+
+	mac = dvobj_to_halmac(d);
+	api = HALMAC_GET_API(mac);
+
+	status = api->halmac_set_hw_value(mac, HALMAC_HW_SDIO_TX_FORMAT, &format);
+	if (HALMAC_RET_SUCCESS != status)
+		return -1;
+
+	return 0;
+}
 #endif /* CONFIG_SDIO_HCI */
 
 #ifdef CONFIG_USB_HCI
@@ -5501,9 +5517,32 @@ int rtw_halmac_bf_del_sounding(struct dvobj_priv *d,
 	return 0;
 }
 
+/**
+ * rtw_halmac_bf_cfg_csi_rate() - Config data rate for CSI report by CSSI
+ * @d:		struct dvobj_priv*
+ * @rssi:	RSSI vlaue, unit is percentage (0~100).
+ * @current_rate:	Current CSI frame rate
+ *			Valid value example
+ *			0	CCK 1M
+ *			3	CCK 11M
+ *			4	OFDM 6M
+ *			and so on
+ * @fixrate_en:	Enable to fix CSI frame in VHT rate, otherwise legacy OFDM rate.
+ *		The value "0" for disable, otheriwse enable.
+ * @new_rate:	Return new data rate, and value range is the same as current_rate
+ * @bmp_ofdm54: Return to suggest enabling OFDM 54M for CSI report frame or not,
+ *		The valid values and meanings are:
+ *		0x00	disable
+ *		0x01	enable
+ *		0xFF	Keep current setting
+ *
+ * According RSSI to config data rate for CSI report frame of Beamforming.
+ *
+ * Rteurn 0 for OK, otherwise fail.
+ */
 int rtw_halmac_bf_cfg_csi_rate(struct dvobj_priv *d,
 		u8 rssi, u8 current_rate, u8 fixrate_en,
-		u8 *new_rate)
+		u8 *new_rate, u8 *bmp_ofdm54)
 {
 	struct halmac_adapter *mac;
 	struct halmac_api *api;
@@ -5514,7 +5553,7 @@ int rtw_halmac_bf_cfg_csi_rate(struct dvobj_priv *d,
 	api = HALMAC_GET_API(mac);
 
 	status = api->halmac_cfg_csi_rate(mac,
-			rssi, current_rate, fixrate_en, new_rate);
+			rssi, current_rate, fixrate_en, new_rate, bmp_ofdm54);
 	if (status != HALMAC_RET_SUCCESS)
 		return -1;
 

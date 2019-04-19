@@ -162,6 +162,8 @@ struct rtw_mesh_path *rtw_mpp_path_lookup(_adapter *adapter,
 				  const u8 *dst);
 int rtw_mpp_path_add(_adapter *adapter,
 		 const u8 *dst, const u8 *mpp);
+void dump_mpp(void *sel, _adapter *adapter);
+
 struct rtw_mesh_path *
 rtw_mesh_path_lookup_by_idx(_adapter *adapter, int idx);
 struct rtw_mesh_path *

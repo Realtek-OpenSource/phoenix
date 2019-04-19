@@ -50,6 +50,10 @@ void rtl8822c_init_hal_spec(PADAPTER adapter)
 			    | WL_FUNC_TDLS
 			    ;
 
+#if CONFIG_TX_AC_LIFETIME
+	hal_spec->tx_aclt_unit_factor = 8;
+#endif
+
 	hal_spec->rx_tsf_filter = 1;
 
 	hal_spec->pg_txpwr_saddr = 0x10;
@@ -227,6 +231,10 @@ void rtl8822c_init_misc(PADAPTER adapter)
 	rtw_write32(adapter, REG_FWHW_TXQ_CTRL_8822C,
 		rtw_read32(adapter, REG_FWHW_TXQ_CTRL_8822C) | BIT_EN_QUEUE_RPT_8822C(BIT(4)));
 #endif /* CONFIG_XMIT_ACK */
+
+#ifdef CONFIG_TCP_CSUM_OFFLOAD_RX
+	rtw_hal_rcr_add(adapter, BIT_TCPOFLD_EN_8822C);
+#endif /* CONFIG_TCP_CSUM_OFFLOAD_RX*/
 }
 
 u32 rtl8822c_init(PADAPTER adapter)

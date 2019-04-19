@@ -1,8 +1,9 @@
-cmd_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/core/efuse/rtw_efuse.o := arm-linux-gnueabi-gcc -Wp,-MD,/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/core/efuse/.rtw_efuse.o.d  -nostdinc -isystem /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/bin/../lib/gcc/arm-linux-gnueabi/6.4.1/include -I./arch/arm/include -I./arch/arm/include/generated/uapi -I./arch/arm/include/generated  -I./include -I./arch/arm/include/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-rtd139x/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-PIE -fno-dwarf2-cfi-asm -fno-omit-frame-pointer -mapcs -mno-sched-prolog -fno-ipa-sra -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=7 -march=armv8-a -msoft-float -Uarm -fno-delete-null-pointer-checks -Wno-frame-address -O2 --param=allow-store-data-races=0 -DCC_HAVE_ASM_GOTO -Wframe-larger-than=1024 -fstack-protector-strong -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fno-merge-all-constants -fmerge-constants -fno-stack-check -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -Werror=incompatible-pointer-types -O1 -Wno-unused-variable -Wno-unused-value -Wno-unused-label -Wno-unused-parameter -Wno-unused-function -Wno-unused -Wno-date-time -I/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include -I/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/hal/phydm -I/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/platform -I/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/hal/btc -DCONFIG_RTL8723D -DCONFIG_MP_INCLUDED -DCONFIG_POWER_SAVING -DCONFIG_BT_COEXIST -DCONFIG_EFUSE_CONFIG_FILE -DEFUSE_MAP_PATH=\"/system/etc/wifi/wifi_efuse_8723du.map\" -DWIFIMAC_PATH=\"/data/wifimac.txt\" -DCONFIG_TRAFFIC_PROTECT -DCONFIG_LOAD_PHY_PARA_FROM_FILE -DREALTEK_CONFIG_PATH=\"\" -DCONFIG_TXPWR_BY_RATE_EN=1 -DCONFIG_TXPWR_LIMIT_EN=0 -DCONFIG_RTW_ADAPTIVITY_EN=0 -DCONFIG_RTW_ADAPTIVITY_MODE=0 -DCONFIG_BR_EXT '-DCONFIG_BR_EXT_BRNAME="'br0'"' -DCONFIG_RTW_NAPI -DCONFIG_RTW_GRO -DCONFIG_RTW_DEBUG -DRTW_LOG_LEVEL=4 -DDM_ODM_SUPPORT_TYPE=0x04 -DCONFIG_LITTLE_ENDIAN -DRTK_139X_PLATFORM -DCONFIG_TRAFFIC_PROTECT -DCONFIG_CONCURRENT_MODE -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT -DCONFIG_QOS_OPTIMIZATION -Wno-error=date-time -DCONFIG_USE_USB_BUFFER_ALLOC_TX -DCONFIG_RADIO_WORK   -DMODULE  -DKBUILD_BASENAME='"rtw_efuse"'  -DKBUILD_MODNAME='"8723du"' -c -o /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/core/efuse/.tmp_rtw_efuse.o /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/core/efuse/rtw_efuse.c
+cmd_/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/core/efuse/rtw_efuse.o := ccache arm-linux-gnueabi-gcc -Wp,-MD,/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/core/efuse/.rtw_efuse.o.d  -nostdinc -isystem /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/bin/../lib/gcc/arm-linux-gnueabi/6.4.1/include -I./arch/arm/include -I./arch/arm/include/generated/uapi -I./arch/arm/include/generated  -I./include -I./arch/arm/include/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-rtd139x/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-PIE -fno-dwarf2-cfi-asm -fno-omit-frame-pointer -mapcs -mno-sched-prolog -fno-ipa-sra -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=7 -march=armv8-a -msoft-float -Uarm -fno-delete-null-pointer-checks -Wno-frame-address -O2 --param=allow-store-data-races=0 -DCC_HAVE_ASM_GOTO -Wframe-larger-than=1024 -fstack-protector-strong -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fno-merge-all-constants -fmerge-constants -fno-stack-check -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -Werror=incompatible-pointer-types -O1 -Wno-unused-variable -Wno-unused-value -Wno-unused-label -Wno-unused-parameter -Wno-unused-function -Wno-unused -Wno-date-time -I/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include -I/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/platform -I/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/hal/btc -DCONFIG_RTL8723D -DCONFIG_MP_INCLUDED -DCONFIG_POWER_SAVING -DCONFIG_BT_COEXIST -DCONFIG_EFUSE_CONFIG_FILE -DEFUSE_MAP_PATH=\"/system/etc/wifi/wifi_efuse_8723du.map\" -DWIFIMAC_PATH=\"/data/wifimac.txt\" -DCONFIG_LOAD_PHY_PARA_FROM_FILE -DREALTEK_CONFIG_PATH=\"/lib/firmware/\" -DCONFIG_TXPWR_BY_RATE_EN=1 -DCONFIG_TXPWR_LIMIT_EN=0 -DCONFIG_RTW_ADAPTIVITY_EN=0 -DCONFIG_RTW_ADAPTIVITY_MODE=0 -DHIGH_ACTIVE_HST2DEV=0 -DCONFIG_BR_EXT '-DCONFIG_BR_EXT_BRNAME="'br0'"' -DCONFIG_RTW_NAPI -DCONFIG_RTW_GRO -DCONFIG_RTW_NETIF_SG -DCONFIG_RTW_WIFI_HAL -DCONFIG_RTW_CFGVEDNOR_LLSTATS -DCONFIG_RTW_CFGVENDOR_RANDOM_MAC_OUI -DCONFIG_RTW_CFGVEDNOR_RSSIMONITOR -DCONFIG_RTW_CFGVENDOR_WIFI_LOGGER -DCONFIG_RTW_DEBUG -DRTW_LOG_LEVEL=4 -DDM_ODM_SUPPORT_TYPE=0x04 -DCONFIG_LITTLE_ENDIAN -DRTK_139X_PLATFORM -DCONFIG_TRAFFIC_PROTECT -DCONFIG_CONCURRENT_MODE -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT -DCONFIG_QOS_OPTIMIZATION -Wno-error=date-time -DCONFIG_USE_USB_BUFFER_ALLOC_TX -DCONFIG_RADIO_WORK -I/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/hal/phydm   -DMODULE  -DKBUILD_BASENAME='"rtw_efuse"'  -DKBUILD_MODNAME='"8723du"' -c -o /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/core/efuse/.tmp_rtw_efuse.o /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/core/efuse/rtw_efuse.c
 
-source_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/core/efuse/rtw_efuse.o := /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/core/efuse/rtw_efuse.c
+source_/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/core/efuse/rtw_efuse.o := /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/core/efuse/rtw_efuse.c
 
-deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/core/efuse/rtw_efuse.o := \
+deps_/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/core/efuse/rtw_efuse.o := \
+    $(wildcard include/config/usb/hci.h) \
     $(wildcard include/config/rtl8188e.h) \
     $(wildcard include/config/rtl8812a.h) \
     $(wildcard include/config/rtl8821a.h) \
@@ -11,70 +12,101 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/rtl8703b.h) \
     $(wildcard include/config/rtl8814a.h) \
     $(wildcard include/config/rtl8188f.h) \
+    $(wildcard include/config/rtl8188gtv.h) \
     $(wildcard include/config/rtl8822b.h) \
     $(wildcard include/config/rtl8723d.h) \
+    $(wildcard include/config/rtl8710b.h) \
     $(wildcard include/config/rtl8821c.h) \
+    $(wildcard include/config/rtl8192f.h) \
+    $(wildcard include/config/pci/hci.h) \
+    $(wildcard include/config/sdio/hci.h) \
     $(wildcard include/config/rtl8188e/sdio.h) \
-    $(wildcard include/config/rtl8188f/sdio.h) \
     $(wildcard include/config/adaptor/info/caching/file.h) \
     $(wildcard include/config/efuse/config/file.h) \
     $(wildcard include/config/rtw/debug.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/drv_types.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/drv_types.h \
     $(wildcard include/config/arp/keep/alive.h) \
     $(wildcard include/config/80211n/ht.h) \
     $(wildcard include/config/80211ac/vht.h) \
     $(wildcard include/config/intel/widi.h) \
     $(wildcard include/config/beamforming.h) \
+    $(wildcard include/config/rtw/mesh.h) \
     $(wildcard include/config/prealloc/rx/skb/buffer.h) \
     $(wildcard include/config/tdls.h) \
     $(wildcard include/config/wapi/support.h) \
-    $(wildcard include/config/drvext.h) \
     $(wildcard include/config/mp/included.h) \
     $(wildcard include/config/br/ext.h) \
     $(wildcard include/config/iol.h) \
-    $(wildcard include/config/bt/coexist.h) \
     $(wildcard include/config/mcc/mode.h) \
+    $(wildcard include/config/rtw/repeater/son.h) \
     $(wildcard include/config/1t1r.h) \
     $(wildcard include/config/2t2r.h) \
+    $(wildcard include/config/wmmps/sta.h) \
     $(wildcard include/config/rtw/customer/str.h) \
     $(wildcard include/config/tx/early/mode.h) \
+    $(wildcard include/config/ap/mode.h) \
+    $(wildcard include/config/bt/coexist.h) \
     $(wildcard include/config/layer2/roaming.h) \
     $(wildcard include/config/80211d.h) \
-    $(wildcard include/config/special/setting/for/funai/tv.h) \
+    $(wildcard include/config/txpwr/limit.h) \
     $(wildcard include/config/ieee80211/band/5ghz.h) \
     $(wildcard include/config/load/phy/para/from/file.h) \
     $(wildcard include/config/concurrent/mode.h) \
-    $(wildcard include/config/auto/chnl/sel/nhm.h) \
+    $(wildcard include/config/rtw/acs.h) \
+    $(wildcard include/config/background/noise/monitor.h) \
     $(wildcard include/config/dfs/master.h) \
     $(wildcard include/config/rtw/napi.h) \
     $(wildcard include/config/rtw/napi/dynamic.h) \
     $(wildcard include/config/rtw/gro.h) \
     $(wildcard include/config/wowlan.h) \
     $(wildcard include/config/support/trx/shared.h) \
-    $(wildcard include/config/sdio/hci.h) \
+    $(wildcard include/config/advance/ota.h) \
+    $(wildcard include/config/fw/offload/param/init.h) \
+    $(wildcard include/config/dynamic/soml.h) \
+    $(wildcard include/config/fw/handle/txbcn.h) \
+    $(wildcard include/config/tdmadig.h) \
     $(wildcard include/config/gspi/hci.h) \
-    $(wildcard include/config/pci/hci.h) \
     $(wildcard include/config/dbg/counter.h) \
+    $(wildcard include/config/client/port/cfg.h) \
     $(wildcard include/config/iface/number.h) \
+    $(wildcard include/config/dfs.h) \
+    $(wildcard include/config/dfs/slave/with/radar/detect.h) \
     $(wildcard include/config/mbssid/cam.h) \
+    $(wildcard include/config/fw/multi/port/support.h) \
+    $(wildcard include/config/hw/p0/tsf/sync.h) \
     $(wildcard include/config/sdio/indirect/access.h) \
-    $(wildcard include/config/ap/mode.h) \
+    $(wildcard include/config/syson/indirect/access.h) \
+    $(wildcard include/config/support/multi/bcn.h) \
     $(wildcard include/config/ioctl/cfg80211.h) \
     $(wildcard include/config/swtimer/based/txbcn.h) \
-    $(wildcard include/config/usb/hci.h) \
+    $(wildcard include/config/rtw/wifi/hal.h) \
     $(wildcard include/config/usb/vendor/req/mutex.h) \
     $(wildcard include/config/usb/vendor/req/buffer/prealloc.h) \
+    $(wildcard include/config/rtw/tpt/mode.h) \
     $(wildcard include/config/intel/proxim.h) \
     $(wildcard include/config/mac/loopback/driver.h) \
+    $(wildcard include/config/rtw/80211k.h) \
     $(wildcard include/config/ieee80211w.h) \
     $(wildcard include/config/p2p.h) \
     $(wildcard include/config/wfd.h) \
     $(wildcard include/config/bt/coexist/socket/trx.h) \
     $(wildcard include/config/gpio/api.h) \
+    $(wildcard include/config/event/thread/mode.h) \
+    $(wildcard include/config/xmit/thread/mode.h) \
+    $(wildcard include/config/recv/thread/mode.h) \
     $(wildcard include/config/autosuspend.h) \
+    $(wildcard include/config/support/fifo/dump.h) \
+    $(wildcard include/config/tx/amsdu.h) \
+    $(wildcard include/config/rtw/cfgvendor/random/mac/oui.h) \
     $(wildcard include/config/pno/support.h) \
     $(wildcard include/config/pno/set/debug.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/drv_conf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/drv_conf.h \
+    $(wildcard include/config/rssi/priority.h) \
+    $(wildcard include/config/ap.h) \
+    $(wildcard include/config/rtw/repeater/son/id.h) \
+    $(wildcard include/config/rtw/repeater/son/root.h) \
+    $(wildcard include/config/layer2/roaming/active.h) \
+    $(wildcard include/config/power/saving.h) \
     $(wildcard include/config/rtw/80211r.h) \
     $(wildcard include/config/android.h) \
     $(wildcard include/config/platform/android.h) \
@@ -85,20 +117,41 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/android/power.h) \
     $(wildcard include/config/wakelock.h) \
     $(wildcard include/config/vendor/req/retry.h) \
+    $(wildcard include/config/wifi/monitor.h) \
+    $(wildcard include/config/monitor/mode/xmit.h) \
+    $(wildcard include/config/customer/alibaba/general.h) \
+    $(wildcard include/config/customer01/smart/antenna.h) \
+    $(wildcard include/config/rtw/mesh/acnode/prevent.h) \
+    $(wildcard include/config/rtw/mesh/offch/cand.h) \
+    $(wildcard include/config/rtw/mesh/peer/blacklist.h) \
+    $(wildcard include/config/rtw/mesh/cto/mgate/blacklist.h) \
+    $(wildcard include/config/rtw/mesh/cto/mgate/carrier.h) \
+    $(wildcard include/config/rtw/mpm/tx/ies/sync/bss.h) \
+    $(wildcard include/config/rtw/mesh/aek.h) \
+    $(wildcard include/config/rtw/mesh/data/bmc/to/uc.h) \
+    $(wildcard include/config/scan/backop.h) \
     $(wildcard include/config/rtw/hiq/filter.h) \
-    $(wildcard include/config/rtw/force/igi/lb.h) \
     $(wildcard include/config/rtw/adaptivity/en.h) \
     $(wildcard include/config/rtw/adaptivity/mode.h) \
-    $(wildcard include/config/rtw/adaptivity/dml.h) \
-    $(wildcard include/config/rtw/adaptivity/dc/backoff.h) \
     $(wildcard include/config/rtw/adaptivity/th/l2h/ini.h) \
     $(wildcard include/config/rtw/adaptivity/th/edcca/hl/diff.h) \
     $(wildcard include/config/rtw/excl/chs.h) \
     $(wildcard include/config/rtw/dfs/region/domain.h) \
     $(wildcard include/config/txpwr/by/rate/en.h) \
     $(wildcard include/config/txpwr/limit/en.h) \
+    $(wildcard include/config/rtw/chplan.h) \
     $(wildcard include/config/calibrate/tx/power/by/regulatory.h) \
     $(wildcard include/config/calibrate/tx/power/to/max.h) \
+    $(wildcard include/config/rtw/ipcam/application.h) \
+    $(wildcard include/config/rtw/customize/beedca.h) \
+    $(wildcard include/config/rtw/customize/bwmode.h) \
+    $(wildcard include/config/rtw/customize/rlsta.h) \
+    $(wildcard include/config/rtw/tx/2path/en.h) \
+    $(wildcard include/config/extend/lowrate/txop.h) \
+    $(wildcard include/config/rtw/rx/ampdu/sz/limit/1ss.h) \
+    $(wildcard include/config/rtw/rx/ampdu/sz/limit/2ss.h) \
+    $(wildcard include/config/rtw/rx/ampdu/sz/limit/3ss.h) \
+    $(wildcard include/config/rtw/rx/ampdu/sz/limit/4ss.h) \
     $(wildcard include/config/rtw/target/tx/pwr/2g/a.h) \
     $(wildcard include/config/rtw/target/tx/pwr/2g/b.h) \
     $(wildcard include/config/rtw/target/tx/pwr/2g/c.h) \
@@ -112,15 +165,33 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/rtw/rfe/type.h) \
     $(wildcard include/config/rtw/glna/type.h) \
     $(wildcard include/config/rtw/pll/ref/clk/sel.h) \
+    $(wildcard include/config/hwmpcap/gen1.h) \
+    $(wildcard include/config/rtl8822c.h) \
+    $(wildcard include/config/hwmpcap/gen2.h) \
+    $(wildcard include/config/rtl8814b.h) \
+    $(wildcard include/config/hwmpcap/gen3.h) \
     $(wildcard include/config/mi/with/mbssid/cam.h) \
     $(wildcard include/config/runtime/port/switch.h) \
-    $(wildcard include/config/fw/based/bcn.h) \
+    $(wildcard include/config/limited/ap/num.h) \
+    $(wildcard include/config/new/netdev/hdl.h) \
+    $(wildcard include/config/wow/pattern/hw/cam.h) \
+    $(wildcard include/config/tsf/update/pause/factor.h) \
+    $(wildcard include/config/tsf/update/restore/factor.h) \
     $(wildcard include/config/deauth/before/connect.h) \
     $(wildcard include/config/wext/dont/join/byssid.h) \
     $(wildcard include/config/doscan/in/busytraffic.h) \
+    $(wildcard include/config/phdym/fw/fixrate.h) \
     $(wildcard include/config/rtw/sdio/keep/irq.h) \
     $(wildcard include/config/usb/rx/aggregation.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/autoconf.h \
+    $(wildcard include/config/rtw/hostapd/acs.h) \
+    $(wildcard include/config/find/best/channel.h) \
+    $(wildcard include/config/error/reset.h) \
+    $(wildcard include/config/ips.h) \
+    $(wildcard include/config/pci/bcn/polling.h) \
+    $(wildcard include/config/bcn/icf.h) \
+    $(wildcard include/config/pci/msi.h) \
+    $(wildcard include/config/rtw/pci/msi/disable.h) \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/autoconf.h \
     $(wildcard include/config/for/rtl8723du/vq0.h) \
     $(wildcard include/config/sg.h) \
     $(wildcard include/config/recv/reordering/ctrl.h) \
@@ -130,7 +201,6 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/set/scan/deny/timer.h) \
     $(wildcard include/config/nativeap/mlme.h) \
     $(wildcard include/config/hostapd/mlme.h) \
-    $(wildcard include/config/find/best/channel.h) \
     $(wildcard include/config/no/wireless/handlers.h) \
     $(wildcard include/config/tx/mcast2uni.h) \
     $(wildcard include/config/auto/ap/mode.h) \
@@ -146,13 +216,11 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/tdls/autocheckalive.h) \
     $(wildcard include/config/tdls/ch/sw.h) \
     $(wildcard include/config/tsf/reset/offload.h) \
-    $(wildcard include/config/hwport/swap.h) \
-    $(wildcard include/config/scan/backop.h) \
     $(wildcard include/config/layer2/roaming/resume.h) \
     $(wildcard include/config/antenna/diversity.h) \
-    $(wildcard include/config/led.h) \
-    $(wildcard include/config/sw/led.h) \
-    $(wildcard include/config/led/handled/by/cmd/thread.h) \
+    $(wildcard include/config/rtw/led.h) \
+    $(wildcard include/config/rtw/sw/led.h) \
+    $(wildcard include/config/rtw/led/handled/by/cmd/thread.h) \
     $(wildcard include/config/xmit/ack.h) \
     $(wildcard include/config/active/keep/alive/check.h) \
     $(wildcard include/config/rf/power/trim.h) \
@@ -170,20 +238,15 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/skb/copy.h) \
     $(wildcard include/config/easy/replacement.h) \
     $(wildcard include/config/new/signal/stat/process.h) \
-    $(wildcard include/config/background/noise/monitor.h) \
     $(wildcard include/config/check/ac/lifetime.h) \
     $(wildcard include/config/embedded/fwimg.h) \
     $(wildcard include/config/file/fwimg.h) \
     $(wildcard include/config/long/delay/issue.h) \
-    $(wildcard include/config/attempt/to/fix/ap/beacon/error.h) \
     $(wildcard include/config/minimal/memory/usage.h) \
     $(wildcard include/config/mp/iwpriv/support.h) \
-    $(wildcard include/config/power/saving.h) \
-    $(wildcard include/config/ips.h) \
     $(wildcard include/config/lps.h) \
     $(wildcard include/config/ips/level/2.h) \
     $(wildcard include/config/lps/lclk.h) \
-    $(wildcard include/config/xmit/thread/mode.h) \
     $(wildcard include/config/gtk/ol.h) \
     $(wildcard include/config/gpio/wakeup.h) \
     $(wildcard include/config/interrupt/based/txbcn.h) \
@@ -197,15 +260,23 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/dis/uphy.h) \
     $(wildcard include/config/error/detect.h) \
     $(wildcard include/config/error/detect/int.h) \
-    $(wildcard include/config/error/reset.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_ic_cfg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_ic_cfg.h \
     $(wildcard include/config/multidrv.h) \
-    $(wildcard include/config/get/raid/by/drv.h) \
     $(wildcard include/config/fw/c2h/pkt.h) \
+    $(wildcard include/config/rts/full/bw.h) \
     $(wildcard include/config/rtw/mac/hidden/rpt.h) \
+    $(wildcard include/config/ampdu/pretx/cd.h) \
+    $(wildcard include/config/p2p/ps/noa/use/macid/sleep.h) \
+    $(wildcard include/config/fw/correct/bcn.h) \
+    $(wildcard include/config/ap/port/swap.h) \
+    $(wildcard include/config/tcp/csum/offload/tx.h) \
+    $(wildcard include/config/tcp/csum/offload/rx.h) \
+    $(wildcard include/config/mcc/mode/v2.h) \
+    $(wildcard include/config/tdls/ch/sw/v2.h) \
+    $(wildcard include/config/bcn/recv/time.h) \
+    $(wildcard include/config/no/fw.h) \
     $(wildcard include/config/phy/capability/query.h) \
-    $(wildcard include/config/support/fw/multi/port.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/basic_types.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/basic_types.h \
   include/generated/uapi/linux/version.h \
   include/linux/types.h \
     $(wildcard include/config/have/uid16.h) \
@@ -270,7 +341,7 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/mmu.h) \
     $(wildcard include/config/prove/locking.h) \
     $(wildcard include/config/panic/timeout.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/lib/gcc/arm-linux-gnueabi/6.4.1/include/stdarg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/lib/gcc/arm-linux-gnueabi/6.4.1/include/stdarg.h \
   include/linux/linkage.h \
   include/linux/stringify.h \
   include/linux/export.h \
@@ -640,6 +711,7 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/uevent/helper.h) \
     $(wildcard include/config/r8168.h) \
     $(wildcard include/config/r8169soc.h) \
+    $(wildcard include/config/rtd/1295/hwnat.h) \
     $(wildcard include/config/debug/kobject/release.h) \
   include/linux/sysfs.h \
   include/linux/kernfs.h \
@@ -849,13 +921,13 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
   include/linux/nsproxy.h \
   include/linux/ns_common.h \
   include/uapi/linux/utsname.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/osdep_service.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/osdep_service.h \
     $(wildcard include/config/use/vmalloc.h) \
     $(wildcard include/config/ap/wowlan.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/osdep_service_linux.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/osdep_service_linux.h \
     $(wildcard include/config/net/radio.h) \
     $(wildcard include/config/wireless/ext.h) \
-    $(wildcard include/config/tcp/csum/offload/tx.h) \
+    $(wildcard include/config/ieee80211/ht/addt/info.h) \
     $(wildcard include/config/usb/suspend.h) \
   include/linux/slab.h \
     $(wildcard include/config/debug/slab.h) \
@@ -1268,6 +1340,7 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/persistent/keyrings.h) \
   include/uapi/linux/neighbour.h \
   include/linux/netlink.h \
+    $(wildcard include/config/rtl/819x.h) \
   include/net/scm.h \
     $(wildcard include/config/security/network.h) \
   include/linux/security.h \
@@ -1413,13 +1486,14 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/att/wakeup.h) \
     $(wildcard include/config/att/battery.h) \
   include/linux/pm_runtime.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_byteorder.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../os_dep/linux/rtw_rhashtable.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_byteorder.h \
     $(wildcard include/config/little/endian.h) \
     $(wildcard include/config/big/endian.h) \
     $(wildcard include/config/platform/mstar389.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/byteorder/little_endian.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/wlan_bssdef.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/wifi.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/byteorder/little_endian.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/wlan_bssdef.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/wifi.h \
     $(wildcard include/config/append/vendor/ie/enable.h) \
     $(wildcard include/config/rtl8712fw.h) \
     $(wildcard include/config/error.h) \
@@ -1436,27 +1510,29 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/method/ppbc.h) \
     $(wildcard include/config/method/vdisplay.h) \
     $(wildcard include/config/method/pdisplay.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/ieee80211.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/ieee80211.h \
     $(wildcard include/config/rtl8711fw.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/drv_types_linux.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_debug.h \
+    $(wildcard include/config/rtw/wnm.h) \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/drv_types_linux.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_debug.h \
+    $(wildcard include/config/huawei/proc.h) \
+    $(wildcard include/config/rf4ce/coexist.h) \
     $(wildcard include/config/p2p/wowlan.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_rf.h \
-    $(wildcard include/config/1t.h) \
-    $(wildcard include/config/2t.h) \
-    $(wildcard include/config/1r.h) \
-    $(wildcard include/config/2r.h) \
-    $(wildcard include/config/1t2r.h) \
-    $(wildcard include/config/turbo.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_ht.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_cmd.h \
-    $(wildcard include/config/event/thread/mode.h) \
+    $(wildcard include/config/dbg/rf/cal.h) \
+    $(wildcard include/config/ctrl/txss/by/tp.h) \
+    $(wildcard include/config/lps/chk/by/tp.h) \
+    $(wildcard include/config/support/static/smps.h) \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/cmn_info/rtw_sta_info.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_rf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../core/rtw_chplan.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_ht.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_cmd.h \
     $(wildcard include/config/fw/c2h/reg.h) \
     $(wildcard include/config/c2h/wk.h) \
     $(wildcard include/config/h2clbk.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/cmd_osdep.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_security.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_xmit.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/cmd_osdep.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_security.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_xmit.h \
     $(wildcard include/config/tx/aggregation.h) \
     $(wildcard include/config/platform/arm/sunxi.h) \
     $(wildcard include/config/platform/arm/sun6i.h) \
@@ -1468,130 +1544,123 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/lps/poff.h) \
     $(wildcard include/config/trx/bd/arch.h) \
     $(wildcard include/config/64bit/dma.h) \
+    $(wildcard include/config/tx/csum/offload.h) \
     $(wildcard include/config/sdio/tx/tasklet.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/xmit_osdep.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_recv.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/xmit_osdep.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_recv.h \
     $(wildcard include/config/single/recv/buf.h) \
-    $(wildcard include/config/tcp/csum/offload/rx.h) \
-    $(wildcard include/config/recv/thread/mode.h) \
+    $(wildcard include/config/platform/rtk390x.h) \
     $(wildcard include/config/rx/indicate/queue.h) \
-    $(wildcard include/config/bsd/rx/use/mbuf.h) \
-    $(wildcard include/config/signal/scale/mapping.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/recv_osdep.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_efuse.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_sreset.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_intf.h \
-    $(wildcard include/config/rtw/sdio/oob/int.h) \
-    $(wildcard include/config/lps/lclk/wd/timer.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_com.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/cmn_info/rtw_sta_info.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_rm.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/recv_osdep.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_efuse.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_sreset.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_intf.h \
     $(wildcard include/config/lps/pg.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/HalVerDef.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_pg.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_phy.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_phy_reg.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_com_reg.h \
+    $(wildcard include/config/lps/lclk/wd/timer.h) \
+    $(wildcard include/config/rfkill/poll.h) \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_com.h \
+    $(wildcard include/config/bcn/recovery.h) \
+    $(wildcard include/config/bcn/xmit/protect.h) \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/HalVerDef.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_pg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_phy.h \
+    $(wildcard include/config/rf/shadow/rw.h) \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_phy_reg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_com_reg.h \
     $(wildcard include/config/usedk.h) \
     $(wildcard include/config/no/usedk.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_com_phycfg.h \
-    $(wildcard include/config/phydm/powertrack/by/tssi.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/hal_com_c2h.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_com_h2c.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_com_phycfg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/hal_com_c2h.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_com_h2c.h \
     $(wildcard include/config/ra/dbg/cmd.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_com_led.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/hal_dm.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_qos.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_pwrctrl.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_com_led.h \
+    $(wildcard include/config/rtw/sw/led/trx/da/classify.h) \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/hal_dm.h \
+    $(wildcard include/config/support/dynamic/txpwr.h) \
+    $(wildcard include/config/lps/pwr/tracking.h) \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_qos.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_pwrctrl.h \
     $(wildcard include/config/platform/android/intel/x86.h) \
     $(wildcard include/config/lps/rpwm/timer.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_mlme.h \
-    $(wildcard include/config/dfs.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/mlme_osdep.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_io.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_ioctl.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_ioctl_set.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_ioctl_query.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_ioctl_rtl.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/osdep_intf.h \
+    $(wildcard include/config/rtw/cfgvednor/llstats.h) \
+    $(wildcard include/config/check/leave/lps.h) \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_mlme.h \
+    $(wildcard include/config/bcn/cnt/confirm/hdl.h) \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/mlme_osdep.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_io.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_ioctl.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_ioctl_set.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_ioctl_query.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_ioctl_rtl.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/osdep_intf.h \
     $(wildcard include/config/r871x/test.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../os_dep/linux/rtw_proc.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../os_dep/linux/rtw_proc.h \
   include/linux/proc_fs.h \
     $(wildcard include/config/proc/uid.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../os_dep/linux/ioctl_cfg80211.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../os_dep/linux/ioctl_cfg80211.h \
     $(wildcard include/config/rtw/dynamic/ndev.h) \
     $(wildcard include/config/radio/work.h) \
-    $(wildcard include/config/platform/intel/cht/android60.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../os_dep/linux/rtw_cfgvendor.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_eeprom.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/sta_info.h \
+    $(wildcard include/config/rtw/cfgvednor/rssimonitor.h) \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../os_dep/linux/rtw_cfgvendor.h \
+    $(wildcard include/config/nd/offload.h) \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_eeprom.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/sta_info.h \
     $(wildcard include/config/rtw/macaddr/acl.h) \
+    $(wildcard include/config/rtw/pre/link/sta.h) \
     $(wildcard include/config/atmel/rc/patch.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_event.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_mlme_ext.h \
-    $(wildcard include/config/rtw/wnm.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_mi.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_ap.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_version.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_odm.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_types.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_features.h \
-    $(wildcard include/config/phydm/antenna/diversity.h) \
-    $(wildcard include/config/s0s1/sw/antenna/diversity.h) \
-    $(wildcard include/config/hl/smart/antenna/type1.h) \
-    $(wildcard include/config/fat/patch.h) \
-    $(wildcard include/config/path/diversity.h) \
-    $(wildcard include/config/ra/dynamic/rty/limit.h) \
-    $(wildcard include/config/ant/detection.h) \
-    $(wildcard include/config/ra/fw/dbg/code.h) \
-    $(wildcard include/config/phydm/rx/sniffer/parsing.h) \
-    $(wildcard include/config/bb/power/saving.h) \
-    $(wildcard include/config/bb/txbf/api.h) \
-    $(wildcard include/config/ra/dynamic/rate/id.h) \
-    $(wildcard include/config/rtl/8881a/ant/switch.h) \
-    $(wildcard include/config/slot/0/ant/switch.h) \
-    $(wildcard include/config/slot/1/ant/switch.h) \
-    $(wildcard include/config/no/2g/diversity.h) \
-    $(wildcard include/config/2g5g/cg/trx/diversity/8881a.h) \
-    $(wildcard include/config/2g/cgcs/rx/diversity.h) \
-    $(wildcard include/config/2g/cg/trx/diversity.h) \
-    $(wildcard include/config/2g/cg/smart/ant/diversity.h) \
-    $(wildcard include/config/no/5g/diversity/8881a.h) \
-    $(wildcard include/config/no/5g/diversity.h) \
-    $(wildcard include/config/5g/cgcs/rx/diversity/8881a.h) \
-    $(wildcard include/config/5g/cgcs/rx/diversity.h) \
-    $(wildcard include/config/5g/cg/trx/diversity/8881a.h) \
-    $(wildcard include/config/5g/cg/trx/diversity.h) \
-    $(wildcard include/config/2g5g/cg/trx/diversity.h) \
-    $(wildcard include/config/5g/cg/smart/ant/diversity.h) \
-    $(wildcard include/config/not/support/antdiv.h) \
-    $(wildcard include/config/2g/support/antdiv.h) \
-    $(wildcard include/config/5g/support/antdiv.h) \
-    $(wildcard include/config/2g5g/support/antdiv.h) \
-    $(wildcard include/config/phydm/dfs/master.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_p2p.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_mp.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_event.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_mlme_ext.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_mi.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_ap.h \
+    $(wildcard include/config/bmc/tx/rate/select.h) \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_version.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_odm.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_types.h \
+    $(wildcard include/config/rtl/triband/support.h) \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_p2p.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_mp.h \
     $(wildcard include/config/txt.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_br_ext.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/ip.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/if_ether.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/ethernet.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/circ_buf.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_android.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_br_ext.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/ip.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/if_ether.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/ethernet.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/circ_buf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_android.h \
     $(wildcard include/config/platform/intel/byt.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_btcoex.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/usb_osintf.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/usb_vendor_req.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/usb_ops.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_btcoex_wifionly.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtw_btcoex.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/usb_osintf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/usb_vendor_req.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/usb_ops.h \
     $(wildcard include/config/rtl8814.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/usb_ops_linux.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/usb_hal.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_data.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/usb_ops_linux.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/usb_hal.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_data.h \
     $(wildcard include/config/single/img.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_precomp.h \
+    $(wildcard include/config/pci/dynamic/aspm.h) \
+    $(wildcard include/config/ant/a.h) \
+    $(wildcard include/config/ant/b.h) \
+    $(wildcard include/config/pmpd/ant/a.h) \
+    $(wildcard include/config/pmpd/ant/b.h) \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_precomp.h \
     $(wildcard include/config/sfw/supported.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_types.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_types.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/halrf/halrf_features.h \
+    $(wildcard include/config/halrf/powertracking.h) \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm.h \
+    $(wildcard include/config/path/diversity.h) \
+    $(wildcard include/config/phydm/antenna/diversity.h) \
+    $(wildcard include/config/smart/antenna.h) \
+    $(wildcard include/config/ant/detection.h) \
+    $(wildcard include/config/dynamic/tx/twr.h) \
+    $(wildcard include/config/psd/tool.h) \
     $(wildcard include/config/bb/rf.h) \
-    $(wildcard include/config/phy/reg/pg/value/type.h) \
+    $(wildcard include/config/mcc/dm.h) \
+    $(wildcard include/config/phydm/dfs/master.h) \
+    $(wildcard include/config/adaptive/soml.h) \
+    $(wildcard include/config/hl/smart/antenna.h) \
     $(wildcard include/config/bb/phy/reg.h) \
     $(wildcard include/config/bb/agc/tab.h) \
     $(wildcard include/config/bb/agc/tab/2g.h) \
@@ -1599,8 +1668,10 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/bb/phy/reg/pg.h) \
     $(wildcard include/config/bb/phy/reg/mp.h) \
     $(wildcard include/config/bb/agc/tab/diff.h) \
+    $(wildcard include/config/bb/rf/cal/init.h) \
     $(wildcard include/config/rf/radio.h) \
     $(wildcard include/config/rf/txpwr/lmt.h) \
+    $(wildcard include/config/rf/syn/radio.h) \
     $(wildcard include/config/fw/nic.h) \
     $(wildcard include/config/fw/nic/2.h) \
     $(wildcard include/config/fw/ap.h) \
@@ -1610,77 +1681,100 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/fw/wowlan/2.h) \
     $(wildcard include/config/fw/ap/wowlan.h) \
     $(wildcard include/config/fw/bt.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_pre_define.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_dig.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_edcaturbocheck.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_pathdiv.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_antdiv.h \
-    $(wildcard include/config/wlan/hal.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_antdect.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_dynamicbbpowersaving.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_rainfo.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_dynamictxpower.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_cfotracking.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_acs.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_adaptivity.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_iqk.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_dfs.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_ccx.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/txbf/phydm_hal_txbf_api.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_adc_sampling.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_beamforming.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/txbf/halcomtxbf.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/txbf/haltxbfjaguar.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/txbf/haltxbf8192e.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/txbf/haltxbf8814a.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/txbf/haltxbf8822b.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/txbf/haltxbfinterface.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_noisemonitor.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/halphyrf_ce.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_kfree.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_powertracking_ce.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_hwconfig.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_pre_define.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_features.h \
+    $(wildcard include/config/run/in/drv.h) \
+    $(wildcard include/config/powersaving.h) \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_features_ce.h \
+    $(wildcard include/config/receiver/blocking.h) \
+    $(wildcard include/config/8912f/spur/calibration.h) \
+    $(wildcard include/config/8822b/spur/calibration.h) \
+    $(wildcard include/config/s0s1/sw/antenna/diversity.h) \
+    $(wildcard include/config/hl/smart/antenna/type1.h) \
+    $(wildcard include/config/hl/smart/antenna/type2.h) \
+    $(wildcard include/config/cumitek/smart/antenna.h) \
+    $(wildcard include/config/ra/fw/dbg/code.h) \
+    $(wildcard include/config/ra/dynamic/rty/limit.h) \
+    $(wildcard include/config/bb/txbf/api.h) \
+    $(wildcard include/config/phydm/debug/function.h) \
+    $(wildcard include/config/dynamic/bypass/mode.h) \
+    $(wildcard include/config/dynamic/bypass.h) \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_dig.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_soml.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_rainfo.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_cfotracking.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_adaptivity.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_dfs.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_ccx.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/txbf/phydm_hal_txbf_api.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_psd.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_cck_pd.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_rssi_monitor.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_math_lib.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_noisemonitor.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_api.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_beamforming.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/txbf/halcomtxbf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/txbf/haltxbfjaguar.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/txbf/haltxbf8192e.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/txbf/haltxbf8814a.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/txbf/haltxbf8822b.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/txbf/haltxbfinterface.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_regtable.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/halrf/halrf_iqk.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/halrf/halrf_dpk.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/halrf/halrf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/hal/phydm/halrf/halrf_psd.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/halrf/halrf_powertracking.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/halrf/halphyrf_ce.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/hal/phydm/halrf/halrf_kfree.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/hal/phydm/halrf/halrf_powertracking_ce.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_hwconfig.h \
     $(wildcard include/config/mp.h) \
     $(wildcard include/config/tc.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_debug.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_regdefine11ac.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_regdefine11n.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_phystatus.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_debug.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_regdefine11ac.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_regdefine11n.h \
     $(wildcard include/config/anta/11n.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_interface.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_reg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_interface.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/phydm_reg.h \
     $(wildcard include/config/wlan/hal/8814ae.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/rtl8723d/halhwimg8723d_bb.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/rtl8723d/halhwimg8723d_mac.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/rtl8723d/halhwimg8723d_rf.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/rtl8723d/phydm_regconfig8723d.h \
+    $(wildcard include/config/wlan/hal/8198f.h) \
+    $(wildcard include/config/wlan/hal/8822ce.h) \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/halrf/halrf_debug.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/rtl8723d/halhwimg8723d_bb.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/rtl8723d/halhwimg8723d_mac.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/rtl8723d/halhwimg8723d_rf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/rtl8723d/phydm_regconfig8723d.h \
     $(wildcard include/config/h/8723d.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/rtl8723d/halhwimg8723d_fw.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/rtl8723d/hal8723dreg.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/rtl8723d/phydm_rtl8723d.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/rtl8723d/halphyrf_8723d.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/rtl8723d/version_rtl8723d.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtl8723d_hal.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/rtl8723d/hal8723dreg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/rtl8723d/phydm_rtl8723d.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/halrf/rtl8723d/halrf_8723d.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/phydm/rtl8723d/version_rtl8723d.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtl8723d_hal.h \
     $(wildcard include/config/fw/c2h/debug.h) \
     $(wildcard include/config/check/bt/hang.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_data.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtl8723d_spec.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtl8723d_rf.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtl8723d_dm.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtl8723d_recv.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_data.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtl8723d_spec.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtl8723d_rf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtl8723d_dm.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtl8723d_recv.h \
     $(wildcard include/config/sdio/rx/copy.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtl8723d_xmit.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtl8723d_cmd.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/rtl8723d_led.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/Hal8723DPwrSeq.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/HalPwrSeqCmd.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/Hal8723DPhyReg.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/Hal8723DPhyCfg.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_com.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_btcoex.h \
-    $(wildcard include/config/rf4ce/coexist.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/efuse/efuse_mask.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/efuse/rtl8723d/HalEfuseMask8723D_USB.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtl8723d_xmit.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtl8723d_cmd.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/rtl8723d_led.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/Hal8723DPwrSeq.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/HalPwrSeqCmd.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/Hal8723DPhyReg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/Hal8723DPhyCfg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_com.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_btcoex.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/hal_btcoex_wifionly.h \
+    $(wildcard include/config/btcoex/support/wifi/only/cfg.h) \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/efuse/efuse_mask.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/include/../hal/efuse/rtl8723d/HalEfuseMask8723D_USB.h \
 
-/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/core/efuse/rtw_efuse.o: $(deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/core/efuse/rtw_efuse.o)
+/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/core/efuse/rtw_efuse.o: $(deps_/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/core/efuse/rtw_efuse.o)
 
-$(deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8723du/core/efuse/rtw_efuse.o):
+$(deps_/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8723du/core/efuse/rtw_efuse.o):

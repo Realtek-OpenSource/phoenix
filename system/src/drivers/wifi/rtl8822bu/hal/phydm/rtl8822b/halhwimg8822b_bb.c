@@ -23,7 +23,7 @@
  *
  *****************************************************************************/
 
-/*Image2HeaderVersion: R3 1.4.3*/
+/*Image2HeaderVersion: R3 1.4.5*/
 #include "mp_precomp.h"
 #include "../phydm_precomp.h"
 
@@ -10190,7 +10190,7 @@ odm_read_and_config_mp_8822b_agc_tab(struct dm_struct *dm)
 u32
 odm_get_version_mp_8822b_agc_tab(void)
 {
-		return 107;
+		return 112;
 }
 
 /******************************************************************************
@@ -10334,12 +10334,12 @@ const u32 array_mp_8822b_phy_reg[] = {
 		0xA14, 0x1114D028,
 		0xA18, 0x00881117,
 		0xA1C, 0x89140F00,
-		0xA20, 0x84880000,
+		0xA20, 0x84880010,
 		0xA24, 0x384F6577,
 		0xA28, 0x00001525,
 		0xA2C, 0x00920000,
 		0xA70, 0x101FFF00,
-		0xA74, 0x00000148,
+		0xA74, 0x00000048,
 		0xA78, 0x00000900,
 		0xA7C, 0x225B0606,
 		0xA80, 0x218675B2,
@@ -11756,7 +11756,7 @@ odm_read_and_config_mp_8822b_phy_reg(struct dm_struct *dm)
 u32
 odm_get_version_mp_8822b_phy_reg(void)
 {
-		return 107;
+		return 112;
 }
 
 /******************************************************************************
@@ -11820,18 +11820,18 @@ odm_read_and_config_mp_8822b_phy_reg_pg(struct dm_struct *dm)
 {
 #ifdef CONFIG_8822B
 
-	u32	i = 0;
-	u32	array_len =
-			sizeof(array_mp_8822b_phy_reg_pg) / sizeof(u32);
-	u32	*array = (u32 *)array_mp_8822b_phy_reg_pg;
+	u32 i = 0;
+	u32 array_len =
+		 sizeof(array_mp_8822b_phy_reg_pg) / sizeof(u32);
+	u32 *array = (u32 *)array_mp_8822b_phy_reg_pg;
 
 #if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
 	void	*adapter = dm->adapter;
 	HAL_DATA_TYPE	*hal_data = GET_HAL_DATA(((PADAPTER)adapter));
 
-	PlatformZeroMemory(hal_data->BufOfLinesPwrByRate,
-			   MAX_LINES_HWCONFIG_TXT *
-			   MAX_BYTES_LINE_HWCONFIG_TXT);
+	odm_memory_set(dm, hal_data->BufOfLinesPwrByRate, 0,
+		       MAX_LINES_HWCONFIG_TXT *
+		       MAX_BYTES_LINE_HWCONFIG_TXT);
 	hal_data->nLinesReadPwrByRate = array_len / 6;
 #endif
 
@@ -11921,18 +11921,18 @@ odm_read_and_config_mp_8822b_phy_reg_pg_type12(struct dm_struct *dm)
 {
 #ifdef CONFIG_8822B_TYPE12
 
-	u32	i = 0;
-	u32	array_len =
-			sizeof(array_mp_8822b_phy_reg_pg_type12) / sizeof(u32);
-	u32	*array = (u32 *)array_mp_8822b_phy_reg_pg_type12;
+	u32 i = 0;
+	u32 array_len =
+		 sizeof(array_mp_8822b_phy_reg_pg_type12) / sizeof(u32);
+	u32 *array = (u32 *)array_mp_8822b_phy_reg_pg_type12;
 
 #if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
 	void	*adapter = dm->adapter;
 	HAL_DATA_TYPE	*hal_data = GET_HAL_DATA(((PADAPTER)adapter));
 
-	PlatformZeroMemory(hal_data->BufOfLinesPwrByRate,
-			   MAX_LINES_HWCONFIG_TXT *
-			   MAX_BYTES_LINE_HWCONFIG_TXT);
+	odm_memory_set(dm, hal_data->BufOfLinesPwrByRate, 0,
+		       MAX_LINES_HWCONFIG_TXT *
+		       MAX_BYTES_LINE_HWCONFIG_TXT);
 	hal_data->nLinesReadPwrByRate = array_len / 6;
 #endif
 
@@ -12022,18 +12022,18 @@ odm_read_and_config_mp_8822b_phy_reg_pg_type15(struct dm_struct *dm)
 {
 #ifdef CONFIG_8822B_TYPE15
 
-	u32	i = 0;
-	u32	array_len =
-			sizeof(array_mp_8822b_phy_reg_pg_type15) / sizeof(u32);
-	u32	*array = (u32 *)array_mp_8822b_phy_reg_pg_type15;
+	u32 i = 0;
+	u32 array_len =
+		 sizeof(array_mp_8822b_phy_reg_pg_type15) / sizeof(u32);
+	u32 *array = (u32 *)array_mp_8822b_phy_reg_pg_type15;
 
 #if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
 	void	*adapter = dm->adapter;
 	HAL_DATA_TYPE	*hal_data = GET_HAL_DATA(((PADAPTER)adapter));
 
-	PlatformZeroMemory(hal_data->BufOfLinesPwrByRate,
-			   MAX_LINES_HWCONFIG_TXT *
-			   MAX_BYTES_LINE_HWCONFIG_TXT);
+	odm_memory_set(dm, hal_data->BufOfLinesPwrByRate, 0,
+		       MAX_LINES_HWCONFIG_TXT *
+		       MAX_BYTES_LINE_HWCONFIG_TXT);
 	hal_data->nLinesReadPwrByRate = array_len / 6;
 #endif
 
@@ -12123,18 +12123,18 @@ odm_read_and_config_mp_8822b_phy_reg_pg_type16(struct dm_struct *dm)
 {
 #ifdef CONFIG_8822B_TYPE16
 
-	u32	i = 0;
-	u32	array_len =
-			sizeof(array_mp_8822b_phy_reg_pg_type16) / sizeof(u32);
-	u32	*array = (u32 *)array_mp_8822b_phy_reg_pg_type16;
+	u32 i = 0;
+	u32 array_len =
+		 sizeof(array_mp_8822b_phy_reg_pg_type16) / sizeof(u32);
+	u32 *array = (u32 *)array_mp_8822b_phy_reg_pg_type16;
 
 #if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
 	void	*adapter = dm->adapter;
 	HAL_DATA_TYPE	*hal_data = GET_HAL_DATA(((PADAPTER)adapter));
 
-	PlatformZeroMemory(hal_data->BufOfLinesPwrByRate,
-			   MAX_LINES_HWCONFIG_TXT *
-			   MAX_BYTES_LINE_HWCONFIG_TXT);
+	odm_memory_set(dm, hal_data->BufOfLinesPwrByRate, 0,
+		       MAX_LINES_HWCONFIG_TXT *
+		       MAX_BYTES_LINE_HWCONFIG_TXT);
 	hal_data->nLinesReadPwrByRate = array_len / 6;
 #endif
 
@@ -12224,18 +12224,18 @@ odm_read_and_config_mp_8822b_phy_reg_pg_type17(struct dm_struct *dm)
 {
 #ifdef CONFIG_8822B_TYPE17
 
-	u32	i = 0;
-	u32	array_len =
-			sizeof(array_mp_8822b_phy_reg_pg_type17) / sizeof(u32);
-	u32	*array = (u32 *)array_mp_8822b_phy_reg_pg_type17;
+	u32 i = 0;
+	u32 array_len =
+		 sizeof(array_mp_8822b_phy_reg_pg_type17) / sizeof(u32);
+	u32 *array = (u32 *)array_mp_8822b_phy_reg_pg_type17;
 
 #if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
 	void	*adapter = dm->adapter;
 	HAL_DATA_TYPE	*hal_data = GET_HAL_DATA(((PADAPTER)adapter));
 
-	PlatformZeroMemory(hal_data->BufOfLinesPwrByRate,
-			   MAX_LINES_HWCONFIG_TXT *
-			   MAX_BYTES_LINE_HWCONFIG_TXT);
+	odm_memory_set(dm, hal_data->BufOfLinesPwrByRate, 0,
+		       MAX_LINES_HWCONFIG_TXT *
+		       MAX_BYTES_LINE_HWCONFIG_TXT);
 	hal_data->nLinesReadPwrByRate = array_len / 6;
 #endif
 
@@ -12325,18 +12325,18 @@ odm_read_and_config_mp_8822b_phy_reg_pg_type18(struct dm_struct *dm)
 {
 #ifdef CONFIG_8822B_TYPE18
 
-	u32	i = 0;
-	u32	array_len =
-			sizeof(array_mp_8822b_phy_reg_pg_type18) / sizeof(u32);
-	u32	*array = (u32 *)array_mp_8822b_phy_reg_pg_type18;
+	u32 i = 0;
+	u32 array_len =
+		 sizeof(array_mp_8822b_phy_reg_pg_type18) / sizeof(u32);
+	u32 *array = (u32 *)array_mp_8822b_phy_reg_pg_type18;
 
 #if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
 	void	*adapter = dm->adapter;
 	HAL_DATA_TYPE	*hal_data = GET_HAL_DATA(((PADAPTER)adapter));
 
-	PlatformZeroMemory(hal_data->BufOfLinesPwrByRate,
-			   MAX_LINES_HWCONFIG_TXT *
-			   MAX_BYTES_LINE_HWCONFIG_TXT);
+	odm_memory_set(dm, hal_data->BufOfLinesPwrByRate, 0,
+		       MAX_LINES_HWCONFIG_TXT *
+		       MAX_BYTES_LINE_HWCONFIG_TXT);
 	hal_data->nLinesReadPwrByRate = array_len / 6;
 #endif
 
@@ -12426,18 +12426,18 @@ odm_read_and_config_mp_8822b_phy_reg_pg_type2(struct dm_struct *dm)
 {
 #ifdef CONFIG_8822B_TYPE2
 
-	u32	i = 0;
-	u32	array_len =
-			sizeof(array_mp_8822b_phy_reg_pg_type2) / sizeof(u32);
-	u32	*array = (u32 *)array_mp_8822b_phy_reg_pg_type2;
+	u32 i = 0;
+	u32 array_len =
+		 sizeof(array_mp_8822b_phy_reg_pg_type2) / sizeof(u32);
+	u32 *array = (u32 *)array_mp_8822b_phy_reg_pg_type2;
 
 #if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
 	void	*adapter = dm->adapter;
 	HAL_DATA_TYPE	*hal_data = GET_HAL_DATA(((PADAPTER)adapter));
 
-	PlatformZeroMemory(hal_data->BufOfLinesPwrByRate,
-			   MAX_LINES_HWCONFIG_TXT *
-			   MAX_BYTES_LINE_HWCONFIG_TXT);
+	odm_memory_set(dm, hal_data->BufOfLinesPwrByRate, 0,
+		       MAX_LINES_HWCONFIG_TXT *
+		       MAX_BYTES_LINE_HWCONFIG_TXT);
 	hal_data->nLinesReadPwrByRate = array_len / 6;
 #endif
 
@@ -12527,18 +12527,18 @@ odm_read_and_config_mp_8822b_phy_reg_pg_type3(struct dm_struct *dm)
 {
 #ifdef CONFIG_8822B_TYPE3
 
-	u32	i = 0;
-	u32	array_len =
-			sizeof(array_mp_8822b_phy_reg_pg_type3) / sizeof(u32);
-	u32	*array = (u32 *)array_mp_8822b_phy_reg_pg_type3;
+	u32 i = 0;
+	u32 array_len =
+		 sizeof(array_mp_8822b_phy_reg_pg_type3) / sizeof(u32);
+	u32 *array = (u32 *)array_mp_8822b_phy_reg_pg_type3;
 
 #if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
 	void	*adapter = dm->adapter;
 	HAL_DATA_TYPE	*hal_data = GET_HAL_DATA(((PADAPTER)adapter));
 
-	PlatformZeroMemory(hal_data->BufOfLinesPwrByRate,
-			   MAX_LINES_HWCONFIG_TXT *
-			   MAX_BYTES_LINE_HWCONFIG_TXT);
+	odm_memory_set(dm, hal_data->BufOfLinesPwrByRate, 0,
+		       MAX_LINES_HWCONFIG_TXT *
+		       MAX_BYTES_LINE_HWCONFIG_TXT);
 	hal_data->nLinesReadPwrByRate = array_len / 6;
 #endif
 
@@ -12628,18 +12628,18 @@ odm_read_and_config_mp_8822b_phy_reg_pg_type4(struct dm_struct *dm)
 {
 #ifdef CONFIG_8822B_TYPE4
 
-	u32	i = 0;
-	u32	array_len =
-			sizeof(array_mp_8822b_phy_reg_pg_type4) / sizeof(u32);
-	u32	*array = (u32 *)array_mp_8822b_phy_reg_pg_type4;
+	u32 i = 0;
+	u32 array_len =
+		 sizeof(array_mp_8822b_phy_reg_pg_type4) / sizeof(u32);
+	u32 *array = (u32 *)array_mp_8822b_phy_reg_pg_type4;
 
 #if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
 	void	*adapter = dm->adapter;
 	HAL_DATA_TYPE	*hal_data = GET_HAL_DATA(((PADAPTER)adapter));
 
-	PlatformZeroMemory(hal_data->BufOfLinesPwrByRate,
-			   MAX_LINES_HWCONFIG_TXT *
-			   MAX_BYTES_LINE_HWCONFIG_TXT);
+	odm_memory_set(dm, hal_data->BufOfLinesPwrByRate, 0,
+		       MAX_LINES_HWCONFIG_TXT *
+		       MAX_BYTES_LINE_HWCONFIG_TXT);
 	hal_data->nLinesReadPwrByRate = array_len / 6;
 #endif
 
@@ -12729,18 +12729,18 @@ odm_read_and_config_mp_8822b_phy_reg_pg_type5(struct dm_struct *dm)
 {
 #ifdef CONFIG_8822B_TYPE5
 
-	u32	i = 0;
-	u32	array_len =
-			sizeof(array_mp_8822b_phy_reg_pg_type5) / sizeof(u32);
-	u32	*array = (u32 *)array_mp_8822b_phy_reg_pg_type5;
+	u32 i = 0;
+	u32 array_len =
+		 sizeof(array_mp_8822b_phy_reg_pg_type5) / sizeof(u32);
+	u32 *array = (u32 *)array_mp_8822b_phy_reg_pg_type5;
 
 #if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
 	void	*adapter = dm->adapter;
 	HAL_DATA_TYPE	*hal_data = GET_HAL_DATA(((PADAPTER)adapter));
 
-	PlatformZeroMemory(hal_data->BufOfLinesPwrByRate,
-			   MAX_LINES_HWCONFIG_TXT *
-			   MAX_BYTES_LINE_HWCONFIG_TXT);
+	odm_memory_set(dm, hal_data->BufOfLinesPwrByRate, 0,
+		       MAX_LINES_HWCONFIG_TXT *
+		       MAX_BYTES_LINE_HWCONFIG_TXT);
 	hal_data->nLinesReadPwrByRate = array_len / 6;
 #endif
 

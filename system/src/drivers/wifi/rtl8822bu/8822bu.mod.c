@@ -57,6 +57,7 @@ __attribute__((section("__versions"))) = {
 	{ 0xe4689576, __VMLINUX_SYMBOL_STR(ktime_get_with_offset) },
 	{ 0xa1cf8bcb, __VMLINUX_SYMBOL_STR(mutex_unlock) },
 	{ 0x60352082, __VMLINUX_SYMBOL_STR(register_inet6addr_notifier) },
+	{ 0x4059792f, __VMLINUX_SYMBOL_STR(print_hex_dump) },
 	{ 0x9e8ce4b1, __VMLINUX_SYMBOL_STR(alloc_etherdev_mqs) },
 	{ 0xc237eb0e, __VMLINUX_SYMBOL_STR(usb_free_urb) },
 	{ 0x8bb3812b, __VMLINUX_SYMBOL_STR(cfg80211_new_sta) },
@@ -104,6 +105,7 @@ __attribute__((section("__versions"))) = {
 	{ 0x55f72ac2, __VMLINUX_SYMBOL_STR(cfg80211_scan_done) },
 	{ 0xb3f7646e, __VMLINUX_SYMBOL_STR(kthread_should_stop) },
 	{ 0x407d765a, __VMLINUX_SYMBOL_STR(mutex_lock) },
+	{ 0xbb56ce71, __VMLINUX_SYMBOL_STR(kmem_cache_alloc_trace) },
 	{ 0xb46cfb30, __VMLINUX_SYMBOL_STR(__mutex_init) },
 	{ 0xd62c833f, __VMLINUX_SYMBOL_STR(schedule_timeout) },
 	{ 0xe4afb5d3, __VMLINUX_SYMBOL_STR(napi_complete_done) },
@@ -148,6 +150,7 @@ __attribute__((section("__versions"))) = {
 	{ 0x2de8f566, __VMLINUX_SYMBOL_STR(seq_printf) },
 	{ 0xd4669fad, __VMLINUX_SYMBOL_STR(complete) },
 	{ 0x9bd93757, __VMLINUX_SYMBOL_STR(cfg80211_get_bss) },
+	{ 0x14255c2b, __VMLINUX_SYMBOL_STR(kmalloc_caches) },
 	{ 0xcd5b4de8, __VMLINUX_SYMBOL_STR(wiphy_new_nm) },
 	{ 0x46699372, __VMLINUX_SYMBOL_STR(param_array_ops) },
 	{ 0x166ae74b, __VMLINUX_SYMBOL_STR(wiphy_free) },
@@ -158,6 +161,7 @@ __attribute__((section("__versions"))) = {
 	{ 0x7f7801e, __VMLINUX_SYMBOL_STR(seq_open) },
 	{ 0x1afae5e7, __VMLINUX_SYMBOL_STR(down_interruptible) },
 	{ 0x2e5810c6, __VMLINUX_SYMBOL_STR(__aeabi_unwind_cpp_pr1) },
+	{ 0x79aa04a2, __VMLINUX_SYMBOL_STR(get_random_bytes) },
 	{ 0x515fd51, __VMLINUX_SYMBOL_STR(proc_get_parent_data) },
 	{ 0xa4c218d7, __VMLINUX_SYMBOL_STR(skb_put) },
 	{ 0x21f06f97, __VMLINUX_SYMBOL_STR(__ieee80211_get_channel) },
@@ -187,6 +191,7 @@ __attribute__((section("__versions"))) = {
 	{ 0x5f754e5a, __VMLINUX_SYMBOL_STR(memset) },
 	{ 0x815dd5b8, __VMLINUX_SYMBOL_STR(__pskb_pull_tail) },
 	{ 0x9c0bd51f, __VMLINUX_SYMBOL_STR(_raw_spin_lock) },
+	{ 0xee2bc3f5, __VMLINUX_SYMBOL_STR(nla_append) },
 	{ 0x40171b19, __VMLINUX_SYMBOL_STR(usb_alloc_urb) },
 	{ 0xe2d5255a, __VMLINUX_SYMBOL_STR(strcmp) },
 	{ 0x63f54a74, __VMLINUX_SYMBOL_STR(usb_reset_device) },
@@ -232,4 +237,4 @@ MODULE_ALIAS("usb:v0BDApB82Cd*dc*dsc*dp*icFFiscFFipFFin*");
 MODULE_ALIAS("usb:v0BDApB812d*dc*dsc*dp*icFFiscFFipFFin*");
 MODULE_ALIAS("usb:v13B1p0043d*dc*dsc*dp*icFFiscFFipFFin*");
 
-MODULE_INFO(srcversion, "9CE605324F4942069F6B49F");
+MODULE_INFO(srcversion, "62BCC7F366EF5578DB781B6");

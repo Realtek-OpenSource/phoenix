@@ -639,6 +639,34 @@ int rtw_mpp_path_add(_adapter *adapter,
 	return ret;
 }
 
+void dump_mpp(void *sel, _adapter *adapter)
+{
+	struct rtw_mesh_path *mpath;
+	int idx = 0;
+	char dst[ETH_ALEN];
+	char mpp[ETH_ALEN];
+
+	RTW_PRINT_SEL(sel, "%-17s %-17s\n", "dst", "mpp");
+
+	do {
+		rtw_rcu_read_lock();
+
+		mpath = rtw_mpp_path_lookup_by_idx(adapter, idx);
+		if (mpath) {
+			_rtw_memcpy(dst, mpath->dst, ETH_ALEN);
+			_rtw_memcpy(mpp, mpath->mpp, ETH_ALEN);
+		}
+
+		rtw_rcu_read_unlock();
+
+		if (mpath) {
+			RTW_PRINT_SEL(sel, MAC_FMT" "MAC_FMT"\n"
+				, MAC_ARG(dst), MAC_ARG(mpp));
+		}
+
+		idx++;
+	} while (mpath);
+}
 
 /**
  * rtw_mesh_plink_broken - deactivates paths and sends perr when a link breaks

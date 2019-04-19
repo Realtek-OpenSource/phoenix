@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2007 - 2017 Realtek Corporation.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -11,12 +11,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
  *
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
- *
- *
- ******************************************************************************/
+ *****************************************************************************/
 /* ***** temporarily flag ******* */
 #define CONFIG_SINGLE_IMG
 /* #define CONFIG_DISABLE_ODM */
@@ -48,7 +43,6 @@
 	/* #define CONFIG_DEBUG_CFG80211 */
 	/* #define CONFIG_DRV_ISSUE_PROV_REQ */ /* IOT FOR S2 */
 	#define CONFIG_SET_SCAN_DENY_TIMER
-	/*#define SUPPLICANT_RTK_VERSION_LOWER_THAN_JB42*/ /* wpa_supplicant realtek version <= jb42 will be defined this */
 #endif
 
 /*
@@ -89,10 +83,6 @@
 
 #define CONFIG_RECV_REORDERING_CTRL	1
 
-/* #define CONFIG_TCP_CSUM_OFFLOAD_RX	1 */
-
-/* #define CONFIG_DRVEXT_MODULE	1 */
-
 #define CONFIG_DFS	1
 
 /*#define CONFIG_SUPPORT_USB_INT*/
@@ -100,7 +90,7 @@
 /*#define CONFIG_USB_INTERRUPT_IN_PIPE	1*/
 #endif
 
-/* #ifndef CONFIG_MP_INCLUDED */
+#ifdef CONFIG_POWER_SAVING
 	#define CONFIG_IPS	1
 	#ifdef CONFIG_IPS
 	/* #define CONFIG_IPS_LEVEL_2	1 */ /* enable this to set default IPS mode to IPS_LEVEL_2 */
@@ -116,14 +106,13 @@
 	#ifdef CONFIG_LPS_LCLK
 	#define CONFIG_XMIT_THREAD_MODE
 	#endif
-
+#endif /*CONFIG_POWER_SAVING*/
 	/*#define CONFIG_ANTENNA_DIVERSITY*/
 	/* #define CONFIG_CONCURRENT_MODE 1 */
 	#ifdef CONFIG_CONCURRENT_MODE
 		#define CONFIG_RUNTIME_PORT_SWITCH
 
 		/* #define DBG_RUNTIME_PORT_SWITCH */
-		#define CONFIG_SCAN_BACKOP
 		/* #ifdef CONFIG_RTL8812A */
 		/* #define CONFIG_TSF_RESET_OFFLOAD 1 */		/* For 2 PORT TSF SYNC. */
 		/* #endif */
@@ -164,7 +153,7 @@
 	#define CONFIG_P2P_PS
 	#define CONFIG_P2P_OP_CHK_SOCIAL_CH
 	#define CONFIG_CFG80211_ONECHANNEL_UNDER_CONCURRENT  /* replace CONFIG_P2P_CHK_INVITE_CH_LIST flag */
-	#define CONFIG_P2P_INVITE_IOT
+	/*#define CONFIG_P2P_INVITE_IOT*/
 #endif
 
 /* Added by Kurt 20110511 */
@@ -187,13 +176,13 @@
 
 #define CONFIG_SKB_COPY	1/* for amsdu */
 
-#define CONFIG_LED
-#ifdef CONFIG_LED
-	#define CONFIG_SW_LED
-	#ifdef CONFIG_SW_LED
-		/* #define CONFIG_LED_HANDLED_BY_CMD_THREAD */
+#define CONFIG_RTW_LED
+#ifdef CONFIG_RTW_LED
+	#define CONFIG_RTW_SW_LED
+	#ifdef CONFIG_RTW_SW_LED
+		/* #define CONFIG_RTW_LED_HANDLED_BY_CMD_THREAD */
 	#endif
-#endif /* CONFIG_LED */
+#endif /* CONFIG_RTW_LED */
 
 #define CONFIG_GLOBAL_UI_PID
 
@@ -210,18 +199,18 @@
 #endif
 #define RTW_NOTCH_FILTER 0 /* 0:Disable, 1:Enable, */
 
+/* Bug: 43523, 20140609 avoid rtw_xmit error */
 #ifdef CONFIG_DHC_PATCH
-//Bug: 43523, 20140609 avoid rtw_xmit error to mark CONFIG_TX_MCAST2UNI
-//#define CONFIG_TX_MCAST2UNI	1	// Support IP multicast->unicast
+/* #define CONFIG_TX_MCAST2UNI */	/* Support IP multicast->unicast */
 #else
-#define CONFIG_TX_MCAST2UNI		/*Support IP multicast->unicast*/
-#endif //CONFIG_DHC_PATCH
+#define CONFIG_TX_MCAST2UNI	/* Support IP multicast->unicast */
+#endif /* CONFIG_DHC_PATCH */
 
 /* #define CONFIG_CHECK_AC_LIFETIME 1 */	/* Check packet lifetime of 4 ACs. */
 
 #ifdef CONFIG_WOWLAN
 	/* #define CONFIG_GTK_OL */
-	#define CONFIG_ARP_KEEP_ALIVE
+	/* #define CONFIG_ARP_KEEP_ALIVE */
 #endif /* CONFIG_WOWLAN */
 
 #ifdef CONFIG_GPIO_WAKEUP
@@ -327,8 +316,6 @@
 #endif
 
 #define	RTL8188E_EARLY_MODE_PKT_NUM_10	0
-
-#define CONFIG_80211D
 
 #define CONFIG_ATTEMPT_TO_FIX_AP_BEACON_ERROR
 

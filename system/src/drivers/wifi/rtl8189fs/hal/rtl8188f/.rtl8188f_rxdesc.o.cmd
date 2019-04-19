@@ -1,9 +1,9 @@
-cmd_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/hal/rtl8188f/rtl8188f_rxdesc.o := arm-linux-gnueabi-gcc -Wp,-MD,/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/hal/rtl8188f/.rtl8188f_rxdesc.o.d  -nostdinc -isystem /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/bin/../lib/gcc/arm-linux-gnueabi/6.4.1/include -I./arch/arm/include -I./arch/arm/include/generated/uapi -I./arch/arm/include/generated  -I./include -I./arch/arm/include/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-rtd139x/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-PIE -fno-dwarf2-cfi-asm -fno-omit-frame-pointer -mapcs -mno-sched-prolog -fno-ipa-sra -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=7 -march=armv8-a -msoft-float -Uarm -fno-delete-null-pointer-checks -Wno-frame-address -O2 --param=allow-store-data-races=0 -DCC_HAVE_ASM_GOTO -Wframe-larger-than=1024 -fstack-protector-strong -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fno-merge-all-constants -fmerge-constants -fno-stack-check -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -Werror=incompatible-pointer-types -O1 -Wno-unused-variable -Wno-unused-value -Wno-unused-label -Wno-unused-parameter -Wno-unused-function -Wno-unused -Wno-date-time -I/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include -I/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/platform -I/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/hal/btc -DCONFIG_RTL8188F -DCONFIG_MP_INCLUDED -DCONFIG_POWER_SAVING -DCONFIG_EFUSE_CONFIG_FILE -DEFUSE_MAP_PATH=\"/system/etc/wifi/wifi_efuse_8189fs.map\" -DWIFIMAC_PATH=\"/data/wifimac.txt\" -DCONFIG_LOAD_PHY_PARA_FROM_FILE -DREALTEK_CONFIG_PATH=\"/lib/firmware/\" -DCONFIG_TXPWR_BY_RATE_EN=1 -DCONFIG_TXPWR_LIMIT_EN=0 -DCONFIG_RTW_ADAPTIVITY_EN=0 -DCONFIG_RTW_ADAPTIVITY_MODE=0 -DCONFIG_RTW_SDIO_PM_KEEP_POWER -DCONFIG_BR_EXT '-DCONFIG_BR_EXT_BRNAME="'br0'"' -DCONFIG_RTW_NAPI -DCONFIG_RTW_GRO -DCONFIG_RTW_NETIF_SG -DCONFIG_RTW_WIFI_HAL -DCONFIG_RTW_CFGVEDNOR_LLSTATS -DCONFIG_RTW_DEBUG -DRTW_LOG_LEVEL=4 -DDM_ODM_SUPPORT_TYPE=0x04 -DCONFIG_LITTLE_ENDIAN -DCONFIG_TRAFFIC_PROTECT -DCONFIG_CONCURRENT_MODE -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT -DCONFIG_QOS_OPTIMIZATION -Wno-error=date-time -DCONFIG_RADIO_WORK -I/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/hal/phydm   -DMODULE  -DKBUILD_BASENAME='"rtl8188f_rxdesc"'  -DKBUILD_MODNAME='"8189fs"' -c -o /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/hal/rtl8188f/.tmp_rtl8188f_rxdesc.o /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/hal/rtl8188f/rtl8188f_rxdesc.c
+cmd_/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/hal/rtl8188f/rtl8188f_rxdesc.o := ccache arm-linux-gnueabi-gcc -Wp,-MD,/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/hal/rtl8188f/.rtl8188f_rxdesc.o.d  -nostdinc -isystem /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/bin/../lib/gcc/arm-linux-gnueabi/6.4.1/include -I./arch/arm/include -I./arch/arm/include/generated/uapi -I./arch/arm/include/generated  -I./include -I./arch/arm/include/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-rtd139x/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-PIE -fno-dwarf2-cfi-asm -fno-omit-frame-pointer -mapcs -mno-sched-prolog -fno-ipa-sra -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=7 -march=armv8-a -msoft-float -Uarm -fno-delete-null-pointer-checks -Wno-frame-address -O2 --param=allow-store-data-races=0 -DCC_HAVE_ASM_GOTO -Wframe-larger-than=1024 -fstack-protector-strong -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fno-merge-all-constants -fmerge-constants -fno-stack-check -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -Werror=incompatible-pointer-types -O1 -Wno-unused-variable -Wno-unused-value -Wno-unused-label -Wno-unused-parameter -Wno-unused-function -Wno-unused -Wno-date-time -I/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include -I/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/platform -I/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/hal/btc -DCONFIG_RTL8188F -DCONFIG_MP_INCLUDED -DCONFIG_POWER_SAVING -DCONFIG_EFUSE_CONFIG_FILE -DEFUSE_MAP_PATH=\"/system/etc/wifi/wifi_efuse_8189fs.map\" -DWIFIMAC_PATH=\"/data/wifimac.txt\" -DCONFIG_LOAD_PHY_PARA_FROM_FILE -DREALTEK_CONFIG_PATH=\"/lib/firmware/\" -DCONFIG_TXPWR_BY_RATE_EN=1 -DCONFIG_TXPWR_LIMIT_EN=0 -DCONFIG_RTW_ADAPTIVITY_EN=0 -DCONFIG_RTW_ADAPTIVITY_MODE=0 -DCONFIG_RTW_SDIO_PM_KEEP_POWER -DCONFIG_BR_EXT '-DCONFIG_BR_EXT_BRNAME="'br0'"' -DCONFIG_RTW_NAPI -DCONFIG_RTW_GRO -DCONFIG_RTW_NETIF_SG -DCONFIG_RTW_WIFI_HAL -DCONFIG_RTW_CFGVEDNOR_LLSTATS -DCONFIG_RTW_DEBUG -DRTW_LOG_LEVEL=4 -DDM_ODM_SUPPORT_TYPE=0x04 -DCONFIG_LITTLE_ENDIAN -DCONFIG_TRAFFIC_PROTECT -DCONFIG_CONCURRENT_MODE -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT -DCONFIG_QOS_OPTIMIZATION -Wno-error=date-time -DCONFIG_RADIO_WORK -I/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/hal/phydm   -DMODULE  -DKBUILD_BASENAME='"rtl8188f_rxdesc"'  -DKBUILD_MODNAME='"8189fs"' -c -o /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/hal/rtl8188f/.tmp_rtl8188f_rxdesc.o /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/hal/rtl8188f/rtl8188f_rxdesc.c
 
-source_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/hal/rtl8188f/rtl8188f_rxdesc.o := /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/hal/rtl8188f/rtl8188f_rxdesc.c
+source_/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/hal/rtl8188f/rtl8188f_rxdesc.o := /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/hal/rtl8188f/rtl8188f_rxdesc.c
 
-deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/hal/rtl8188f/rtl8188f_rxdesc.o := \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtl8188f_hal.h \
+deps_/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/hal/rtl8188f/rtl8188f_rxdesc.o := \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtl8188f_hal.h \
     $(wildcard include/config/error/detect.h) \
     $(wildcard include/config/embedded/fwimg.h) \
     $(wildcard include/config/fw/c2h/debug.h) \
@@ -16,7 +16,7 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/gpio/wakeup.h) \
     $(wildcard include/config/mp/included.h) \
     $(wildcard include/config/pci/hci.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_data.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_data.h \
     $(wildcard include/config/single/img.h) \
     $(wildcard include/config/sdio/hci.h) \
     $(wildcard include/config/gspi/hci.h) \
@@ -51,12 +51,12 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/ant/b.h) \
     $(wildcard include/config/pmpd/ant/a.h) \
     $(wildcard include/config/pmpd/ant/b.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_precomp.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_precomp.h \
     $(wildcard include/config/sfw/supported.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_types.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_types.h \
     $(wildcard include/config/little/endian.h) \
     $(wildcard include/config/big/endian.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/drv_types.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/drv_types.h \
     $(wildcard include/config/arp/keep/alive.h) \
     $(wildcard include/config/80211n/ht.h) \
     $(wildcard include/config/80211ac/vht.h) \
@@ -109,7 +109,7 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/support/fifo/dump.h) \
     $(wildcard include/config/tx/amsdu.h) \
     $(wildcard include/config/pno/set/debug.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/drv_conf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/drv_conf.h \
     $(wildcard include/config/rssi/priority.h) \
     $(wildcard include/config/ap.h) \
     $(wildcard include/config/rtw/repeater/son/id.h) \
@@ -181,7 +181,7 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/find/best/channel.h) \
     $(wildcard include/config/error/reset.h) \
     $(wildcard include/config/ips.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/autoconf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/autoconf.h \
     $(wildcard include/config/dhc/patch.h) \
     $(wildcard include/config/sg.h) \
     $(wildcard include/config/recv/reordering/ctrl.h) \
@@ -233,7 +233,7 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/gtk/ol.h) \
     $(wildcard include/config/rtw/debug.h) \
     $(wildcard include/config/proc/debug.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_ic_cfg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_ic_cfg.h \
     $(wildcard include/config/multidrv.h) \
     $(wildcard include/config/fw/c2h/pkt.h) \
     $(wildcard include/config/rtw/mac/hidden/rpt.h) \
@@ -243,7 +243,7 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/tdls/ch/sw/v2.h) \
     $(wildcard include/config/no/fw.h) \
     $(wildcard include/config/ampdu/pretx/cd.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/basic_types.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/basic_types.h \
   include/generated/uapi/linux/version.h \
   include/linux/types.h \
     $(wildcard include/config/have/uid16.h) \
@@ -308,7 +308,7 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/mmu.h) \
     $(wildcard include/config/prove/locking.h) \
     $(wildcard include/config/panic/timeout.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/lib/gcc/arm-linux-gnueabi/6.4.1/include/stdarg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/lib/gcc/arm-linux-gnueabi/6.4.1/include/stdarg.h \
   include/linux/linkage.h \
   include/linux/stringify.h \
   include/linux/export.h \
@@ -678,6 +678,7 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/uevent/helper.h) \
     $(wildcard include/config/r8168.h) \
     $(wildcard include/config/r8169soc.h) \
+    $(wildcard include/config/rtd/1295/hwnat.h) \
     $(wildcard include/config/debug/kobject/release.h) \
   include/linux/sysfs.h \
   include/linux/kernfs.h \
@@ -887,9 +888,9 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
   include/linux/nsproxy.h \
   include/linux/ns_common.h \
   include/uapi/linux/utsname.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/osdep_service.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/osdep_service.h \
     $(wildcard include/config/use/vmalloc.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/osdep_service_linux.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/osdep_service_linux.h \
     $(wildcard include/config/net/radio.h) \
     $(wildcard include/config/wireless/ext.h) \
     $(wildcard include/config/ieee80211/ht/addt/info.h) \
@@ -1307,6 +1308,7 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/persistent/keyrings.h) \
   include/uapi/linux/neighbour.h \
   include/linux/netlink.h \
+    $(wildcard include/config/rtl/819x.h) \
   include/net/scm.h \
     $(wildcard include/config/security/network.h) \
   include/linux/security.h \
@@ -1440,12 +1442,12 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
   include/linux/debugfs.h \
   include/uapi/linux/nl80211.h \
   include/net/regulatory.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../os_dep/linux/rtw_rhashtable.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_byteorder.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../os_dep/linux/rtw_rhashtable.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_byteorder.h \
     $(wildcard include/config/platform/mstar389.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/byteorder/little_endian.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/wlan_bssdef.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/wifi.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/byteorder/little_endian.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/wlan_bssdef.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/wifi.h \
     $(wildcard include/config/append/vendor/ie/enable.h) \
     $(wildcard include/config/rtl8712fw.h) \
     $(wildcard include/config/error.h) \
@@ -1462,24 +1464,24 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/method/ppbc.h) \
     $(wildcard include/config/method/vdisplay.h) \
     $(wildcard include/config/method/pdisplay.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/ieee80211.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/ieee80211.h \
     $(wildcard include/config/rtl8711fw.h) \
     $(wildcard include/config/rtw/wnm.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/drv_types_linux.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_debug.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/drv_types_linux.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_debug.h \
     $(wildcard include/config/rf4ce/coexist.h) \
     $(wildcard include/config/p2p/wowlan.h) \
     $(wildcard include/config/dbg/rf/cal.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/cmn_info/rtw_sta_info.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_rf.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_ht.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_cmd.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/cmn_info/rtw_sta_info.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_rf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_ht.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_cmd.h \
     $(wildcard include/config/fw/c2h/reg.h) \
     $(wildcard include/config/c2h/wk.h) \
     $(wildcard include/config/h2clbk.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/cmd_osdep.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_security.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_xmit.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/cmd_osdep.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_security.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_xmit.h \
     $(wildcard include/config/platform/arm/sunxi.h) \
     $(wildcard include/config/platform/arm/sun6i.h) \
     $(wildcard include/config/platform/arm/sun7i.h) \
@@ -1491,86 +1493,86 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/trx/bd/arch.h) \
     $(wildcard include/config/64bit/dma.h) \
     $(wildcard include/config/sdio/tx/tasklet.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/xmit_osdep.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_recv.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/xmit_osdep.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_recv.h \
     $(wildcard include/config/single/recv/buf.h) \
     $(wildcard include/config/platform/rtk390x.h) \
     $(wildcard include/config/usb/interrupt/in/pipe.h) \
     $(wildcard include/config/rx/indicate/queue.h) \
     $(wildcard include/config/signal/scale/mapping.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/cmn_info/rtw_sta_info.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_rm.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/recv_osdep.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_efuse.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_sreset.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_intf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/cmn_info/rtw_sta_info.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_rm.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/recv_osdep.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_efuse.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_sreset.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_intf.h \
     $(wildcard include/config/lps/pg.h) \
     $(wildcard include/config/support/usb/int.h) \
     $(wildcard include/config/rfkill/poll.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_com.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_com.h \
     $(wildcard include/config/bcn/xmit/protect.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/HalVerDef.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_pg.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_phy.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/HalVerDef.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_pg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_phy.h \
     $(wildcard include/config/rf/shadow/rw.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_phy_reg.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_com_reg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_phy_reg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_com_reg.h \
     $(wildcard include/config/usedk.h) \
     $(wildcard include/config/no/usedk.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_com_phycfg.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/hal_com_c2h.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_com_h2c.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_com_phycfg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/hal_com_c2h.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_com_h2c.h \
     $(wildcard include/config/ra/dbg/cmd.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_com_led.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_com_led.h \
     $(wildcard include/config/rtw/sw/led/trx/da/classify.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/hal_dm.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_qos.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_pwrctrl.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/hal_dm.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_qos.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_pwrctrl.h \
     $(wildcard include/config/platform/android/intel/x86.h) \
     $(wildcard include/config/rtw/cfgvednor/llstats.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_mlme.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/mlme_osdep.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_io.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_ioctl.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_ioctl_set.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_ioctl_query.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_ioctl_rtl.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/osdep_intf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_mlme.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/mlme_osdep.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_io.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_ioctl.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_ioctl_set.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_ioctl_query.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_ioctl_rtl.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/osdep_intf.h \
     $(wildcard include/config/r871x/test.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../os_dep/linux/rtw_proc.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../os_dep/linux/rtw_proc.h \
   include/linux/proc_fs.h \
     $(wildcard include/config/proc/uid.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../os_dep/linux/ioctl_cfg80211.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../os_dep/linux/ioctl_cfg80211.h \
     $(wildcard include/config/rtw/dynamic/ndev.h) \
     $(wildcard include/config/radio/work.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../os_dep/linux/rtw_cfgvendor.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../os_dep/linux/rtw_cfgvendor.h \
     $(wildcard include/config/nd/offload.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_eeprom.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/sta_info.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_eeprom.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/sta_info.h \
     $(wildcard include/config/rtw/macaddr/acl.h) \
     $(wildcard include/config/rtw/pre/link/sta.h) \
     $(wildcard include/config/atmel/rc/patch.h) \
     $(wildcard include/config/auto/ap/mode.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_event.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_mlme_ext.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_mi.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_ap.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_event.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_mlme_ext.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_mi.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_ap.h \
     $(wildcard include/config/bmc/tx/rate/select.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_version.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_odm.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_types.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_p2p.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_mp.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_version.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_odm.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_types.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_p2p.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_mp.h \
     $(wildcard include/config/txt.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_br_ext.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/ip.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/if_ether.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/ethernet.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/circ_buf.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_android.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_btcoex_wifionly.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_btcoex.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/drv_types_sdio.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_br_ext.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/ip.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/if_ether.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/ethernet.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/circ_buf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_android.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_btcoex_wifionly.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtw_btcoex.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/drv_types_sdio.h \
     $(wildcard include/config/platform/sprd.h) \
   include/linux/mmc/sdio_func.h \
   include/linux/mmc/pm.h \
@@ -1616,12 +1618,12 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/acc/boot0.h) \
     $(wildcard include/config/acc/rpmb.h) \
     $(wildcard include/config/acc/gp0.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/sdio_osintf.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/sdio_ops.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/sdio_ops_linux.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/sdio_hal.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_features.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_features_ce.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/sdio_osintf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/sdio_ops.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/sdio_ops_linux.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/sdio_hal.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_features.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_features_ce.h \
     $(wildcard include/config/adaptive/soml.h) \
     $(wildcard include/config/dynamic/rx/path.h) \
     $(wildcard include/config/receiver/blocking.h) \
@@ -1640,9 +1642,9 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/ra/dynamic/rty/limit.h) \
     $(wildcard include/config/bb/txbf/api.h) \
     $(wildcard include/config/phydm/debug/function.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/halrf/halrf_features.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/halrf/halrf_features.h \
     $(wildcard include/config/halrf/powertracking.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm.h \
     $(wildcard include/config/bb/rf.h) \
     $(wildcard include/config/hl/smart/antenna.h) \
     $(wildcard include/config/bb/phy/reg.h) \
@@ -1663,88 +1665,88 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/fw/wowlan/2.h) \
     $(wildcard include/config/fw/ap/wowlan.h) \
     $(wildcard include/config/fw/bt.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_pre_define.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_pre_define.h \
     $(wildcard include/config/physts/3rd/type.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_dig.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_pathdiv.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_antdiv.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_dig.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_pathdiv.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_antdiv.h \
     $(wildcard include/config/5g/cg/smart/ant/diversity.h) \
     $(wildcard include/config/2g/cg/smart/ant/diversity.h) \
     $(wildcard include/config/wlan/hal.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_soml.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_smt_ant.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_antdect.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_rainfo.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_soml.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_smt_ant.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_antdect.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_rainfo.h \
     $(wildcard include/config/ra/dynamic/rate/id.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_dynamictxpower.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_cfotracking.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_adaptivity.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_dfs.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_ccx.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/txbf/phydm_hal_txbf_api.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_adc_sampling.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_dynamic_rx_path.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_psd.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_primary_cca.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_cck_pd.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_rssi_monitor.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_auto_dbg.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_math_lib.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_noisemonitor.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_api.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_pow_train.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_beamforming.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/txbf/halcomtxbf.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/txbf/haltxbfjaguar.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/txbf/haltxbf8192e.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/txbf/haltxbf8814a.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/txbf/haltxbf8822b.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/txbf/haltxbfinterface.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_regtable.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/halrf/halrf_iqk.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/halrf/halrf.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/hal/phydm/halrf/halrf_psd.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/halrf/halrf_powertracking.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/halrf/halphyrf_ce.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/hal/phydm/halrf/halrf_kfree.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/hal/phydm/halrf/halrf_powertracking_ce.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_hwconfig.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_dynamictxpower.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_cfotracking.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_adaptivity.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_dfs.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_ccx.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/txbf/phydm_hal_txbf_api.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_adc_sampling.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_dynamic_rx_path.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_psd.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_primary_cca.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_cck_pd.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_rssi_monitor.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_auto_dbg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_math_lib.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_noisemonitor.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_api.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_pow_train.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_beamforming.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/txbf/halcomtxbf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/txbf/haltxbfjaguar.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/txbf/haltxbf8192e.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/txbf/haltxbf8814a.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/txbf/haltxbf8822b.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/txbf/haltxbfinterface.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_regtable.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/halrf/halrf_iqk.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/halrf/halrf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/hal/phydm/halrf/halrf_psd.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/halrf/halrf_powertracking.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/halrf/halphyrf_ce.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/hal/phydm/halrf/halrf_kfree.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/hal/phydm/halrf/halrf_powertracking_ce.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_hwconfig.h \
     $(wildcard include/config/mp.h) \
     $(wildcard include/config/tc.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_phystatus.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_debug.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_regdefine11ac.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_regdefine11n.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_phystatus.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_debug.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_regdefine11ac.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_regdefine11n.h \
     $(wildcard include/config/anta/11n.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_interface.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_reg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_interface.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/phydm_reg.h \
     $(wildcard include/config/wlan/hal/8814ae.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/rtl8188f/halhwimg8188f_mac.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/rtl8188f/halhwimg8188f_rf.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/rtl8188f/halhwimg8188f_bb.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/rtl8188f/hal8188freg.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/rtl8188f/phydm_rtl8188f.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/rtl8188f/phydm_regconfig8188f.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/rtl8188f/halhwimg8188f_mac.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/rtl8188f/halhwimg8188f_rf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/rtl8188f/halhwimg8188f_bb.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/rtl8188f/hal8188freg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/rtl8188f/phydm_rtl8188f.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/rtl8188f/phydm_regconfig8188f.h \
     $(wildcard include/config/h/8188f.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/halrf/rtl8188f/halrf_8188f.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/rtl8188f/version_rtl8188f.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_sdio.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtl8188f_spec.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtl8188f_rf.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtl8188f_dm.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtl8188f_recv.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/halrf/rtl8188f/halrf_8188f.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/../hal/phydm/rtl8188f/version_rtl8188f.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_sdio.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtl8188f_spec.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtl8188f_rf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtl8188f_dm.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtl8188f_recv.h \
     $(wildcard include/config/minimal/memory/usage.h) \
     $(wildcard include/config/platform/hisilicon.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtl8188f_xmit.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtl8188f_cmd.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtl8188f_led.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/Hal8188FPwrSeq.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/HalPwrSeqCmd.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/Hal8188FPhyReg.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/Hal8188FPhyCfg.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtl8188f_sreset.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_com.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtl8188f_xmit.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtl8188f_cmd.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtl8188f_led.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/Hal8188FPwrSeq.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/HalPwrSeqCmd.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/Hal8188FPhyReg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/Hal8188FPhyCfg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/rtl8188f_sreset.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/include/hal_com.h \
 
-/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/hal/rtl8188f/rtl8188f_rxdesc.o: $(deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/hal/rtl8188f/rtl8188f_rxdesc.o)
+/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/hal/rtl8188f/rtl8188f_rxdesc.o: $(deps_/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/hal/rtl8188f/rtl8188f_rxdesc.o)
 
-$(deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8189fs/hal/rtl8188f/rtl8188f_rxdesc.o):
+$(deps_/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8189fs/hal/rtl8188f/rtl8188f_rxdesc.o):

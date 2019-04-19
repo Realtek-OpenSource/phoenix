@@ -106,5 +106,33 @@ int rtl8822cs_halmac_init_adapter(PADAPTER adapter)
 
 	err = rtw_halmac_init_adapter(d, api);
 
+#ifdef CONFIG_SDIO_TX_FORMAT_DUMMY_AUTO
+	{
+		int ret = 0;
+		enum halmac_sdio_tx_format format;
+		const char *const sdio_tx_format_str[] = {
+			"SDIO_TX_FORMAT_UNKNOWN",
+			"SDIO_TX_FORMAT_AGG",
+			"SDIO_TX_FORMAT_DUMMY_BLOCK",
+			"SDIO_TX_FORMAT_DUMMY_AUTO"
+		};
+
+		if (MAX_XMITBUF_SZ > 32764)
+			format = HALMAC_SDIO_DUMMY_AUTO_MODE;
+		else
+			format = HALMAC_SDIO_AGG_MODE;
+
+		RTW_INFO("MAX_XMITBUF_SZ = %d, switch to %s \n", MAX_XMITBUF_SZ, sdio_tx_format_str[format]);
+
+		ret = rtw_halmac_sdio_set_tx_format(d, format);
+		if (ret == 0)
+			RTW_INFO("Switch to %s ok !\n", sdio_tx_format_str[format]);
+		else {
+			RTW_INFO("Switch to %s fail !\n", sdio_tx_format_str[format]);
+			rtw_warn_on(1);
+		}
+	}
+#endif
+
 	return err;
 }

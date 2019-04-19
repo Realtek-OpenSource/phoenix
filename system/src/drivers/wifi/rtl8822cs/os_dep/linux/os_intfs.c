@@ -27,7 +27,7 @@ int rtw_chip_version = 0x00;
 int rtw_rfintfs = HWPI;
 int rtw_lbkmode = 0;/* RTL8712_AIR_TRX; */
 #ifdef DBG_LA_MODE
-int rtw_la_mode_en=1;
+int rtw_la_mode_en=0;
 module_param(rtw_la_mode_en, int, 0644);
 #endif
 int rtw_network_mode = Ndis802_11IBSS;/* Ndis802_11Infrastructure; */ /* infra, ad-hoc, auto */
@@ -43,32 +43,47 @@ int rtw_preamble = PREAMBLE_LONG;/* long, short, auto */
 int rtw_scan_mode = 1;/* active, passive */
 /* int smart_ps = 1; */
 #ifdef CONFIG_POWER_SAVING
+	/* IPS configuration */
+	int rtw_ips_mode = RTW_IPS_MODE;
+
+	/* LPS configuration */
+/* RTW_LPS_MODE=0:disable, 1:LPS , 2:LPS with clock gating, 3: power gating */
+#if (RTW_LPS_MODE > 0)
 	int rtw_power_mgnt = PS_MODE_MAX;
-	#ifdef CONFIG_IPS_LEVEL_2
-		int rtw_ips_mode = IPS_LEVEL_2;
-	#else
-		int rtw_ips_mode = IPS_NORMAL;
-	#endif /*CONFIG_IPS_LEVEL_2*/
 
 	#ifdef CONFIG_USB_HCI
 		int rtw_lps_level = LPS_NORMAL; /*USB default LPS level*/
 	#else /*SDIO,PCIE*/
-		#if defined(CONFIG_LPS_PG)
-			int rtw_lps_level = LPS_PG;
-		#elif defined(CONFIG_LPS_PG_DDMA)
-			int rtw_lps_level = LPS_PG;
-		#elif defined(CONFIG_LPS_LCLK)
-			int rtw_lps_level = LPS_LCLK;
-		#else
-			int rtw_lps_level = LPS_NORMAL;
-		#endif
+		int rtw_lps_level = (RTW_LPS_MODE - 1);
 	#endif/*CONFIG_USB_HCI*/
-	int rtw_lps_chk_by_tp = 1;
-#else /* !CONFIG_POWER_SAVING */
+#else
 	int rtw_power_mgnt = PS_MODE_ACTIVE;
+	int rtw_lps_level = LPS_NORMAL;
+#endif
+
+	int rtw_lps_chk_by_tp = 1;
+
+	/* WOW LPS configuration */
+#ifdef CONFIG_WOWLAN
+/* RTW_WOW_LPS_MODE=0:disable, 1:LPS , 2:LPS with clock gating, 3: power gating */
+#if (RTW_WOW_LPS_MODE > 0)
+	int rtw_wow_power_mgnt = PS_MODE_MAX;
+	int rtw_wow_lps_level = (RTW_WOW_LPS_MODE - 1);
+#else
+	int rtw_wow_power_mgnt = PS_MODE_ACTIVE;
+	int rtw_wow_lps_level = LPS_NORMAL;
+#endif	
+#endif /* CONFIG_WOWLAN */
+
+#else /* !CONFIG_POWER_SAVING */
 	int rtw_ips_mode = IPS_NONE;
+	int rtw_power_mgnt = PS_MODE_ACTIVE;
 	int rtw_lps_level = LPS_NORMAL;
 	int rtw_lps_chk_by_tp = 0;
+#ifdef CONFIG_WOWLAN
+	int rtw_wow_power_mgnt = PS_MODE_ACTIVE;
+	int rtw_wow_lps_level = LPS_NORMAL;
+#endif /* CONFIG_WOWLAN */
 #endif /* CONFIG_POWER_SAVING */
 
 
@@ -79,6 +94,13 @@ module_param(rtw_lps_level, int, 0644);
 MODULE_PARM_DESC(rtw_lps_level, "The default LPS level");
 
 module_param(rtw_lps_chk_by_tp, int, 0644);
+
+#ifdef CONFIG_WOWLAN
+module_param(rtw_wow_power_mgnt, int, 0644);
+MODULE_PARM_DESC(rtw_wow_power_mgnt, "The default WOW LPS mode");
+module_param(rtw_wow_lps_level, int, 0644);
+MODULE_PARM_DESC(rtw_wow_lps_level, "The default WOW LPS level");
+#endif /* CONFIG_WOWLAN */
 
 /* LPS: 
  * rtw_smart_ps = 0 => TX: pwr bit = 1, RX: PS_Poll
@@ -161,6 +183,31 @@ int rtw_uapsd_ac_enable = 0x0;
 	int rtw_pwrtrim_enable = 0; /* Default Enalbe  power trim by efuse config */
 #endif
 
+#if CONFIG_TX_AC_LIFETIME
+uint rtw_tx_aclt_flags = CONFIG_TX_ACLT_FLAGS;
+module_param(rtw_tx_aclt_flags, uint, 0644);
+MODULE_PARM_DESC(rtw_tx_aclt_flags, "device TX AC queue packet lifetime control flags");
+
+static uint rtw_tx_aclt_conf_default[3] = CONFIG_TX_ACLT_CONF_DEFAULT;
+static uint rtw_tx_aclt_conf_default_num = 0;
+module_param_array(rtw_tx_aclt_conf_default, uint, &rtw_tx_aclt_conf_default_num, 0644);
+MODULE_PARM_DESC(rtw_tx_aclt_conf_default, "device TX AC queue lifetime config for default status");
+
+#ifdef CONFIG_TX_MCAST2UNI
+static uint rtw_tx_aclt_conf_ap_m2u[3] = CONFIG_TX_ACLT_CONF_AP_M2U;
+static uint rtw_tx_aclt_conf_ap_m2u_num = 0;
+module_param_array(rtw_tx_aclt_conf_ap_m2u, uint, &rtw_tx_aclt_conf_ap_m2u_num, 0644);
+MODULE_PARM_DESC(rtw_tx_aclt_conf_ap_m2u, "device TX AC queue lifetime config for AP mode M2U status");
+#endif
+
+#ifdef CONFIG_RTW_MESH
+static uint rtw_tx_aclt_conf_mesh[3] = CONFIG_TX_ACLT_CONF_MESH;
+static uint rtw_tx_aclt_conf_mesh_num = 0;
+module_param_array(rtw_tx_aclt_conf_mesh, uint, &rtw_tx_aclt_conf_mesh_num, 0644);
+MODULE_PARM_DESC(rtw_tx_aclt_conf_mesh, "device TX AC queue lifetime config for MESH status");
+#endif
+#endif /* CONFIG_TX_AC_LIFETIME */
+
 uint rtw_tx_bw_mode = 0x21;
 module_param(rtw_tx_bw_mode, uint, 0644);
 MODULE_PARM_DESC(rtw_tx_bw_mode, "The max tx bw for 2.4G and 5G. format is the same as rtw_bw_mode");
@@ -184,7 +231,7 @@ int rtw_ampdu_enable = 1;/* for enable tx_ampdu , */ /* 0: disable, 0x1:enable *
 int rtw_rx_stbc = 1;/* 0: disable, bit(0):enable 2.4g, bit(1):enable 5g, default is set to enable 2.4GHZ for IOT issue with bufflao's AP at 5GHZ */
 #if (defined(CONFIG_RTL8814A) || defined(CONFIG_RTL8822B) || defined(CONFIG_RTL8822C)) && defined(CONFIG_PCI_HCI)
 int rtw_rx_ampdu_amsdu = 2;/* 0: disabled, 1:enabled, 2:auto . There is an IOT issu with DLINK DIR-629 when the flag turn on */
-#elif (defined(CONFIG_RTL8822B) && defined(CONFIG_SDIO_HCI))
+#elif ((defined(CONFIG_RTL8822B) || defined(CONFIG_RTL8822C)) && defined(CONFIG_SDIO_HCI))
 int rtw_rx_ampdu_amsdu = 1;
 #else
 int rtw_rx_ampdu_amsdu;/* 0: disabled, 1:enabled, 2:auto . There is an IOT issu with DLINK DIR-629 when the flag turn on */
@@ -604,7 +651,7 @@ int rtw_tx_pwr_by_rate = CONFIG_TXPWR_BY_RATE_EN;
 module_param(rtw_tx_pwr_by_rate, int, 0644);
 MODULE_PARM_DESC(rtw_tx_pwr_by_rate, "0:Disable, 1:Enable, 2: Depend on efuse");
 
-#ifdef CONFIG_TXPWR_LIMIT
+#if CONFIG_TXPWR_LIMIT
 int rtw_tx_pwr_lmt_enable = CONFIG_TXPWR_LIMIT_EN;
 module_param(rtw_tx_pwr_lmt_enable, int, 0644);
 MODULE_PARM_DESC(rtw_tx_pwr_lmt_enable, "0:Disable, 1:Enable, 2: Depend on efuse");
@@ -718,6 +765,13 @@ module_param(rtw_phydm_ability, uint, 0644);
 uint rtw_halrf_ability = 0xffffffff;
 module_param(rtw_halrf_ability, uint, 0644);
 
+#ifdef CONFIG_RTW_MESH
+uint rtw_peer_alive_based_preq = 1;
+module_param(rtw_peer_alive_based_preq, uint, 0644);
+MODULE_PARM_DESC(rtw_peer_alive_based_preq,
+	"On demand PREQ will reference peer alive status. 0: Off, 1: On");
+#endif
+
 int _netdev_open(struct net_device *pnetdev);
 int netdev_open(struct net_device *pnetdev);
 static int netdev_close(struct net_device *pnetdev);
@@ -826,6 +880,39 @@ module_param(rtw_wakeup_event, uint, 0644);
  */
 uint rtw_suspend_type = RTW_SUSPEND_TYPE;
 module_param(rtw_suspend_type, uint, 0644);
+#endif
+
+#if CONFIG_TX_AC_LIFETIME
+static void rtw_regsty_load_tx_ac_lifetime(struct registry_priv *regsty)
+{
+	int i, j;
+	struct tx_aclt_conf_t *conf;
+	uint *parm;
+
+	regsty->tx_aclt_flags = (u8)rtw_tx_aclt_flags;
+
+	for (i = 0; i < TX_ACLT_CONF_NUM; i++) {
+		conf = &regsty->tx_aclt_confs[i];
+		if (i == TX_ACLT_CONF_DEFAULT)
+			parm = rtw_tx_aclt_conf_default;
+		#ifdef CONFIG_TX_MCAST2UNI
+		else if (i == TX_ACLT_CONF_AP_M2U)
+			parm = rtw_tx_aclt_conf_ap_m2u;
+		#endif
+		#ifdef CONFIG_RTW_MESH
+		else if (i == TX_ACLT_CONF_MESH)
+			parm = rtw_tx_aclt_conf_mesh;
+		#endif
+		else
+			parm = NULL;
+
+		if (parm) {
+			conf->en = parm[0] & 0xF;
+			conf->vo_vi = parm[1];
+			conf->be_bk = parm[2];
+		}	
+	}
+}
 #endif
 
 void rtw_regsty_load_target_tx_power(struct registry_priv *regsty)
@@ -949,6 +1036,10 @@ uint loadparam(_adapter *padapter)
 	#endif/*CONFIG_TDMADIG*/
 	registry_par->lps_level = (u8)rtw_lps_level;
 	registry_par->lps_chk_by_tp = (u8)rtw_lps_chk_by_tp;
+#ifdef CONFIG_WOWLAN
+	registry_par->wow_power_mgnt = (u8)rtw_wow_power_mgnt;
+	registry_par->wow_lps_level = (u8)rtw_wow_lps_level;
+#endif /* CONFIG_WOWLAN */
 	registry_par->radio_enable = (u8)rtw_radio_enable;
 	registry_par->long_retry_lmt = (u8)rtw_long_retry_lmt;
 	registry_par->short_retry_lmt = (u8)rtw_short_retry_lmt;
@@ -978,6 +1069,10 @@ uint loadparam(_adapter *padapter)
 #endif /* CONFIG_WMMPS_STA */
 
 	registry_par->RegPwrTrimEnable = (u8)rtw_pwrtrim_enable;
+
+#if CONFIG_TX_AC_LIFETIME
+	rtw_regsty_load_tx_ac_lifetime(registry_par);
+#endif
 
 	registry_par->tx_bw_mode = (u8)rtw_tx_bw_mode;
 
@@ -1098,7 +1193,7 @@ uint loadparam(_adapter *padapter)
 #endif
 	registry_par->pll_ref_clk_sel = (u8)rtw_pll_ref_clk_sel;
 
-#ifdef CONFIG_TXPWR_LIMIT
+#if CONFIG_TXPWR_LIMIT
 	registry_par->RegEnableTxPowerLimit = (u8)rtw_tx_pwr_lmt_enable;
 #endif
 	registry_par->RegEnableTxPowerByRate = (u8)rtw_tx_pwr_by_rate;
@@ -1220,7 +1315,9 @@ uint loadparam(_adapter *padapter)
 #endif
 	registry_par->phydm_ability = rtw_phydm_ability;
 	registry_par->halrf_ability = rtw_halrf_ability;
-
+#ifdef CONFIG_RTW_MESH
+	registry_par->peer_alive_based_preq = rtw_peer_alive_based_preq;
+#endif
 	return status;
 }
 
@@ -2358,6 +2455,38 @@ u8 rtw_init_drv_sw(_adapter *padapter)
 	padapter->client_id = MAX_CLIENT_PORT_NUM;
 	padapter->client_port = CLT_PORT_INVALID;
 	#endif
+
+	if (is_primary_adapter(padapter)) {
+		struct dvobj_priv *dvobj = adapter_to_dvobj(padapter);
+		struct hal_spec_t *hal_spec = GET_HAL_SPEC(padapter);
+
+		dvobj->macid_ctl.num = rtw_min(hal_spec->macid_num, MACID_NUM_SW_LIMIT);
+
+		dvobj->cam_ctl.sec_cap = hal_spec->sec_cap;
+		dvobj->cam_ctl.num = rtw_min(hal_spec->sec_cam_ent_num, SEC_CAM_ENT_NUM_SW_LIMIT);
+
+		#if CONFIG_TX_AC_LIFETIME
+		{
+			struct registry_priv *regsty = adapter_to_regsty(padapter);
+			int i;
+
+			dvobj->tx_aclt_flags = regsty->tx_aclt_flags;
+			for (i = 0; i < TX_ACLT_CONF_NUM; i++) {
+				dvobj->tx_aclt_confs[i].en = regsty->tx_aclt_confs[i].en;
+				dvobj->tx_aclt_confs[i].vo_vi
+					= regsty->tx_aclt_confs[i].vo_vi / (hal_spec->tx_aclt_unit_factor * 32);
+				if (dvobj->tx_aclt_confs[i].vo_vi > 0xFFFF)
+					dvobj->tx_aclt_confs[i].vo_vi = 0xFFFF;
+				dvobj->tx_aclt_confs[i].be_bk
+					= regsty->tx_aclt_confs[i].be_bk / (hal_spec->tx_aclt_unit_factor * 32);
+				if (dvobj->tx_aclt_confs[i].be_bk > 0xFFFF)
+					dvobj->tx_aclt_confs[i].be_bk = 0xFFFF;
+			}
+
+			dvobj->tx_aclt_force_val.en = 0xFF;
+		}
+		#endif
+	}
 
 	ret8 = rtw_init_default_value(padapter);
 
@@ -4477,9 +4606,9 @@ int rtw_suspend_wow(_adapter *padapter)
 		}
 #ifdef CONFIG_LPS
 		else {
-			if (!(pwrpriv->wowlan_dis_lps)) {
+			if(pwrpriv->wowlan_power_mgmt != PS_MODE_ACTIVE) {
 				rtw_wow_lps_level_decide(padapter, _TRUE);
-				rtw_set_ps_mode(padapter, PS_MODE_MAX, 0, 0, "WOWLAN");
+				rtw_set_ps_mode(padapter, pwrpriv->wowlan_power_mgmt, 0, 0, "WOWLAN");
 			}
 		}
 #endif /* #ifdef CONFIG_LPS */
@@ -4579,9 +4708,9 @@ int rtw_suspend_ap_wow(_adapter *padapter)
 #endif
 
 #ifdef CONFIG_LPS
-	if (!(pwrpriv->wowlan_dis_lps)) {
+	if(pwrpriv->wowlan_power_mgmt != PS_MODE_ACTIVE) {
 		rtw_wow_lps_level_decide(padapter, _TRUE);
-		rtw_set_ps_mode(padapter, PS_MODE_MIN, 0, 0, "AP-WOWLAN");
+		rtw_set_ps_mode(padapter, pwrpriv->wowlan_power_mgmt, 0, 0, "AP-WOWLAN");
 	}
 #endif
 
@@ -4756,7 +4885,7 @@ int rtw_resume_process_wow(_adapter *padapter)
 
 	if (pwrpriv->wowlan_mode == _TRUE) {
 #ifdef CONFIG_LPS
-		if (!(pwrpriv->wowlan_dis_lps)) {
+		if(pwrpriv->wowlan_power_mgmt != PS_MODE_ACTIVE) {
 			rtw_set_ps_mode(padapter, PS_MODE_ACTIVE, 0, 0, "WOWLAN");
 			rtw_wow_lps_level_decide(padapter, _FALSE);
 		}
@@ -4903,7 +5032,7 @@ int rtw_resume_process_ap_wow(_adapter *padapter)
 
 
 #ifdef CONFIG_LPS
-	if (!(pwrpriv->wowlan_dis_lps)) {
+	if(pwrpriv->wowlan_power_mgmt != PS_MODE_ACTIVE) {
 		rtw_set_ps_mode(padapter, PS_MODE_ACTIVE, 0, 0, "AP-WOWLAN");
 		rtw_wow_lps_level_decide(padapter, _FALSE);
 	}

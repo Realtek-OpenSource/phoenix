@@ -8165,7 +8165,17 @@ static int rtw_pm_set(struct net_device *dev,
 	} else if (_rtw_memcmp(extra, "lps_level=", 10)) {
 		if (sscanf(extra + 10, "%u", &mode) > 0)
 			ret = rtw_pm_set_lps_level(padapter, mode);
-	} else
+	} 
+#ifdef CONFIG_WOWLAN
+	else if (_rtw_memcmp(extra, "wow_lps=", 8)) {
+		sscanf(extra + 8, "%u", &mode);
+		ret = rtw_pm_set_wow_lps(padapter, mode);
+	} else if (_rtw_memcmp(extra, "wow_lps_level=", 14)) {
+		if (sscanf(extra + 14, "%u", &mode) > 0)
+			ret = rtw_pm_set_wow_lps_level(padapter, mode);
+	}
+#endif /* CONFIG_WOWLAN */
+	else
 		ret = -EINVAL;
 
 	return ret;
@@ -12129,6 +12139,8 @@ static const struct iw_priv_args rtw_private_args[] = {
 		SIOCIWFIRSTPRIV + 0x17,
 		IW_PRIV_TYPE_CHAR | 1024, IW_PRIV_TYPE_CHAR | 1024 , "rrm"
 	},
+#else
+	{SIOCIWFIRSTPRIV + 0x17, IW_PRIV_TYPE_CHAR | 1024 , 0 , "NULL"},
 #endif
 	{SIOCIWFIRSTPRIV + 0x18, IW_PRIV_TYPE_CHAR | IFNAMSIZ , 0 , "rereg_nd_name"},
 #ifdef CONFIG_MP_INCLUDED

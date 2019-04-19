@@ -1,8 +1,8 @@
-cmd_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/core/rtw_mlme_ext.o := arm-linux-gnueabi-gcc -Wp,-MD,/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/core/.rtw_mlme_ext.o.d  -nostdinc -isystem /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/bin/../lib/gcc/arm-linux-gnueabi/6.4.1/include -I./arch/arm/include -I./arch/arm/include/generated/uapi -I./arch/arm/include/generated  -I./include -I./arch/arm/include/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-rtd139x/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-PIE -fno-dwarf2-cfi-asm -fno-omit-frame-pointer -mapcs -mno-sched-prolog -fno-ipa-sra -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=7 -march=armv8-a -msoft-float -Uarm -fno-delete-null-pointer-checks -Wno-frame-address -O2 --param=allow-store-data-races=0 -DCC_HAVE_ASM_GOTO -Wframe-larger-than=1024 -fstack-protector-strong -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fno-merge-all-constants -fmerge-constants -fno-stack-check -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -Werror=incompatible-pointer-types -O1 -Wno-unused-variable -Wno-unused-value -Wno-unused-label -Wno-unused-parameter -Wno-unused-function -Wno-unused -Wno-uninitialized -Wno-incompatible-pointer-types -I/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include -I/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/platform -DCONFIG_POWER_SAVING -DCONFIG_LITTLE_ENDIAN -DRTK_119X_PLATFORM -DCONFIG_TRAFFIC_PROTECT -DCONFIG_CONCURRENT_MODE -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT -DCONFIG_QOS_OPTIMIZATION -Wno-error=date-time -DCONFIG_USE_USB_BUFFER_ALLOC_TX   -DMODULE  -DKBUILD_BASENAME='"rtw_mlme_ext"'  -DKBUILD_MODNAME='"8192cu"' -c -o /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/core/.tmp_rtw_mlme_ext.o /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/core/rtw_mlme_ext.c
+cmd_/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/core/rtw_mlme_ext.o := ccache arm-linux-gnueabi-gcc -Wp,-MD,/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/core/.rtw_mlme_ext.o.d  -nostdinc -isystem /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/bin/../lib/gcc/arm-linux-gnueabi/6.4.1/include -I./arch/arm/include -I./arch/arm/include/generated/uapi -I./arch/arm/include/generated  -I./include -I./arch/arm/include/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-rtd139x/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-PIE -fno-dwarf2-cfi-asm -fno-omit-frame-pointer -mapcs -mno-sched-prolog -fno-ipa-sra -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=7 -march=armv8-a -msoft-float -Uarm -fno-delete-null-pointer-checks -Wno-frame-address -O2 --param=allow-store-data-races=0 -DCC_HAVE_ASM_GOTO -Wframe-larger-than=1024 -fstack-protector-strong -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fno-merge-all-constants -fmerge-constants -fno-stack-check -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -Werror=incompatible-pointer-types -O1 -Wno-unused-variable -Wno-unused-value -Wno-unused-label -Wno-unused-parameter -Wno-unused-function -Wno-unused -Wno-uninitialized -Wno-incompatible-pointer-types -I/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include -I/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/platform -DCONFIG_POWER_SAVING -DCONFIG_LITTLE_ENDIAN -DRTK_119X_PLATFORM -DCONFIG_TRAFFIC_PROTECT -DCONFIG_CONCURRENT_MODE -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT -DCONFIG_QOS_OPTIMIZATION -Wno-error=date-time -DCONFIG_USE_USB_BUFFER_ALLOC_TX   -DMODULE  -DKBUILD_BASENAME='"rtw_mlme_ext"'  -DKBUILD_MODNAME='"8192cu"' -c -o /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/core/.tmp_rtw_mlme_ext.o /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/core/rtw_mlme_ext.c
 
-source_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/core/rtw_mlme_ext.o := /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/core/rtw_mlme_ext.c
+source_/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/core/rtw_mlme_ext.o := /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/core/rtw_mlme_ext.c
 
-deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/core/rtw_mlme_ext.o := \
+deps_/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/core/rtw_mlme_ext.o := \
     $(wildcard include/config/ioctl/cfg80211.h) \
     $(wildcard include/config/nativeap/mlme/.h) \
     $(wildcard include/config/ieee80211w.h) \
@@ -49,7 +49,7 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/find/best/channel.h) \
     $(wildcard include/config/cfg80211/onechannel/under/concurrent.h) \
     $(wildcard include/config/led/handled/by/cmd/thread.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/drv_conf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/drv_conf.h \
     $(wildcard include/config/android.h) \
     $(wildcard include/config/platform/android.h) \
     $(wildcard include/config/validate/ssid.h) \
@@ -62,7 +62,7 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/usb/vendor/req/mutex.h) \
     $(wildcard include/config/vendor/req/retry.h) \
     $(wildcard include/config/rtw/hiq/filter.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/autoconf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/autoconf.h \
     $(wildcard include/config/rtl8192c.h) \
     $(wildcard include/config/sg.h) \
     $(wildcard include/config/drv/issue/prov/req.h) \
@@ -141,7 +141,7 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/single/recv/buf.h) \
     $(wildcard include/config/busy/traffic/skip/pwr/track.h) \
     $(wildcard include/config/power/saving.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/osdep_service.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/osdep_service.h \
     $(wildcard include/config/ktime/scalar.h) \
     $(wildcard include/config/xfrm.h) \
     $(wildcard include/config/nf/conntrack.h) \
@@ -157,7 +157,7 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/usb/suspend.h) \
     $(wildcard include/config/autosuspend.h) \
     $(wildcard include/config/use/vmalloc.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/basic_types.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/basic_types.h \
   include/generated/uapi/linux/version.h \
   include/linux/types.h \
     $(wildcard include/config/have/uid16.h) \
@@ -227,7 +227,7 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/panic/timeout.h) \
     $(wildcard include/config/tracing.h) \
     $(wildcard include/config/ftrace/mcount/record.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/lib/gcc/arm-linux-gnueabi/6.4.1/include/stdarg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/lib/gcc/arm-linux-gnueabi/6.4.1/include/stdarg.h \
   include/linux/bitops.h \
   arch/arm/include/asm/bitops.h \
   include/linux/irqflags.h \
@@ -586,6 +586,7 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/uevent/helper.h) \
     $(wildcard include/config/r8168.h) \
     $(wildcard include/config/r8169soc.h) \
+    $(wildcard include/config/rtd/1295/hwnat.h) \
     $(wildcard include/config/debug/kobject/release.h) \
   include/linux/sysfs.h \
   include/linux/kernfs.h \
@@ -1201,6 +1202,7 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/persistent/keyrings.h) \
   include/uapi/linux/neighbour.h \
   include/linux/netlink.h \
+    $(wildcard include/config/rtl/819x.h) \
   include/net/scm.h \
     $(wildcard include/config/security/network.h) \
   include/linux/security.h \
@@ -1262,19 +1264,19 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/att/wakeup.h) \
     $(wildcard include/config/att/battery.h) \
   include/linux/pm_runtime.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_byteorder.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_byteorder.h \
     $(wildcard include/config/little/endian.h) \
     $(wildcard include/config/big/endian.h) \
     $(wildcard include/config/platform/mstar389.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/byteorder/little_endian.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/drv_types.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/byteorder/little_endian.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/drv_types.h \
     $(wildcard include/config/1t1r.h) \
     $(wildcard include/config/2t2r.h) \
     $(wildcard include/config/intel/proxim.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/wlan_bssdef.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/drv_types_linux.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_ht.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/wifi.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/wlan_bssdef.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/drv_types_linux.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_ht.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/wifi.h \
     $(wildcard include/config/rtl8712fw.h) \
     $(wildcard include/config/error.h) \
     $(wildcard include/config/method/flash.h) \
@@ -1288,59 +1290,59 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/method/ppbc.h) \
     $(wildcard include/config/method/vdisplay.h) \
     $(wildcard include/config/method/pdisplay.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_cmd.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_cmd.h \
     $(wildcard include/config/rtl8711fw.h) \
     $(wildcard include/config/event/thread/mode.h) \
     $(wildcard include/config/c2h/wk.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_rf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_rf.h \
     $(wildcard include/config/1t.h) \
     $(wildcard include/config/2t.h) \
     $(wildcard include/config/1r.h) \
     $(wildcard include/config/2r.h) \
     $(wildcard include/config/1t2r.h) \
     $(wildcard include/config/turbo.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_led.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/ieee80211.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_security.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_xmit.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_led.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/ieee80211.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_security.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_xmit.h \
     $(wildcard include/config/platform/arm/sunxi.h) \
     $(wildcard include/config/platform/arm/sun6i.h) \
     $(wildcard include/config/platform/mstar.h) \
     $(wildcard include/config/rtl8192d.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/xmit_osdep.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_recv.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/xmit_osdep.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_recv.h \
     $(wildcard include/config/recv/thread/mode.h) \
     $(wildcard include/config/rx/indicate/queue.h) \
     $(wildcard include/config/bsd/rx/use/mbuf.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/hal_intf.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/hal_com.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/hal_intf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/hal_com.h \
     $(wildcard include/config/chip/ver/integration.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_qos.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_pwrctrl.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_qos.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_pwrctrl.h \
     $(wildcard include/config/lps/lclk.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_io.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/osdep_intf.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/../os_dep/linux/rtw_proc.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_io.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/osdep_intf.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/../os_dep/linux/rtw_proc.h \
   include/linux/proc_fs.h \
     $(wildcard include/config/proc/uid.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_eeprom.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/sta_info.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/wifi.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_mlme.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/mlme_osdep.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_debug.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_event.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_mlme_ext.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_p2p.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_tdls.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_ap.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/../hal/dm.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_eeprom.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/sta_info.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/wifi.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_mlme.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/mlme_osdep.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_debug.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_event.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_mlme_ext.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_p2p.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_tdls.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_ap.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/../hal/dm.h \
     $(wildcard include/config/odm/adaptivity.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_br_ext.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/ioctl_cfg80211.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/recv_osdep.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_wifi_regd.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_br_ext.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/ioctl_cfg80211.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/recv_osdep.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/include/rtw_wifi_regd.h \
 
-/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/core/rtw_mlme_ext.o: $(deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/core/rtw_mlme_ext.o)
+/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/core/rtw_mlme_ext.o: $(deps_/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/core/rtw_mlme_ext.o)
 
-$(deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8192cu/core/rtw_mlme_ext.o):
+$(deps_/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8192cu/core/rtw_mlme_ext.o):

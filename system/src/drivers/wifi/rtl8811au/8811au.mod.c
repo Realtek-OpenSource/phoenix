@@ -56,6 +56,7 @@ __attribute__((section("__versions"))) = {
 	{ 0x760a0f4f, __VMLINUX_SYMBOL_STR(yield) },
 	{ 0xe4689576, __VMLINUX_SYMBOL_STR(ktime_get_with_offset) },
 	{ 0xa1cf8bcb, __VMLINUX_SYMBOL_STR(mutex_unlock) },
+	{ 0x60352082, __VMLINUX_SYMBOL_STR(register_inet6addr_notifier) },
 	{ 0x9e8ce4b1, __VMLINUX_SYMBOL_STR(alloc_etherdev_mqs) },
 	{ 0xc237eb0e, __VMLINUX_SYMBOL_STR(usb_free_urb) },
 	{ 0x8bb3812b, __VMLINUX_SYMBOL_STR(cfg80211_new_sta) },
@@ -68,6 +69,7 @@ __attribute__((section("__versions"))) = {
 	{ 0x2469810f, __VMLINUX_SYMBOL_STR(__rcu_read_unlock) },
 	{ 0x8e865d3c, __VMLINUX_SYMBOL_STR(arm_delay_ops) },
 	{ 0x28cc25db, __VMLINUX_SYMBOL_STR(arm_copy_from_user) },
+	{ 0x1fab5905, __VMLINUX_SYMBOL_STR(wait_for_completion) },
 	{ 0x794e7023, __VMLINUX_SYMBOL_STR(dev_alloc_name) },
 	{ 0x16305289, __VMLINUX_SYMBOL_STR(warn_slowpath_null) },
 	{ 0xa791a026, __VMLINUX_SYMBOL_STR(usb_kill_urb) },
@@ -78,8 +80,10 @@ __attribute__((section("__versions"))) = {
 	{ 0xa9fe05ce, __VMLINUX_SYMBOL_STR(proc_create_data) },
 	{ 0x2f713084, __VMLINUX_SYMBOL_STR(find_vpid) },
 	{ 0x674f44a, __VMLINUX_SYMBOL_STR(usb_alloc_coherent) },
+	{ 0x1000e51, __VMLINUX_SYMBOL_STR(schedule) },
 	{ 0xaa39a2ee, __VMLINUX_SYMBOL_STR(skb_push) },
 	{ 0x7cf9099, __VMLINUX_SYMBOL_STR(wait_for_completion_timeout) },
+	{ 0xf1969a8e, __VMLINUX_SYMBOL_STR(__usecs_to_jiffies) },
 	{ 0xf4fa543b, __VMLINUX_SYMBOL_STR(arm_copy_to_user) },
 	{ 0x6df1aaf1, __VMLINUX_SYMBOL_STR(kernel_sigaction) },
 	{ 0xdbdd1ef, __VMLINUX_SYMBOL_STR(kill_pid) },
@@ -88,12 +92,17 @@ __attribute__((section("__versions"))) = {
 	{ 0xa1d55e90, __VMLINUX_SYMBOL_STR(_raw_spin_lock_bh) },
 	{ 0x44daa98b, __VMLINUX_SYMBOL_STR(netif_napi_add) },
 	{ 0x4be7fb63, __VMLINUX_SYMBOL_STR(up) },
+	{ 0xfe029963, __VMLINUX_SYMBOL_STR(unregister_inetaddr_notifier) },
+	{ 0x2a3aa678, __VMLINUX_SYMBOL_STR(_test_and_clear_bit) },
 	{ 0x2cc855a8, __VMLINUX_SYMBOL_STR(register_netdev) },
 	{ 0x9a6a211c, __VMLINUX_SYMBOL_STR(cfg80211_put_bss) },
 	{ 0xc35e3de7, __VMLINUX_SYMBOL_STR(cfg80211_roamed) },
+	{ 0xf68285c0, __VMLINUX_SYMBOL_STR(register_inetaddr_notifier) },
 	{ 0x5e611235, __VMLINUX_SYMBOL_STR(remove_proc_entry) },
 	{ 0x526c3a6c, __VMLINUX_SYMBOL_STR(jiffies) },
 	{ 0x55f72ac2, __VMLINUX_SYMBOL_STR(cfg80211_scan_done) },
+	{ 0xb3f7646e, __VMLINUX_SYMBOL_STR(kthread_should_stop) },
+	{ 0x407d765a, __VMLINUX_SYMBOL_STR(mutex_lock) },
 	{ 0xb46cfb30, __VMLINUX_SYMBOL_STR(__mutex_init) },
 	{ 0xd62c833f, __VMLINUX_SYMBOL_STR(schedule_timeout) },
 	{ 0xe4afb5d3, __VMLINUX_SYMBOL_STR(napi_complete_done) },
@@ -126,7 +135,7 @@ __attribute__((section("__versions"))) = {
 	{ 0xa0411fed, __VMLINUX_SYMBOL_STR(netif_tx_wake_queue) },
 	{ 0x7e9efe8e, __VMLINUX_SYMBOL_STR(complete_and_exit) },
 	{ 0xb918f4f8, __VMLINUX_SYMBOL_STR(cfg80211_disconnected) },
-	{ 0x3f93becf, __VMLINUX_SYMBOL_STR(netif_device_attach) },
+	{ 0xd8cde2e9, __VMLINUX_SYMBOL_STR(kthread_stop) },
 	{ 0xa735db59, __VMLINUX_SYMBOL_STR(prandom_u32) },
 	{ 0x47939e0d, __VMLINUX_SYMBOL_STR(__tasklet_hi_schedule) },
 	{ 0x9a1dfd65, __VMLINUX_SYMBOL_STR(strpbrk) },
@@ -166,6 +175,7 @@ __attribute__((section("__versions"))) = {
 	{ 0x51d559d1, __VMLINUX_SYMBOL_STR(_raw_spin_unlock_irqrestore) },
 	{ 0x99bb8806, __VMLINUX_SYMBOL_STR(memmove) },
 	{ 0xca54fee, __VMLINUX_SYMBOL_STR(_test_and_set_bit) },
+	{ 0x8663ad33, __VMLINUX_SYMBOL_STR(cfg80211_ch_switch_notify) },
 	{ 0x597492c5, __VMLINUX_SYMBOL_STR(netif_wake_subqueue) },
 	{ 0xb1ad28e0, __VMLINUX_SYMBOL_STR(__gnu_mcount_nc) },
 	{ 0x80ef8f3, __VMLINUX_SYMBOL_STR(usb_control_msg) },
@@ -180,6 +190,7 @@ __attribute__((section("__versions"))) = {
 	{ 0xe2d5255a, __VMLINUX_SYMBOL_STR(strcmp) },
 	{ 0x63f54a74, __VMLINUX_SYMBOL_STR(usb_reset_device) },
 	{ 0x689c2bbe, __VMLINUX_SYMBOL_STR(cfg80211_connect_bss) },
+	{ 0x37befc70, __VMLINUX_SYMBOL_STR(jiffies_to_msecs) },
 	{ 0x1040d175, __VMLINUX_SYMBOL_STR(filp_open) },
 	{ 0x623b4325, __VMLINUX_SYMBOL_STR(usb_autopm_get_interface) },
 	{ 0xb81960ca, __VMLINUX_SYMBOL_STR(snprintf) },
@@ -204,6 +215,7 @@ __attribute__((section("__versions"))) = {
 	{ 0x999e8297, __VMLINUX_SYMBOL_STR(vfree) },
 	{ 0xb3844182, __VMLINUX_SYMBOL_STR(netif_napi_del) },
 	{ 0x71c90087, __VMLINUX_SYMBOL_STR(memcmp) },
+	{ 0x2fe252cc, __VMLINUX_SYMBOL_STR(unregister_inet6addr_notifier) },
 	{ 0x4205ad24, __VMLINUX_SYMBOL_STR(cancel_work_sync) },
 	{ 0x3d3f54e3, __VMLINUX_SYMBOL_STR(usb_free_coherent) },
 	{ 0x85670f1d, __VMLINUX_SYMBOL_STR(rtnl_is_locked) },
@@ -221,6 +233,7 @@ MODULE_ALIAS("usb:v0BDAp8822d*dc*dsc*dp*ic*isc*ip*in*");
 MODULE_ALIAS("usb:v0BDApA811d*dc*dsc*dp*ic*isc*ip*in*");
 MODULE_ALIAS("usb:v0BDAp0820d*dc*dsc*dp*icFFiscFFipFFin*");
 MODULE_ALIAS("usb:v0BDAp0823d*dc*dsc*dp*icFFiscFFipFFin*");
+MODULE_ALIAS("usb:v20F4p804Bd*dc*dsc*dp*ic*isc*ip*in*");
 MODULE_ALIAS("usb:v7392pA811d*dc*dsc*dp*ic*isc*ip*in*");
 MODULE_ALIAS("usb:v04BBp0953d*dc*dsc*dp*ic*isc*ip*in*");
 MODULE_ALIAS("usb:v2001p3314d*dc*dsc*dp*ic*isc*ip*in*");
@@ -230,4 +243,4 @@ MODULE_ALIAS("usb:v056Ep400Ed*dc*dsc*dp*ic*isc*ip*in*");
 MODULE_ALIAS("usb:v056Ep400Fd*dc*dsc*dp*ic*isc*ip*in*");
 MODULE_ALIAS("usb:v20F4p804Bd*dc*dsc*dp*ic*isc*ip*in*");
 
-MODULE_INFO(srcversion, "233C6069E6207D7485C4299");
+MODULE_INFO(srcversion, "604A52DB1915F6F0320A580");

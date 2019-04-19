@@ -3999,16 +3999,41 @@ u8 rtw_search_max_mac_id(_adapter *padapter)
 	return max_mac_id;
 }
 
-inline void rtw_macid_ctl_set_h2c_msr(struct macid_ctl_t *macid_ctl, u8 id, u8 h2c_msr)
+inline u8 rtw_macid_ctl_set_h2c_msr(struct macid_ctl_t *macid_ctl, u8 id, u8 h2c_msr)
 {
+	u8 op_num_change_bmp = 0;
+
 	if (id >= macid_ctl->num) {
 		rtw_warn_on(1);
-		return;
+		goto exit;
+	}
+
+	if (GET_H2CCMD_MSRRPT_PARM_OPMODE(&macid_ctl->h2c_msr[id])
+		&& !GET_H2CCMD_MSRRPT_PARM_OPMODE(&h2c_msr)
+	) {
+		u8 role = GET_H2CCMD_MSRRPT_PARM_ROLE(&macid_ctl->h2c_msr[id]);
+
+		if (role < H2C_MSR_ROLE_MAX) {
+			macid_ctl->op_num[role]--;
+			op_num_change_bmp |= BIT(role);
+		}
+	} else if (!GET_H2CCMD_MSRRPT_PARM_OPMODE(&macid_ctl->h2c_msr[id])
+		&& GET_H2CCMD_MSRRPT_PARM_OPMODE(&h2c_msr)
+	) {
+		u8 role = GET_H2CCMD_MSRRPT_PARM_ROLE(&h2c_msr);
+
+		if (role < H2C_MSR_ROLE_MAX) {
+			macid_ctl->op_num[role]++;
+			op_num_change_bmp |= BIT(role);
+		}
 	}
 
 	macid_ctl->h2c_msr[id] = h2c_msr;
 	if (0)
 		RTW_INFO("macid:%u, h2c_msr:"H2C_MSR_FMT"\n", id, H2C_MSR_ARG(&macid_ctl->h2c_msr[id]));
+
+exit:
+	return op_num_change_bmp;
 }
 
 inline void rtw_macid_ctl_set_bw(struct macid_ctl_t *macid_ctl, u8 id, u8 bw)

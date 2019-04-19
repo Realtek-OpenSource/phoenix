@@ -238,4 +238,4 @@ __attribute__((section(".modinfo"))) =
 MODULE_ALIAS("sdio:c07v024CdC822*");
 MODULE_ALIAS("sdio:c07v024CdD821*");
 
-MODULE_INFO(srcversion, "B26431AF445477F94C83B1A");
+MODULE_INFO(srcversion, "DFF66BBD9B9BC6318C007A4");

@@ -96,7 +96,9 @@ void dump_drv_cfg(void *sel)
 #endif
 	RTW_PRINT_SEL(sel, "RTW_DEF_MODULE_REGULATORY_CERT=0x%02x\n", RTW_DEF_MODULE_REGULATORY_CERT);
 
+	RTW_PRINT_SEL(sel, "CONFIG_TXPWR_BY_RATE=%d\n", CONFIG_TXPWR_BY_RATE);
 	RTW_PRINT_SEL(sel, "CONFIG_TXPWR_BY_RATE_EN=%d\n", CONFIG_TXPWR_BY_RATE_EN);
+	RTW_PRINT_SEL(sel, "CONFIG_TXPWR_LIMIT=%d\n", CONFIG_TXPWR_LIMIT);
 	RTW_PRINT_SEL(sel, "CONFIG_TXPWR_LIMIT_EN=%d\n", CONFIG_TXPWR_LIMIT_EN);
 
 
@@ -174,6 +176,12 @@ void dump_drv_cfg(void *sel)
 #endif
 #ifdef CONFIG_RX_AGGREGATION
 	RTW_PRINT_SEL(sel, "CONFIG_RX_AGGREGATION\n");
+#endif
+#ifdef RTW_XMIT_THREAD_HIGH_PRIORITY
+	RTW_PRINT_SEL(sel, "RTW_XMIT_THREAD_HIGH_PRIORITY\n");
+#endif
+#ifdef RTW_XMIT_THREAD_HIGH_PRIORITY_AGG
+	RTW_PRINT_SEL(sel, "RTW_XMIT_THREAD_HIGH_PRIORITY_AGG\n");
 #endif
 #endif /*CONFIG_SDIO_HCI*/
 
@@ -3976,7 +3984,7 @@ int proc_get_btcoex_info(struct seq_file *m, void *v)
 {
 	struct net_device *dev = m->private;
 	PADAPTER padapter;
-	const u32 bufsize = 30 * 100;
+	const u32 bufsize = 40 * 100;
 	u8 *pbuf = NULL;
 
 	padapter = (PADAPTER)rtw_netdev_priv(dev);
@@ -4865,6 +4873,10 @@ int proc_get_ps_info(struct seq_file *m, void *v)
 	u8 ips_mode = pwrpriv->ips_mode_req;
 	u8 lps_mode = pwrpriv->power_mgnt;
 	u8 lps_level = pwrpriv->lps_level;
+#ifdef CONFIG_WOWLAN
+	u8 wow_lps_mode = pwrpriv->wowlan_power_mgmt;
+	u8 wow_lps_level = pwrpriv->wowlan_lps_level;
+#endif /* CONFIG_WOWLAN */
 	char *str = "";
 
 	RTW_PRINT_SEL(m, "======Power Saving Info:======\n");
@@ -4915,6 +4927,32 @@ int proc_get_ps_info(struct seq_file *m, void *v)
 		str = "LPS_NORMAL";
 	RTW_PRINT_SEL(m, " LPS level: %s\n", str);
 
+#ifdef CONFIG_WOWLAN
+	RTW_PRINT_SEL(m, "------------------------------\n");
+	RTW_PRINT_SEL(m, "*WOW LPS:\n");
+
+	if (wow_lps_mode == PS_MODE_ACTIVE)
+		str = "NO LPS";
+	else if (wow_lps_mode == PS_MODE_MIN)
+		str = "MIN";
+	else if (wow_lps_mode == PS_MODE_MAX)
+		str = "MAX";
+	else if (wow_lps_mode == PS_MODE_DTIM)
+		str = "DTIM";
+	else
+		sprintf(str, "%d", wow_lps_mode);
+
+	RTW_PRINT_SEL(m, " WOW LPS mode: %s\n", str);
+
+	if (wow_lps_level == LPS_LCLK)
+		str = "LPS_LCLK";
+	else if  (wow_lps_level == LPS_PG)
+		str = "LPS_PG";
+	else
+		str = "LPS_NORMAL";
+	RTW_PRINT_SEL(m, " WOW LPS level: %s\n", str);
+#endif /* CONFIG_WOWLAN */
+
 	RTW_PRINT_SEL(m, "=============================\n");
 	return 0;
 }
@@ -4951,6 +4989,12 @@ ssize_t proc_set_ps_info(struct file *file, const char __user *buffer, size_t co
 		
 		rtw_pm_set_ips(adapter, adapter->registrypriv.ips_mode);
 
+#ifdef CONFIG_WOWLAN
+		RTW_INFO("%s: back to original WOW LPS Mode\n", __FUNCTION__);
+
+		rtw_pm_set_wow_lps(adapter, adapter->registrypriv.wow_power_mgnt);
+#endif /* CONFIG_WOWLAN */
+
 		goto exit;
 	}
 	
@@ -4965,7 +5009,16 @@ ssize_t proc_set_ps_info(struct file *file, const char __user *buffer, size_t co
 		RTW_INFO("%s: IPS: %s, en=%d\n", __FUNCTION__, (en == 0) ? "disable":"enable", en);	
 		if (rtw_pm_set_ips(adapter, en) != 0 )
 			RTW_ERR("%s: invalid parameter, mode=%d, level=%d\n", __FUNCTION__, mode, en);
-	} else
+	}
+#ifdef CONFIG_WOWLAN
+	else if (mode == 3) {
+		/* WOW LPS */
+		RTW_INFO("%s: WOW LPS: %s, en=%d\n", __FUNCTION__, (en == 0) ? "disable":"enable", en);
+		if (rtw_pm_set_wow_lps(adapter, en) != 0 )
+			RTW_ERR("%s: invalid parameter, mode=%d, level=%d\n", __FUNCTION__, mode, en);
+	}
+#endif /* CONFIG_WOWLAN */
+	else
 		RTW_ERR("%s: invalid parameter, mode = %d!\n", __FUNCTION__, mode);
 
 exit:
@@ -6549,7 +6602,7 @@ ssize_t proc_set_fw_offload(struct file *file, const char __user *buffer, size_t
 
 		if (hal->RegIQKFWOffload != iqk_offload_enable) {
 			hal->RegIQKFWOffload = iqk_offload_enable;
-			rtw_hal_update_iqk_fw_offload_cap(pri_adapter);
+			rtw_run_in_thread_cmd(pri_adapter, ((void *)(rtw_hal_update_iqk_fw_offload_cap)), pri_adapter);
 		}
 
 		if (hal->ch_switch_offload != ch_switch_offload_enable)

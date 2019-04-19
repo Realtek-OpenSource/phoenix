@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2007 - 2017 Realtek Corporation.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -11,12 +11,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
  *
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
- *
- *
- ******************************************************************************/
+ *****************************************************************************/
 #define _RTL8812AU_XMIT_C_
 
 /* #include <drv_types.h> */
@@ -215,6 +210,8 @@ static s32 update_txdesc(struct xmit_frame *pxmitframe, u8 *pmem, s32 sz , u8 ba
 
 				SET_TX_DESC_TX_RATE_8812(ptxdesc, (pHalData->INIDATA_RATE[pattrib->mac_id] & 0x7F));
 			}
+			if (bmcst)
+				fill_txdesc_bmc_tx_rate(pattrib, ptxdesc);
 
 			if (padapter->fix_rate != 0xFF) { /* modify data rate by iwpriv */
 				SET_TX_DESC_USE_RATE_8812(ptxdesc, 1);
@@ -322,7 +319,8 @@ static s32 update_txdesc(struct xmit_frame *pxmitframe, u8 *pmem, s32 sz , u8 ba
 	}
 
 #ifdef CONFIG_ANTENNA_DIVERSITY
-	odm_set_tx_ant_by_tx_info(&pHalData->odmpriv, ptxdesc, pxmitframe->attrib.mac_id);
+	if (!bmcst && pattrib->psta)
+		odm_set_tx_ant_by_tx_info(adapter_to_phydm(padapter), ptxdesc, pattrib->psta->cmn.mac_id);
 #endif
 
 #ifdef CONFIG_BEAMFORMING
@@ -359,8 +357,13 @@ s32 rtl8812au_xmit_buf_handler(PADAPTER padapter)
 	if (ret == _FAIL)
 		return _FAIL;
 
-	if (RTW_CANNOT_RUN(padapter))
+	if (RTW_CANNOT_RUN(padapter)) {
+		RTW_DBG(FUNC_ADPT_FMT "- bDriverStopped(%s) bSurpriseRemoved(%s)\n",
+			FUNC_ADPT_ARG(padapter),
+			rtw_is_drv_stopped(padapter) ? "True" : "False",
+			rtw_is_surprise_removed(padapter) ? "True" : "False");
 		return _FAIL;
+	}
 
 	if (check_pending_xmitbuf(pxmitpriv) == _FALSE)
 		return _SUCCESS;
@@ -389,6 +392,44 @@ s32 rtl8812au_xmit_buf_handler(PADAPTER padapter)
 }
 #endif /* CONFIG_XMIT_THREAD_MODE */
 
+
+/* BUFFER ACCESS CTRL	*/
+#define DBGBUF_TXPKTBUF         0x69
+#define DBGBUF_RXPKTBUF         0xA5
+#define DBGBUF_TXRPTBUF         0x7F
+
+#define BIT_TXPKTBUF_DBG        BIT7
+#define BIT_RXPKTBUF_DBG        BIT0
+#define BIT_TXRPTBUF_DBG        BIT4
+u32 upload_txpktbuf_8812au(_adapter *adapter, u8 *buf, u32 buflen)
+{
+	u32 len = 0, j, qw_addr = 0;
+	u16 beacon_head = 0xF7, loop_cnt;
+
+	RTW_INFO("%s(): upload reserved page from 0x%02X, len=%d\n", __func__, beacon_head, buflen);
+	rtw_write8(adapter, REG_PKT_BUFF_ACCESS_CTRL, DBGBUF_TXPKTBUF);
+	do {
+		for (j = 0 ; j < 8 ; j++) {
+			if ((len+j) >= buflen)
+				break;
+			rtw_write8(adapter, REG_PKTBUF_DBG_DATA_L + j, buf[len++]);
+		}
+		rtw_write32(adapter, REG_PKTBUF_DBG_CTRL, 0xff800000+(beacon_head<<6) + qw_addr);
+		loop_cnt = 0;
+		while ((rtw_read32(adapter, REG_PKTBUF_DBG_CTRL) & BIT23) == 1) {
+			rtw_udelay_os(10);
+			if (loop_cnt++ == 100)
+				return _FALSE;
+		}
+		qw_addr++;
+		if ((len+j) >= buflen)
+			break;
+	} while (_TRUE);
+
+	rtw_write32(adapter, REG_CPU_MGQ_INFORMATION, rtw_read32(adapter, REG_CPU_MGQ_INFORMATION)|BIT28);
+	RTW_INFO("%s(): end\n", __func__);
+	return _TRUE;
+}
 
 /* for non-agg data frame or  management frame */
 static s32 rtw_dump_xframe(_adapter *padapter, struct xmit_frame *pxmitframe)
@@ -438,6 +479,14 @@ static s32 rtw_dump_xframe(_adapter *padapter, struct xmit_frame *pxmitframe)
 
 		ff_hwaddr = rtw_get_ff_hwaddr(pxmitframe);
 
+		if (IS_FULL_SPEED_USB(padapter) && (ff_hwaddr == BCN_QUEUE_INX)) {
+			inner_ret = upload_txpktbuf_8812au(padapter, mem_addr, w_sz);
+			if (inner_ret) {
+				rtw_write32(padapter, REG_CPU_MGQ_INFORMATION, rtw_read32(padapter, REG_CPU_MGQ_INFORMATION)|BIT28);
+				rtw_sctx_done_err(&pxmitbuf->sctx, RTW_SCTX_DONE_SUCCESS);
+			}
+			rtw_free_xmitbuf(pxmitpriv, pxmitbuf);
+		} else {
 #ifdef CONFIG_XMIT_THREAD_MODE
 		pxmitbuf->len = w_sz;
 		pxmitbuf->ff_hwaddr = ff_hwaddr;
@@ -450,6 +499,7 @@ static s32 rtw_dump_xframe(_adapter *padapter, struct xmit_frame *pxmitframe)
 #else
 		inner_ret = rtw_write_port(padapter, ff_hwaddr, w_sz, (unsigned char *)pxmitbuf);
 #endif
+		}
 		rtw_count_tx_stats(padapter, pxmitframe, sz);
 
 		/* RTW_INFO("rtw_write_port, w_sz=%d, sz=%d, txdesc_sz=%d, tid=%d\n", w_sz, sz, w_sz-sz, pattrib->priority);       */
@@ -469,24 +519,6 @@ static s32 rtw_dump_xframe(_adapter *padapter, struct xmit_frame *pxmitframe)
 }
 
 #ifdef CONFIG_USB_TX_AGGREGATION
-static u32 xmitframe_need_length(struct xmit_frame *pxmitframe)
-{
-	struct pkt_attrib *pattrib = &pxmitframe->attrib;
-
-	u32	len = 0;
-
-	/* no consider fragement */
-	len = pattrib->hdrlen + pattrib->iv_len +
-	      SNAP_SIZE + sizeof(u16) +
-	      pattrib->pktlen +
-	      ((pattrib->bswenc) ? pattrib->icv_len : 0);
-
-	if (pattrib->encrypt == _TKIP_)
-		len += 8;
-
-	return len;
-}
-
 #define IDEA_CONDITION 1	/* check all packets before enqueue */
 s32 rtl8812au_xmitframe_complete(_adapter *padapter, struct xmit_priv *pxmitpriv, struct xmit_buf *pxmitbuf)
 {
@@ -587,7 +619,7 @@ s32 rtl8812au_xmitframe_complete(_adapter *padapter, struct xmit_priv *pxmitpriv
 
 	/* 3 2. aggregate same priority and same DA(AP or STA) frames */
 	pfirstframe = pxmitframe;
-	len = xmitframe_need_length(pfirstframe) + TXDESC_SIZE + (pfirstframe->pkt_offset * PACKET_OFFSET_SZ);
+	len = rtw_wlan_pkt_size(pfirstframe) + TXDESC_SIZE + (pfirstframe->pkt_offset * PACKET_OFFSET_SZ);
 	pbuf_tail = len;
 	pbuf = _RND8(pbuf_tail);
 
@@ -658,7 +690,7 @@ s32 rtl8812au_xmitframe_complete(_adapter *padapter, struct xmit_priv *pxmitpriv
 		pxmitframe->pkt_offset = 0; /* not first frame of aggregation, no need to reserve offset */
 #endif
 
-		len = xmitframe_need_length(pxmitframe) + TXDESC_SIZE + (pxmitframe->pkt_offset * PACKET_OFFSET_SZ);
+		len = rtw_wlan_pkt_size(pxmitframe) + TXDESC_SIZE + (pxmitframe->pkt_offset * PACKET_OFFSET_SZ);
 
 		if (_RND8(pbuf + len) > MAX_XMITBUF_SZ)
 			/* if (_RND8(pbuf + len) > (MAX_XMITBUF_SZ/2))//to do : for TX TP finial tune , Georgia 2012-0323 */

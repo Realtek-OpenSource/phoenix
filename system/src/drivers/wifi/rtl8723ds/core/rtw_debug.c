@@ -175,6 +175,9 @@ void dump_drv_cfg(void *sel)
 #ifdef CONFIG_RX_AGGREGATION
 	RTW_PRINT_SEL(sel, "CONFIG_RX_AGGREGATION\n");
 #endif
+#if defined(RTK_139X_PLATFORM) && defined(CONFIG_RTK_SDIO_CLK_ADJUST)
+	RTW_PRINT_SEL(sel, "CONFIG_RTK_SDIO_CLK_ADJUST\n");
+#endif /*DHCWIFI-42, HW2-381*/
 #endif /*CONFIG_SDIO_HCI*/
 
 #ifdef CONFIG_PCI_HCI

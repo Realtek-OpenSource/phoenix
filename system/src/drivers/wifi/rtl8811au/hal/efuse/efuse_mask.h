@@ -1,3 +1,17 @@
+/******************************************************************************
+ *
+ * Copyright(c) 2016 - 2017 Realtek Corporation.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of version 2 of the GNU General Public License as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ *****************************************************************************/
 
 #if DEV_BUS_TYPE == RT_USB_INTERFACE
 
@@ -35,6 +49,10 @@
 
 	#if defined(CONFIG_RTL8188F)
 		#include "rtl8188f/HalEfuseMask8188F_USB.h"
+	#endif
+
+	#if defined(CONFIG_RTL8188GTV)
+		#include "rtl8188gtv/HalEfuseMask8188GTV_USB.h"
 	#endif
 
 	#if defined(CONFIG_RTL8822B)
@@ -100,6 +118,10 @@
 
 	#if defined(CONFIG_RTL8188F)
 		#include "rtl8188f/HalEfuseMask8188F_SDIO.h"
+	#endif
+
+	#if defined(CONFIG_RTL8188GTV)
+		#include "rtl8188gtv/HalEfuseMask8188GTV_SDIO.h"
 	#endif
 
 	#if defined(CONFIG_RTL8723D)

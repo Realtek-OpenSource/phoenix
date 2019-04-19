@@ -94,4 +94,10 @@ u8 rtw_odm_radar_detect_polling_int_ms(struct dvobj_priv *dvobj);
 
 void rtw_odm_parse_rx_phy_status_chinfo(union recv_frame *rframe, u8 *phys);
 
+#if defined(CONFIG_RTL8822C) && defined(CONFIG_LPS_PG)
+void odm_lps_pg_set_dpk_info_rsvd_page(void *dm_void, u8 *buf, u32 *buf_size);
+void odm_iqk_get_cfir2fw_8822c(void *dm_void, u8 *buf, u32 *buf_size);
+void odm_lps_pg_debug_8822c(void *dm_void);
+#endif
+
 #endif /* __RTW_ODM_H__ */

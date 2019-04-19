@@ -1669,7 +1669,8 @@ void phydm_tdma_dig_timer_check(void *dm_void)
 #ifdef IS_USE_NEW_TDMA
 			if (dm->support_ic_type & (ODM_RTL8198F | ODM_RTL8814B |
 			    ODM_RTL8812F | ODM_RTL8822B | ODM_RTL8192F |
-			    ODM_RTL8821C)) {
+			    ODM_RTL8821C | ODM_RTL8197G | ODM_RTL8822C |
+			    ODM_RTL8723D)) {
 				PHYDM_DBG(dm, DBG_DIG,
 					  "Check fail, Restart timer\n\n");
 				phydm_false_alarm_counter_reset(dm);
@@ -1677,7 +1678,7 @@ void phydm_tdma_dig_timer_check(void *dm_void)
 					      dm->tdma_dig_timer_ms);
 			} else {
 				PHYDM_DBG(dm, DBG_DIG,
-					  "Not 98F/14B/12F/22B/92F/21C no SW timer\n");
+					  "Not support TDMADIG, no SW timer\n");
 			}
 #else
 			/*@if interrupt mask info is got.*/

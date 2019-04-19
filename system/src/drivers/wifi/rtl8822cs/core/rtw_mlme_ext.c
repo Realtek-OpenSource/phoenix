@@ -170,7 +170,7 @@ static void init_channel_list(_adapter *padapter, RT_CHANNEL_INFO *channel_set
 
 }
 
-#ifdef CONFIG_TXPWR_LIMIT
+#if CONFIG_TXPWR_LIMIT
 void rtw_txpwr_init_regd(struct rf_ctl_t *rfctl)
 {
 	u8 regd;
@@ -278,7 +278,7 @@ void rtw_rfctl_init(_adapter *adapter)
 
 	_rtw_mutex_init(&rfctl->offch_mutex);
 
-#ifdef CONFIG_TXPWR_LIMIT
+#if CONFIG_TXPWR_LIMIT
 	_rtw_mutex_init(&rfctl->txpwr_lmt_mutex);
 	_rtw_init_listhead(&rfctl->reg_exc_list);
 	_rtw_init_listhead(&rfctl->txpwr_lmt_list);
@@ -301,7 +301,7 @@ void rtw_rfctl_deinit(_adapter *adapter)
 
 	_rtw_mutex_free(&rfctl->offch_mutex);
 
-#ifdef CONFIG_TXPWR_LIMIT
+#if CONFIG_TXPWR_LIMIT
 	rtw_regd_exc_list_free(rfctl);
 	rtw_txpwr_lmt_list_free(rfctl);
 	_rtw_mutex_free(&rfctl->txpwr_lmt_mutex);
@@ -789,7 +789,7 @@ void dump_cur_chset(void *sel, struct rf_ctl_t *rfctl)
 	else
 		RTW_PRINT_SEL(sel, "chplan:0x%02X\n", rfctl->ChannelPlan);
 
-#ifdef CONFIG_TXPWR_LIMIT
+#if CONFIG_TXPWR_LIMIT
 	RTW_PRINT_SEL(sel, "PLS regd:%s\n", rfctl->regd_name);
 #endif
 
@@ -10271,7 +10271,7 @@ void issue_action_BSSCoexistPacket(_adapter *padapter)
 	u8 InfoContent[16] = {0};
 	u8 ICS[8][15];
 #ifdef CONFIG_80211N_HT
-	if ((pmlmepriv->num_FortyMHzIntolerant == 0) || (pmlmepriv->num_sta_no_ht == 0))
+	if ((pmlmepriv->num_FortyMHzIntolerant == 0) && (pmlmepriv->num_sta_no_ht == 0))
 		return;
 
 	if (_TRUE == pmlmeinfo->bwmode_updated)
@@ -10316,17 +10316,14 @@ void issue_action_BSSCoexistPacket(_adapter *padapter)
 	pframe = rtw_set_fixed_ie(pframe, 1, &(category), &(pattrib->pktlen));
 	pframe = rtw_set_fixed_ie(pframe, 1, &(action), &(pattrib->pktlen));
 
-
-	/*  */
-	if (pmlmepriv->num_FortyMHzIntolerant > 0) {
+	/* TODO calculate 40Mhz intolerant via ch and ch offset */
+	/* if (pmlmepriv->num_FortyMHzIntolerant > 0) */
+	{
 		u8 iedata = 0;
 
 		iedata |= BIT(2);/* 20 MHz BSS Width Request */
-
 		pframe = rtw_set_ie(pframe, EID_BSSCoexistence,  1, &iedata, &(pattrib->pktlen));
-
 	}
-
 
 	/*  */
 	_rtw_memset(ICS, 0, sizeof(ICS));
@@ -12148,7 +12145,7 @@ static void rtw_mlmeext_disconnect(_adapter *padapter)
 			{
 				_adapter *port0_iface = dvobj_get_port0_adapter(adapter_to_dvobj(padapter));
 				if (port0_iface)
-					rtw_lps_ctrl_wk_cmd(port0_iface, LPS_CTRL_CONNECT, 0);
+					rtw_lps_ctrl_wk_cmd(port0_iface, LPS_CTRL_CONNECT, RTW_CMDF_DIRECTLY);
 			}
 #endif
 		}
@@ -12317,7 +12314,7 @@ void mlmeext_joinbss_event_callback(_adapter *padapter, int join_res)
 	#ifndef CONFIG_FW_MULTI_PORT_SUPPORT
 	if (get_hw_port(padapter) == HW_PORT0)
 	#endif
-		rtw_lps_ctrl_wk_cmd(padapter, LPS_CTRL_CONNECT, 0);
+		rtw_lps_ctrl_wk_cmd(padapter, LPS_CTRL_CONNECT, RTW_CMDF_DIRECTLY);
 #endif
 
 #ifdef CONFIG_BEAMFORMING
@@ -13683,7 +13680,7 @@ u8 setopmode_hdl(_adapter *padapter, u8 *pbuf)
 #ifdef CONFIG_LPS
 			_adapter *port0_iface = dvobj_get_port0_adapter(adapter_to_dvobj(padapter));
 			if (port0_iface)
-				rtw_lps_ctrl_wk_cmd(port0_iface, LPS_CTRL_CONNECT, 0);
+				rtw_lps_ctrl_wk_cmd(port0_iface, LPS_CTRL_CONNECT, RTW_CMDF_DIRECTLY);
 #endif
 		}
 	}
@@ -15314,6 +15311,11 @@ u8 setkey_hdl(_adapter *padapter, u8 *pbuf)
 		}
 	}
 
+#ifdef CONFIG_LPS_PG
+	if (adapter_to_pwrctl(padapter)->lps_level == LPS_PG)
+		LPS_Leave(padapter, "SET_KEY");
+#endif
+
 	/* cam entry searched is pairwise key */
 	if (used == _TRUE && rtw_camid_is_gk(padapter, cam_id) == _FALSE) {
 		s16 camid_clr;
@@ -15445,6 +15447,11 @@ u8 set_stakey_hdl(_adapter *padapter, u8 *pbuf)
 	cam_id = rtw_camid_alloc(padapter, psta, pparm->keyid, pparm->gk, &used);
 	if (cam_id < 0)
 		goto exit;
+
+#ifdef CONFIG_LPS_PG
+	if (adapter_to_pwrctl(padapter)->lps_level == LPS_PG)
+		LPS_Leave(padapter, "SET_KEY");
+#endif
 
 	/* cam entry searched is group key when setting pariwise key */
 	if (!pparm->gk && used == _TRUE && rtw_camid_is_gk(padapter, cam_id) == _TRUE) {
@@ -16195,7 +16202,7 @@ u8 set_chplan_hdl(_adapter *padapter, unsigned char *pbuf)
 
 	rfctl->max_chan_nums = init_channel_set(padapter, rfctl->ChannelPlan, rfctl->channel_set);
 	init_channel_list(padapter, rfctl->channel_set, &rfctl->channel_list);
-#ifdef CONFIG_TXPWR_LIMIT
+#if CONFIG_TXPWR_LIMIT
 	rtw_txpwr_init_regd(rfctl);
 #endif
 

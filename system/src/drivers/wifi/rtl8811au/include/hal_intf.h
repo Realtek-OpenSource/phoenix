@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2007 - 2012 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2007 - 2017 Realtek Corporation.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -11,12 +11,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
  *
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
- *
- *
- ******************************************************************************/
+ *****************************************************************************/
 #ifndef __HAL_INTF_H__
 #define __HAL_INTF_H__
 
@@ -39,6 +34,7 @@ enum _CHIP_TYPE {
 	RTL8814A,
 	RTL8703B,
 	RTL8188F,
+	RTL8188GTV,
 	RTL8822B,
 	RTL8723D,
 	RTL8821C,
@@ -73,7 +69,7 @@ typedef enum _HW_VARIABLES {
 	HW_VAR_TXPAUSE,
 	HW_VAR_BCN_FUNC,
 	HW_VAR_CORRECT_TSF,
-	HW_VAR_CHECK_BSSID,
+	HW_VAR_RCR,
 	HW_VAR_MLME_DISCONNECT,
 	HW_VAR_MLME_SITESURVEY,
 	HW_VAR_MLME_JOIN,
@@ -87,6 +83,9 @@ typedef enum _HW_VARIABLES {
 	HW_VAR_SEC_DK_CFG,
 	HW_VAR_BCN_VALID,
 	HW_VAR_RF_TYPE,
+	HW_VAR_TSF,
+	HW_VAR_FREECNT,
+
 	/* PHYDM odm->SupportAbility */
 	HW_VAR_CAM_EMPTY_ENTRY,
 	HW_VAR_CAM_INVALID_ALL,
@@ -95,9 +94,9 @@ typedef enum _HW_VARIABLES {
 	HW_VAR_AC_PARAM_BE,
 	HW_VAR_AC_PARAM_BK,
 	HW_VAR_ACM_CTRL,
-#ifdef CONFIG_WMMPS
+#ifdef CONFIG_WMMPS_STA
 	HW_VAR_UAPSD_TID,
-#endif
+#endif /* CONFIG_WMMPS_STA */
 	HW_VAR_AMPDU_MIN_SPACE,
 	HW_VAR_AMPDU_FACTOR,
 	HW_VAR_RXDMA_AGG_PG_TH,
@@ -146,13 +145,15 @@ typedef enum _HW_VARIABLES {
 	HW_VAR_RPT_TIMER_SETTING,
 	HW_VAR_TX_RPT_MAX_MACID,
 	HW_VAR_CHK_HI_QUEUE_EMPTY,
+	HW_VAR_CHK_MGQ_CPU_EMPTY,
 	HW_VAR_DL_BCN_SEL,
 	HW_VAR_AMPDU_MAX_TIME,
 	HW_VAR_WIRELESS_MODE,
 	HW_VAR_USB_MODE,
 	HW_VAR_PORT_SWITCH,
+	HW_VAR_PORT_CFG,
 	HW_VAR_DO_IQK,
-	HW_VAR_DM_IN_LPS,
+	HW_VAR_DM_IN_LPS_LCLK,/*flag CONFIG_LPS_LCLK_WD_TIMER*/
 	HW_VAR_SET_REQ_FW_PS,
 	HW_VAR_FW_PS_STATE,
 	HW_VAR_SOUNDING_ENTER,
@@ -172,8 +173,6 @@ typedef enum _HW_VARIABLES {
 	HW_VAR_DL_RSVD_PAGE,
 	HW_VAR_MACID_LINK,
 	HW_VAR_MACID_NOLINK,
-	HW_VAR_MACID_SLEEP,
-	HW_VAR_MACID_WAKEUP,
 	HW_VAR_DUMP_MAC_QUEUE_INFO,
 	HW_VAR_ASIX_IOT,
 #ifdef CONFIG_MBSSID_CAM
@@ -185,13 +184,22 @@ typedef enum _HW_VARIABLES {
 	HW_VAR_CH_SW_NEED_TO_TAKE_CARE_IQK_INFO,
 	HW_VAR_CH_SW_IQK_INFO_BACKUP,
 	HW_VAR_CH_SW_IQK_INFO_RESTORE,
+
+	HW_VAR_DBI,
+	HW_VAR_MDIO,
+	HW_VAR_L1OFF_CAPABILITY,
+	HW_VAR_L1OFF_NIC_SUPPORT,
 #ifdef CONFIG_TDLS
-	HW_VAR_TDLS_WRCR,
-	HW_VAR_TDLS_RS_RCR,
 #ifdef CONFIG_TDLS_CH_SW
-	HW_VAR_TDLS_BCN_EARLY_C2H_RPT
+	HW_VAR_TDLS_BCN_EARLY_C2H_RPT,
 #endif
 #endif
+	HW_VAR_DUMP_MAC_TXFIFO,
+	HW_VAR_PWR_CMD,
+	HW_VAR_SET_SOML_PARAM,
+	HW_VAR_ENABLE_RX_BAR,
+	HW_VAR_TSF_AUTO_SYNC,
+	HW_VAR_LPS_STATE_CHK,
 } HW_VARIABLES;
 
 typedef enum _HAL_DEF_VARIABLE {
@@ -228,8 +236,6 @@ typedef enum _HAL_DEF_VARIABLE {
 	HAL_DEF_PCI_SUUPORT_L1_BACKDOOR, /* Determine if the L1 Backdoor setting is turned on. */
 	HAL_DEF_PCI_AMD_L1_SUPPORT,
 	HAL_DEF_PCI_ASPM_OSC, /* Support for ASPM OSC, added by Roger, 2013.03.27. */
-	HAL_DEF_MACID_SLEEP, /* Support for MACID sleep */
-	HAL_DEF_DBG_DIS_PWT, /* disable Tx power training or not. */
 	HAL_DEF_EFUSE_USAGE,	/* Get current EFUSE utilization. 2008.12.19. Added by Roger. */
 	HAL_DEF_EFUSE_BYTES,
 	HW_VAR_BEST_AMPDU_DENSITY,
@@ -239,17 +245,10 @@ typedef enum _HAL_ODM_VARIABLE {
 	HAL_ODM_STA_INFO,
 	HAL_ODM_P2P_STATE,
 	HAL_ODM_WIFI_DISPLAY_STATE,
-	HAL_ODM_NOISE_MONITOR,
 	HAL_ODM_REGULATION,
 	HAL_ODM_INITIAL_GAIN,
-	HAL_ODM_FA_CNT_DUMP,
-	HAL_ODM_DBG_FLAG,
-	HAL_ODM_DBG_LEVEL,
 	HAL_ODM_RX_INFO_DUMP,
 	HAL_ODM_RX_Dframe_INFO,
-#ifdef CONFIG_AUTO_CHNL_SEL_NHM
-	HAL_ODM_AUTO_CHNL_SEL,
-#endif
 #ifdef CONFIG_ANTENNA_DIVERSITY
 	HAL_ODM_ANTDIV_SELECT
 #endif
@@ -263,17 +262,6 @@ typedef enum _HAL_INTF_PS_FUNC {
 typedef s32(*c2h_id_filter)(_adapter *adapter, u8 id, u8 seq, u8 plen, u8 *payload);
 
 struct txpwr_idx_comp;
-
-struct macid_cfg {
-	u8 mac_id;
-	u8 rate_id;
-	u8 bandwidth;
-	u8 short_gi;
-	u8 ignore_bw;
-	u8 rsvd;
-	u16 rsvd1;
-	u64 ra_mask;
-};
 
 struct hal_ops {
 	/*** initialize section ***/
@@ -330,25 +318,21 @@ struct hal_ops {
 #endif
 
 	/*** DM section ***/
-
+#ifdef CONFIG_RTW_SW_LED
 	void	(*InitSwLeds)(_adapter *padapter);
 	void	(*DeInitSwLeds)(_adapter *padapter);
-
-	void	(*set_chnl_bw_handler)(_adapter *padapter, u8 channel, CHANNEL_WIDTH Bandwidth, u8 Offset40, u8 Offset80);
+#endif
+	void	(*set_chnl_bw_handler)(_adapter *padapter, u8 channel, enum channel_width Bandwidth, u8 Offset40, u8 Offset80);
 
 	void	(*set_tx_power_level_handler)(_adapter *padapter, u8 channel);
 	void	(*get_tx_power_level_handler)(_adapter *padapter, s32 *powerlevel);
 
-	void (*set_tx_power_index_handler)(_adapter *padapter, u32 powerindex, u8 rfpath, u8 rate);
-	u8(*get_tx_power_index_handler)(_adapter *padapter, u8 rfpath, u8 rate, u8 bandwidth, u8 channel, struct txpwr_idx_comp *tic);
+	void (*set_tx_power_index_handler)(_adapter *padapter, u32 powerindex, enum rf_path rfpath, u8 rate);
+	u8 (*get_tx_power_index_handler)(_adapter *padapter, enum rf_path rfpath, u8 rate, u8 bandwidth, u8 channel, struct txpwr_idx_comp *tic);
 
 	void	(*hal_dm_watchdog)(_adapter *padapter);
-#ifdef CONFIG_LPS_LCLK_WD_TIMER
-	void	(*hal_dm_watchdog_in_lps)(_adapter *padapter);
-#endif
 
-
-	void	(*set_hw_reg_handler)(_adapter *padapter, u8	variable, u8 *val);
+	u8	(*set_hw_reg_handler)(_adapter *padapter, u8	variable, u8 *val);
 
 	void	(*GetHwRegHandler)(_adapter *padapter, u8	variable, u8 *val);
 
@@ -361,16 +345,17 @@ struct hal_ops {
 	void	(*GetHalODMVarHandler)(_adapter *padapter, HAL_ODM_VARIABLE eVariable, PVOID pValue1, PVOID pValue2);
 	void	(*SetHalODMVarHandler)(_adapter *padapter, HAL_ODM_VARIABLE eVariable, PVOID pValue1, BOOLEAN bSet);
 
-	void	(*update_ra_mask_handler)(_adapter *padapter, struct sta_info *psta, struct macid_cfg *h2c_macid_cfg);
 	void	(*SetBeaconRelatedRegistersHandler)(_adapter *padapter);
 
 	u8(*interface_ps_func)(_adapter *padapter, HAL_INTF_PS_FUNC efunc_id, u8 *val);
 
 	u32(*read_bbreg)(_adapter *padapter, u32 RegAddr, u32 BitMask);
 	void	(*write_bbreg)(_adapter *padapter, u32 RegAddr, u32 BitMask, u32 Data);
-	u32(*read_rfreg)(_adapter *padapter, u8 eRFPath, u32 RegAddr, u32 BitMask);
-	void	(*write_rfreg)(_adapter *padapter, u8 eRFPath, u32 RegAddr, u32 BitMask, u32 Data);
+	u32 (*read_rfreg)(_adapter *padapter, enum rf_path eRFPath, u32 RegAddr, u32 BitMask);
+	void	(*write_rfreg)(_adapter *padapter, enum rf_path eRFPath, u32 RegAddr, u32 BitMask, u32 Data);
 
+	void (*read_wmmedca_reg)(_adapter *padapter, u16 *vo_params, u16 *vi_params, u16 *be_params, u16 *bk_params);
+	
 #ifdef CONFIG_HOSTAPD_MLME
 	s32(*hostap_mgnt_xmit_entry)(_adapter *padapter, _pkt *pkt);
 #endif
@@ -429,6 +414,15 @@ struct hal_ops {
 	u8(*init_mac_register)(PADAPTER);
 	u8(*init_phy)(PADAPTER);
 #endif /* RTW_HALMAC */
+
+#ifdef CONFIG_PCI_HCI
+	void (*hal_set_l1ssbackdoor_handler)(_adapter *padapter, u8 enable);
+#endif
+
+#ifdef CONFIG_RFKILL_POLL
+	bool (*hal_radio_onoff_check)(_adapter *adapter, u8 *valid);
+#endif
+
 };
 
 typedef	enum _RT_EEPROM_TYPE {
@@ -477,6 +471,8 @@ typedef enum _HARDWARE_TYPE {
 	HARDWARE_TYPE_RTL8188FE,
 	HARDWARE_TYPE_RTL8188FU,
 	HARDWARE_TYPE_RTL8188FS,
+	HARDWARE_TYPE_RTL8188GTVU,
+	HARDWARE_TYPE_RTL8188GTVS,
 	HARDWARE_TYPE_RTL8723DE,
 	HARDWARE_TYPE_RTL8723DU,
 	HARDWARE_TYPE_RTL8723DS,
@@ -563,6 +559,11 @@ typedef enum _HARDWARE_TYPE {
 #define	IS_HARDWARE_TYPE_8188F(_Adapter)			\
 	(IS_HARDWARE_TYPE_8188FE(_Adapter) || IS_HARDWARE_TYPE_8188FU(_Adapter) || IS_HARDWARE_TYPE_8188FS(_Adapter))
 
+#define IS_HARDWARE_TYPE_8188GTVU(_Adapter)		(rtw_get_hw_type(_Adapter) == HARDWARE_TYPE_RTL8188GTVU)
+#define IS_HARDWARE_TYPE_8188GTVS(_Adapter)		(rtw_get_hw_type(_Adapter) == HARDWARE_TYPE_RTL8188GTVS)
+#define	IS_HARDWARE_TYPE_8188GTV(_Adapter)			\
+	(IS_HARDWARE_TYPE_8188GTVU(_Adapter) || IS_HARDWARE_TYPE_8188GTVS(_Adapter))
+
 #define IS_HARDWARE_TYPE_8821BE(_Adapter)		(rtw_get_hw_type(_Adapter) == HARDWARE_TYPE_RTL8821BE)
 #define IS_HARDWARE_TYPE_8821BU(_Adapter)		(rtw_get_hw_type(_Adapter) == HARDWARE_TYPE_RTL8821BU)
 #define IS_HARDWARE_TYPE_8821BS(_Adapter)		(rtw_get_hw_type(_Adapter) == HARDWARE_TYPE_RTL8821BS)
@@ -613,16 +614,17 @@ void	rtw_hal_free_data(_adapter *padapter);
 
 void rtw_hal_dm_init(_adapter *padapter);
 void rtw_hal_dm_deinit(_adapter *padapter);
+#ifdef CONFIG_RTW_SW_LED
 void rtw_hal_sw_led_init(_adapter *padapter);
 void rtw_hal_sw_led_deinit(_adapter *padapter);
-
+#endif
 u32 rtw_hal_power_on(_adapter *padapter);
 void rtw_hal_power_off(_adapter *padapter);
 
 uint rtw_hal_init(_adapter *padapter);
 uint rtw_hal_deinit(_adapter *padapter);
 void rtw_hal_stop(_adapter *padapter);
-void rtw_hal_set_hwreg(PADAPTER padapter, u8 variable, u8 *val);
+u8 rtw_hal_set_hwreg(PADAPTER padapter, u8 variable, u8 *val);
 void rtw_hal_get_hwreg(PADAPTER padapter, u8 variable, u8 *val);
 
 void rtw_hal_chip_configure(_adapter *padapter);
@@ -647,6 +649,12 @@ u8 rtw_hal_check_ips_status(_adapter *padapter);
 
 #if defined(CONFIG_PCI_HCI)
 	void	rtw_hal_irp_reset(_adapter *padapter);
+void	rtw_hal_pci_dbi_write(_adapter *padapter, u16 addr, u8 data);
+u8	rtw_hal_pci_dbi_read(_adapter *padapter, u16 addr);
+void	rtw_hal_pci_mdio_write(_adapter *padapter, u8 addr, u16 data);
+u16	rtw_hal_pci_mdio_read(_adapter *padapter, u8 addr);
+u8	rtw_hal_pci_l1off_nic_support(_adapter *padapter);
+u8	rtw_hal_pci_l1off_capability(_adapter *padapter);
 #endif
 
 u8	rtw_hal_intf_ps_func(_adapter *padapter, HAL_INTF_PS_FUNC efunc_id, u8 *val);
@@ -661,8 +669,7 @@ void	rtw_hal_free_xmit_priv(_adapter *padapter);
 s32	rtw_hal_init_recv_priv(_adapter *padapter);
 void	rtw_hal_free_recv_priv(_adapter *padapter);
 
-void rtw_hal_update_ra_mask(struct sta_info *psta, u8 rssi_level, u8 is_update_bw);
-void rtw_update_ramask(_adapter *padapter, struct sta_info *psta, u32 mac_id, u8 rssi_level, u8 is_update_bw);
+void rtw_hal_update_ra_mask(struct sta_info *psta);
 
 void	rtw_hal_start_thread(_adapter *padapter);
 void	rtw_hal_stop_thread(_adapter *padapter);
@@ -671,8 +678,8 @@ void rtw_hal_bcn_related_reg_setting(_adapter *padapter);
 
 u32	rtw_hal_read_bbreg(_adapter *padapter, u32 RegAddr, u32 BitMask);
 void	rtw_hal_write_bbreg(_adapter *padapter, u32 RegAddr, u32 BitMask, u32 Data);
-u32	rtw_hal_read_rfreg(_adapter *padapter, u32 eRFPath, u32 RegAddr, u32 BitMask);
-void	rtw_hal_write_rfreg(_adapter *padapter, u32 eRFPath, u32 RegAddr, u32 BitMask, u32 Data);
+u32	rtw_hal_read_rfreg(_adapter *padapter, enum rf_path eRFPath, u32 RegAddr, u32 BitMask);
+void	rtw_hal_write_rfreg(_adapter *padapter, enum rf_path eRFPath, u32 RegAddr, u32 BitMask, u32 Data);
 
 
 #define phy_query_bb_reg(Adapter, RegAddr, BitMask) rtw_hal_read_bbreg((Adapter), (RegAddr), (BitMask))
@@ -691,7 +698,7 @@ void	rtw_hal_write_rfreg(_adapter *padapter, u32 eRFPath, u32 RegAddr, u32 BitMa
 	void	rtw_hal_interrupt_handler(_adapter *padapter, u16 pkt_len, u8 *pbuf);
 #endif
 
-void	rtw_hal_set_chnl_bw(_adapter *padapter, u8 channel, CHANNEL_WIDTH Bandwidth, u8 Offset40, u8 Offset80);
+void	rtw_hal_set_chnl_bw(_adapter *padapter, u8 channel, enum channel_width Bandwidth, u8 Offset40, u8 Offset80);
 void	rtw_hal_dm_watchdog(_adapter *padapter);
 void	rtw_hal_dm_watchdog_in_lps(_adapter *padapter);
 
@@ -744,8 +751,10 @@ s32 rtw_hal_c2h_id_handle_directly(_adapter *adapter, u8 id, u8 seq, u8 plen, u8
 
 s32 rtw_hal_is_disable_sw_channel_plan(PADAPTER padapter);
 
-s32 rtw_hal_macid_sleep(PADAPTER padapter, u8 macid);
-s32 rtw_hal_macid_wakeup(PADAPTER padapter, u8 macid);
+s32 rtw_hal_macid_sleep(_adapter *adapter, u8 macid);
+s32 rtw_hal_macid_wakeup(_adapter *adapter, u8 macid);
+s32 rtw_hal_macid_sleep_all_used(_adapter *adapter);
+s32 rtw_hal_macid_wakeup_all_used(_adapter *adapter);
 
 s32 rtw_hal_fill_h2c_cmd(PADAPTER padapter, u8 ElementID, u32 CmdLen, u8 *pCmdBuffer);
 void rtw_hal_fill_fake_txdesc(_adapter *padapter, u8 *pDesc, u32 BufferLen,
@@ -765,8 +774,9 @@ s32 rtw_hal_fw_dl(_adapter *padapter, u8 wowlan);
 	void rtw_hal_clear_interrupt(_adapter *padapter);
 #endif
 
-void rtw_hal_set_tx_power_index(PADAPTER, u32 powerindex, u8 rfpath, u8 rate);
-u8 rtw_hal_get_tx_power_index(PADAPTER, u8 rfpath, u8 rate, u8 bandwidth, u8 channel,struct txpwr_idx_comp *tic);
+void rtw_hal_set_tx_power_index(PADAPTER adapter, u32 powerindex, enum rf_path rfpath, u8 rate);
+u8 rtw_hal_get_tx_power_index(PADAPTER adapter, enum rf_path
+	rfpath, u8 rate, u8 bandwidth, u8 channel, struct txpwr_idx_comp *tic);
 
 u8 rtw_hal_ops_check(_adapter *padapter);
 
@@ -775,5 +785,9 @@ u8 rtw_hal_ops_check(_adapter *padapter);
 	u8 rtw_hal_init_phy(PADAPTER);
 s32 rtw_hal_fw_mem_dl(_adapter *padapter, enum fw_mem mem);
 #endif /* RTW_HALMAC */
+
+#ifdef CONFIG_RFKILL_POLL
+bool rtw_hal_rfkill_poll(_adapter *adapter, u8 *valid);
+#endif
 
 #endif /* __HAL_INTF_H__ */

@@ -111,6 +111,8 @@ void phydm_1rcca_setting_8822c(struct dm_struct *dm, boolean en_1rcca);
 
 void phydm_ch_smooth_setting_8822c(struct dm_struct *dm, boolean en_ch_smooth);
 
+u16 phydm_get_dis_dpd_by_rate_8822c(struct dm_struct *dm);
+
 boolean config_phydm_parameter_init_8822c(struct dm_struct *dm,
 					  enum odm_parameter_init type);
 

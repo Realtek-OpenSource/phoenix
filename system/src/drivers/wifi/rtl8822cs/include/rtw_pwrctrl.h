@@ -312,6 +312,8 @@ struct aoac_report {
 	u8 rxgtk_iv[4][8];
 };
 
+struct rsvd_page_cache_t;
+
 struct pwrctrl_priv {
 	_pwrlock	lock;
 	_pwrlock	check_32k_lock;
@@ -432,7 +434,8 @@ struct pwrctrl_priv {
 #endif
 	u8		wowlan_aoac_rpt_loc;
 	struct aoac_report wowlan_aoac_rpt;
-	u8		wowlan_dis_lps;/*for debug purpose*/
+	u8		wowlan_power_mgmt;
+	u8		wowlan_lps_level;
 #endif /* CONFIG_WOWLAN */
 	_timer	pwr_state_check_timer;
 	int		pwr_state_check_interval;
@@ -470,8 +473,11 @@ struct pwrctrl_priv {
 	u8 lps_level_bk;
 	u8 lps_level; /*LPS_NORMAL,LPA_CG,LPS_PG*/
 #ifdef CONFIG_LPS_PG
-	u8 lpspg_rsvd_page_locate;
-	u8 blpspg_info_up;
+	struct rsvd_page_cache_t lpspg_info;
+#ifdef CONFIG_RTL8822C
+	struct rsvd_page_cache_t lpspg_dpk_info;
+	struct rsvd_page_cache_t lpspg_iqk_info;
+#endif
 #endif
 	u8 current_lps_hw_port_id;
 
@@ -585,6 +591,10 @@ int _rtw_pwr_wakeup(_adapter *padapter, u32 ips_deffer_ms, const char *caller);
 int rtw_pm_set_ips(_adapter *padapter, u8 mode);
 int rtw_pm_set_lps(_adapter *padapter, u8 mode);
 int rtw_pm_set_lps_level(_adapter *padapter, u8 level);
+#ifdef CONFIG_WOWLAN
+int rtw_pm_set_wow_lps(_adapter *padapter, u8 mode);
+int rtw_pm_set_wow_lps_level(_adapter *padapter, u8 level);
+#endif /* CONFIG_WOWLAN */
 
 void rtw_ps_deny(PADAPTER padapter, PS_DENY_REASON reason);
 void rtw_ps_deny_cancel(PADAPTER padapter, PS_DENY_REASON reason);

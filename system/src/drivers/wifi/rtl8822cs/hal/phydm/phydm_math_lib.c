@@ -198,7 +198,8 @@ u64 phydm_db_2_linear(u32 value)
 	u64 linear;
 
 	/* @1dB~96dB */
-
+	if (value > 96)
+		value = 96;
 	value = value & 0xFF;
 
 	i = (u8)((value - 1) >> 3);
@@ -225,12 +226,12 @@ u16 phydm_show_fraction_num(u32 frac_val, u8 bit_num)
 	return val;
 }
 
-u32 phydm_gen_bitmask(u8 mask_num)
+u64 phydm_gen_bitmask(u8 mask_num)
 {
 	u8 i = 0;
-	u32 bitmask = 0;
+	u64 bitmask = 0;
 
-	if (mask_num > 32)
+	if (mask_num > 64)
 		return 1;
 
 	for (i = 0; i < mask_num; i++)

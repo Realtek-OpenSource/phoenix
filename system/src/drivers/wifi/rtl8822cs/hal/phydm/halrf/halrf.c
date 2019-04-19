@@ -119,8 +119,8 @@ void phydm_get_iqk_cfir(void *dm_void, u8 idx, u8 path, boolean debug)
 		odm_set_bb_reg(dm, R_0x1bd8, MASKDWORD, 0xe0000001 + (i * 4));
 		tmp = odm_get_bb_reg(dm, R_0x1bfc, MASKDWORD);
 		iqk_info->iqk_cfir_real[ch][path][idx][i] =
-						(tmp & 0x0fff0000) >> 16;
-		iqk_info->iqk_cfir_imag[ch][path][idx][i] = tmp & 0xfff;
+						(u16)((tmp & 0x0fff0000) >> 16);
+		iqk_info->iqk_cfir_imag[ch][path][idx][i] = (u16)(tmp & 0xfff);
 	}
 	odm_set_bb_reg(dm, R_0x1bd8, MASKDWORD, 0x0);
 	odm_set_bb_reg(dm, R_0x1b0c, BIT(13) | BIT(12), 0x0);
@@ -627,9 +627,9 @@ void halrf_iqk_dbg_cfir_write(struct dm_struct *dm, u8 type, u32 path, u32 idx,
 	struct dm_iqk_info *iqk_info = &dm->IQK_info;
 
 	if (type == 0)
-		iqk_info->iqk_cfir_real[2][path][idx][i] = data;
+		iqk_info->iqk_cfir_real[2][path][idx][i] = (u16)data;
 	else
-		iqk_info->iqk_cfir_imag[2][path][idx][i] = data;
+		iqk_info->iqk_cfir_imag[2][path][idx][i] = (u16)data;
 }
 
 void halrf_iqk_dbg_cfir_backup_show(struct dm_struct *dm)
@@ -1101,6 +1101,9 @@ u64 halrf_cmn_info_get(void *dm_void, u32 cmn_info)
 	case HALRF_CMNINFO_IQK_SEGMENT:
 		return_value = dm->IQK_info.segment_iqk;
 		break;
+	case HALRF_CMNINFO_IQK_TIMES:
+		return_value = dm->IQK_info.iqk_times;
+		break;
 #endif
 	default:
 		/* do nothing */
@@ -1431,7 +1434,7 @@ void halrf_rf_k_connect_trigger(void *dm_void, boolean is_recovery,
 	/*[TX GAP K]*/
 
 	/*[LOK, IQK]*/
-	halrf_iqk_trigger(dm, is_recovery);
+	halrf_segment_iqk_trigger(dm, true, seg_time);
 
 	/*[TSSI Trk]*/
 	/*halrf_do_tssi(dm);*/
@@ -1853,6 +1856,11 @@ void halrf_init(void *dm_void)
 	halrf_dack_trigger(dm);
 	halrf_x2k_check(dm);
 #endif
+
+	/*power trim, thrmal trim, pa bias*/
+	phydm_config_new_kfree(dm);
+
+	/*TSSI Init*/
 	halrf_tssi_get_efuse(dm);
 }
 
@@ -2546,6 +2554,10 @@ void halrf_set_tssi_power(void *dm_void, s8 power)
 #endif
 }
 
+void halrf_tssi_set_de_for_tx_verify(void *dm_void, u32 tssi_de, u8 path)
+{
+	return;
+}
 u32 halrf_query_tssi_value(void *dm_void)
 {
 	struct dm_struct *dm = (struct dm_struct *)dm_void;
@@ -2584,10 +2596,34 @@ void halrf_tssi_set_de(void *dm_void)
 #if (RTL8814B_SUPPORT == 1)
 	if (dm->support_ic_type & ODM_RTL8814B)
 		halrf_tssi_set_de_8814b(dm);
-#endif
+#endif	
+}
+
+void halrf_tssi_dck(void *dm_void, u8 direct_do)
+{
+
+}
+
+void halrf_calculate_tssi_codeword(void *dm_void)
+{
 	
 }
 
+void halrf_set_tssi_codeword(void *dm_void)
+{
+
+}
+
+u8 halrf_get_tssi_codeword_for_txindex(void *dm_void)
+{
+	return 0;
+}
+
+
+u32 halrf_tssi_get_de(void *dm_void, u8 path)
+{
+	return 0;
+}
 
 /*Golbal function*/
 void halrf_reload_bp(void *dm_void, u32 *bp_reg, u32 *bp, u32 num)

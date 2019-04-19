@@ -456,8 +456,8 @@ void traffic_check_for_leave_lps_by_tp(PADAPTER padapter, u8 tx, struct sta_info
 			RTW_INFO("Rx = %d [%d] (KB)\n", rx_tp_kbyte, rx_tp_th);
 		#endif
 		pwrpriv->lps_chk_cnt = pwrpriv->lps_chk_cnt_th;
-		/* rtw_lps_ctrl_wk_cmd(padapter, LPS_CTRL_LEAVE, 1); */
-		rtw_lps_ctrl_wk_cmd(padapter, tx ? LPS_CTRL_TX_TRAFFIC_LEAVE : LPS_CTRL_RX_TRAFFIC_LEAVE, 1);
+		/* rtw_lps_ctrl_wk_cmd(padapter, LPS_CTRL_LEAVE, 0); */
+		rtw_lps_ctrl_wk_cmd(padapter, tx ? LPS_CTRL_TX_TRAFFIC_LEAVE : LPS_CTRL_RX_TRAFFIC_LEAVE, 0);
 	}
 }
 #endif /*CONFIG_LPS_CHK_BY_TP*/
@@ -510,8 +510,8 @@ void	traffic_check_for_leave_lps(PADAPTER padapter, u8 tx, u32 tx_packets)
 
 	if (bLeaveLPS) {
 		/* RTW_INFO("leave lps via %s, Tx = %d, Rx = %d\n", tx?"Tx":"Rx", pmlmepriv->LinkDetectInfo.NumTxOkInPeriod,pmlmepriv->LinkDetectInfo.NumRxUnicastOkInPeriod);	 */
-		/* rtw_lps_ctrl_wk_cmd(padapter, LPS_CTRL_LEAVE, 1); */
-		rtw_lps_ctrl_wk_cmd(padapter, tx ? LPS_CTRL_TX_TRAFFIC_LEAVE : LPS_CTRL_RX_TRAFFIC_LEAVE, tx ? 0 : 1);
+		/* rtw_lps_ctrl_wk_cmd(padapter, LPS_CTRL_LEAVE, 0); */
+		rtw_lps_ctrl_wk_cmd(padapter, tx ? LPS_CTRL_TX_TRAFFIC_LEAVE : LPS_CTRL_RX_TRAFFIC_LEAVE, tx ? RTW_CMDF_DIRECTLY : 0);
 	}
 }
 #endif /* CONFIG_CHECK_LEAVE_LPS */
@@ -907,10 +907,12 @@ void rtw_set_ps_mode(PADAPTER padapter, u8 ps_mode, u8 smart_ps, u8 bcn_ant_mode
 #endif
 
 #ifdef CONFIG_LPS_PG
-	if ((PS_MODE_ACTIVE != ps_mode) && (pwrpriv->blpspg_info_up)) {
-		/*rtw_hal_set_lps_pg_info(padapter);*/
-		lps_pg_hdl_id = LPS_PG_INFO_CFG;
-		rtw_hal_set_hwreg(padapter, HW_VAR_LPS_PG_HANDLE, (u8 *)(&lps_pg_hdl_id));
+	if ((PS_MODE_ACTIVE != ps_mode) && (pwrpriv->lps_level == LPS_PG)) {
+		if (pwrpriv->wowlan_mode != _TRUE) {
+				/*rtw_hal_set_lps_pg_info(padapter);*/
+				lps_pg_hdl_id = LPS_PG_INFO_CFG;
+				rtw_hal_set_hwreg(padapter, HW_VAR_LPS_PG_HANDLE, (u8 *)(&lps_pg_hdl_id));
+		}
 	}
 #endif
 
@@ -1260,16 +1262,16 @@ void LPS_Leave(PADAPTER padapter, const char *msg)
 
 void rtw_wow_lps_level_decide(_adapter *adapter, u8 wow_en)
 {
-#if defined(CONFIG_USB_HCI) && defined(CONFIG_LPS_LCLK)
 	struct dvobj_priv *dvobj = adapter_to_dvobj(adapter);
 	struct pwrctrl_priv *pwrpriv = dvobj_to_pwrctl(dvobj);
 
 	if (wow_en) {
 		pwrpriv->lps_level_bk = pwrpriv->lps_level;
-		pwrpriv->lps_level = LPS_LCLK;
+#ifdef CONFIG_WOWLAN
+		pwrpriv->lps_level = pwrpriv->wowlan_lps_level;
+#endif /* CONFIG_WOWLAN */
 	} else
 		pwrpriv->lps_level = pwrpriv->lps_level_bk;
-#endif
 }
 #endif
 
@@ -1320,7 +1322,7 @@ void LeaveAllPowerSaveModeDirect(PADAPTER Adapter)
 #endif /* CONFIG_P2P_PS */
 
 #ifdef CONFIG_LPS
-		rtw_lps_ctrl_wk_cmd(pri_padapter, LPS_CTRL_LEAVE, 0);
+		rtw_lps_ctrl_wk_cmd(pri_padapter, LPS_CTRL_LEAVE, RTW_CMDF_DIRECTLY);
 #endif
 	} else {
 		if (pwrpriv->rf_pwrstate == rf_off) {
@@ -1388,7 +1390,7 @@ void LeaveAllPowerSaveMode(PADAPTER Adapter)
 #endif /* CONFIG_P2P_PS */
 
 #ifdef CONFIG_LPS
-		rtw_lps_ctrl_wk_cmd(Adapter, LPS_CTRL_LEAVE, enqueue);
+		rtw_lps_ctrl_wk_cmd(Adapter, LPS_CTRL_LEAVE, enqueue ? 0 : RTW_CMDF_DIRECTLY);
 #endif
 
 #ifdef CONFIG_LPS_LCLK
@@ -2143,10 +2145,6 @@ void rtw_init_pwrctrl_priv(PADAPTER padapter)
 
 	pwrctrlpriv->LpsIdleCount = 0;
 
-#ifdef CONFIG_LPS_PG
-	pwrctrlpriv->lpspg_rsvd_page_locate = 0;
-#endif
-
 	/* pwrctrlpriv->FWCtrlPSMode =padapter->registrypriv.power_mgnt; */ /* PS_MODE_MIN; */
 	if (padapter->registrypriv.mp_mode == 1)
 		pwrctrlpriv->power_mgnt = PS_MODE_ACTIVE ;
@@ -2167,6 +2165,9 @@ void rtw_init_pwrctrl_priv(PADAPTER padapter)
 	pwrctrlpriv->tog = 0x80;
 	pwrctrlpriv->rpwm_retry = 0;
 
+	RTW_INFO("%s: IPS_mode=%d, LPS_mode=%d, LPS_level=%d\n", 
+		__func__, pwrctrlpriv->ips_mode, pwrctrlpriv->power_mgnt, pwrctrlpriv->lps_level);
+
 #ifdef CONFIG_LPS_LCLK
 	rtw_hal_set_hwreg(padapter, HW_VAR_SET_RPWM, (u8 *)(&pwrctrlpriv->rpwm));
 
@@ -2180,6 +2181,14 @@ void rtw_init_pwrctrl_priv(PADAPTER padapter)
 	rtw_init_timer(&pwrctrlpriv->pwr_rpwm_timer, padapter, pwr_rpwm_timeout_handler, padapter);
 #endif /* CONFIG_LPS_RPWM_TIMER */
 #endif /* CONFIG_LPS_LCLK */
+
+#ifdef CONFIG_LPS_PG
+	pwrctrlpriv->lpspg_info.name = "LPSPG_INFO";
+	#ifdef CONFIG_RTL8822C
+	pwrctrlpriv->lpspg_dpk_info.name = "LPSPG_DPK_INFO";
+	pwrctrlpriv->lpspg_iqk_info.name = "LPSPG_IQK_INFO";
+	#endif
+#endif
 
 	rtw_init_timer(&pwrctrlpriv->pwr_state_check_timer, padapter, pwr_state_check_handler, padapter);
 
@@ -2222,6 +2231,11 @@ void rtw_init_pwrctrl_priv(PADAPTER padapter)
 #endif /* CONFIG_GPIO_WAKEUP */
 
 #ifdef CONFIG_WOWLAN
+	pwrctrlpriv->wowlan_power_mgmt = padapter->registrypriv.wow_power_mgnt;
+	pwrctrlpriv->wowlan_lps_level = padapter->registrypriv.wow_lps_level;
+
+	RTW_INFO("%s: WOW_LPS_mode=%d, WOW_LPS_level=%d\n",
+		__func__, pwrctrlpriv->wowlan_power_mgmt, pwrctrlpriv->wowlan_lps_level);
 
 	if (registry_par->wakeup_event & BIT(1))
 		pwrctrlpriv->default_patterns_en = _TRUE;
@@ -2280,6 +2294,14 @@ void rtw_free_pwrctrl_priv(PADAPTER adapter)
 	_cancel_workitem_sync(&pwrctrlpriv->rpwmtimeoutwi);
 	#endif
 #endif /* CONFIG_LPS_LCLK */
+
+#ifdef CONFIG_LPS_PG
+	rsvd_page_cache_free(&pwrctrlpriv->lpspg_info);
+	#ifdef CONFIG_RTL8822C
+	rsvd_page_cache_free(&pwrctrlpriv->lpspg_dpk_info);
+	rsvd_page_cache_free(&pwrctrlpriv->lpspg_iqk_info);
+	#endif
+#endif
 
 #ifdef CONFIG_WOWLAN
 #ifdef CONFIG_PNO_SUPPORT
@@ -2654,13 +2676,46 @@ int rtw_pm_set_lps_level(_adapter *padapter, u8 level)
 	int	ret = 0;
 	struct pwrctrl_priv *pwrctrlpriv = adapter_to_pwrctl(padapter);
 
+	if (level < LPS_LEVEL_MAX) {
+		if (pwrctrlpriv->lps_level != level) {
+			#ifdef CONFIG_LPS
+			if (rtw_lps_ctrl_leave_set_level_cmd(padapter, level, RTW_CMDF_WAIT_ACK) != _SUCCESS)
+			#endif
+				pwrctrlpriv->lps_level = level;
+		}
+	} else
+		ret = -EINVAL;
+
+	return ret;
+}
+
+#ifdef CONFIG_WOWLAN
+int rtw_pm_set_wow_lps(_adapter *padapter, u8 mode)
+{
+	int	ret = 0;
+	struct pwrctrl_priv *pwrctrlpriv = adapter_to_pwrctl(padapter);
+
+	if (mode < PS_MODE_NUM) {
+		if (pwrctrlpriv->wowlan_power_mgmt != mode) 
+			pwrctrlpriv->wowlan_power_mgmt = mode;
+	} else
+		ret = -EINVAL;
+
+	return ret;
+}
+int rtw_pm_set_wow_lps_level(_adapter *padapter, u8 level)
+{
+	int	ret = 0;
+	struct pwrctrl_priv *pwrctrlpriv = adapter_to_pwrctl(padapter);
+
 	if (level < LPS_LEVEL_MAX)
-		pwrctrlpriv->lps_level = level;
+		pwrctrlpriv->wowlan_lps_level = level;
 	else
 		ret = -EINVAL;
 
 	return ret;
 }
+#endif /* CONFIG_WOWLAN */
 
 int rtw_pm_set_ips(_adapter *padapter, u8 mode)
 {

@@ -48,6 +48,9 @@
 #ifdef CONFIG_MULTIDRV
 #endif
 
+/*feature for all IC*/
+#define RTW_DYNAMIC_RRSR
+
 #ifdef CONFIG_RTL8188E
 	#undef RTL8188E_SUPPORT
 	#undef RATE_ADAPTIVE_SUPPORT
@@ -275,7 +278,7 @@
 #ifdef CONFIG_RTL8822C
 	#undef RTL8822C_SUPPORT
 	#define RTL8822C_SUPPORT				1
-
+	#define DBG_LA_MODE
 	#ifndef CONFIG_FW_C2H_PKT
 		#define CONFIG_FW_C2H_PKT
 	#endif /* CONFIG_FW_C2H_PKT */
@@ -317,6 +320,14 @@
 	#ifndef RTW_IQK_FW_OFFLOAD
 		/* #define RTW_IQK_FW_OFFLOAD */
 	#endif /* RTW_IQK_FW_OFFLOAD */
+
+	/* Checksum offload feature */
+	/* #define CONFIG_TX_CSUM_OFFLOAD */
+	#if defined(CONFIG_TX_CSUM_OFFLOAD) && !defined(CONFIG_RTW_NETIF_SG)
+		#define CONFIG_RTW_NETIF_SG
+	#endif
+	#define CONFIG_TCP_CSUM_OFFLOAD_RX
+
 	#define CONFIG_ADVANCE_OTA
 
 	#ifdef CONFIG_MCC_MODE
@@ -340,6 +351,11 @@
 	#define CONFIG_SUPPORT_FIFO_DUMP
 	#define CONFIG_HW_P0_TSF_SYNC
 	#define CONFIG_BCN_RECV_TIME
+
+	#ifdef CONFIG_P2P_PS
+		#define CONFIG_P2P_PS_NOA_USE_MACID_SLEEP
+	#endif
+	#define CONFIG_RTS_FULL_BW
 #endif /* CONFIG_RTL8822C */
 
 #ifdef CONFIG_RTL8821C

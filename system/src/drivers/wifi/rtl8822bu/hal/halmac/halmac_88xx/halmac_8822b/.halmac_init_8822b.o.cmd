@@ -1,12 +1,12 @@
-cmd_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_init_8822b.o := arm-linux-gnueabi-gcc -Wp,-MD,/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/.halmac_init_8822b.o.d  -nostdinc -isystem /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/bin/../lib/gcc/arm-linux-gnueabi/6.4.1/include -I./arch/arm/include -I./arch/arm/include/generated/uapi -I./arch/arm/include/generated  -I./include -I./arch/arm/include/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-rtd139x/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-PIE -fno-dwarf2-cfi-asm -fno-omit-frame-pointer -mapcs -mno-sched-prolog -fno-ipa-sra -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=7 -march=armv8-a -msoft-float -Uarm -fno-delete-null-pointer-checks -Wno-frame-address -O2 --param=allow-store-data-races=0 -DCC_HAVE_ASM_GOTO -Wframe-larger-than=1024 -fstack-protector-strong -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fno-merge-all-constants -fmerge-constants -fno-stack-check -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -Werror=incompatible-pointer-types -O1 -Wno-unused-variable -Wno-unused-value -Wno-unused-label -Wno-unused-parameter -Wno-unused-function -Wno-unused -Wno-date-time -I/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/include -I/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/platform -I/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/btc -DCONFIG_MP_INCLUDED -DCONFIG_POWER_SAVING -DCONFIG_BT_COEXIST -DCONFIG_EFUSE_CONFIG_FILE -DEFUSE_MAP_PATH=\"/system/etc/wifi/wifi_efuse_88x2bu.map\" -DWIFIMAC_PATH=\"/data/wifimac.txt\" -DCONFIG_LOAD_PHY_PARA_FROM_FILE -DREALTEK_CONFIG_PATH=\"/lib/firmware/\" -DCONFIG_TXPWR_BY_RATE_EN=1 -DCONFIG_TXPWR_LIMIT_EN=0 -DCONFIG_RTW_ADAPTIVITY_EN=0 -DCONFIG_RTW_ADAPTIVITY_MODE=0 -DCONFIG_BR_EXT '-DCONFIG_BR_EXT_BRNAME="'br0'"' -DCONFIG_RTW_NAPI -DCONFIG_RTW_GRO -DCONFIG_RTW_WIFI_HAL -DCONFIG_RTW_CFGVEDNOR_LLSTATS -DCONFIG_RTW_DEBUG -DRTW_LOG_LEVEL=4 -DDM_ODM_SUPPORT_TYPE=0x04 -DCONFIG_LITTLE_ENDIAN -DRTK_139X_PLATFORM -DCONFIG_TRAFFIC_PROTECT -DCONFIG_CONCURRENT_MODE -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT -DCONFIG_QOS_OPTIMIZATION -Wno-error=date-time -DCONFIG_RADIO_WORK -DCONFIG_USE_USB_BUFFER_ALLOC_TX -I/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/phydm -DCONFIG_RTL8822B   -DMODULE  -DKBUILD_BASENAME='"halmac_init_8822b"'  -DKBUILD_MODNAME='"8822bu"' -c -o /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/.tmp_halmac_init_8822b.o /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_init_8822b.c
+cmd_/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_init_8822b.o := ccache arm-linux-gnueabi-gcc -Wp,-MD,/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/.halmac_init_8822b.o.d  -nostdinc -isystem /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/bin/../lib/gcc/arm-linux-gnueabi/6.4.1/include -I./arch/arm/include -I./arch/arm/include/generated/uapi -I./arch/arm/include/generated  -I./include -I./arch/arm/include/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-rtd139x/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-PIE -fno-dwarf2-cfi-asm -fno-omit-frame-pointer -mapcs -mno-sched-prolog -fno-ipa-sra -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=7 -march=armv8-a -msoft-float -Uarm -fno-delete-null-pointer-checks -Wno-frame-address -O2 --param=allow-store-data-races=0 -DCC_HAVE_ASM_GOTO -Wframe-larger-than=1024 -fstack-protector-strong -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fno-merge-all-constants -fmerge-constants -fno-stack-check -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -Werror=incompatible-pointer-types -O1 -Wno-unused-variable -Wno-unused-value -Wno-unused-label -Wno-unused-parameter -Wno-unused-function -Wno-unused -Wno-date-time -I/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/include -I/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/platform -I/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/btc -DCONFIG_MP_INCLUDED -DCONFIG_POWER_SAVING -DCONFIG_BT_COEXIST -DCONFIG_EFUSE_CONFIG_FILE -DEFUSE_MAP_PATH=\"/system/etc/wifi/wifi_efuse_88x2bu.map\" -DWIFIMAC_PATH=\"/data/wifimac.txt\" -DCONFIG_LOAD_PHY_PARA_FROM_FILE -DREALTEK_CONFIG_PATH=\"/lib/firmware/\" -DCONFIG_TXPWR_BY_RATE_EN=1 -DCONFIG_TXPWR_LIMIT_EN=0 -DCONFIG_RTW_ADAPTIVITY_EN=0 -DCONFIG_RTW_ADAPTIVITY_MODE=0 -DHIGH_ACTIVE_HST2DEV=0 -DCONFIG_BR_EXT '-DCONFIG_BR_EXT_BRNAME="'br0'"' -DCONFIG_RTW_NAPI -DCONFIG_RTW_GRO -DCONFIG_RTW_NETIF_SG -DCONFIG_RTW_WIFI_HAL -DCONFIG_RTW_CFGVEDNOR_LLSTATS -DCONFIG_RTW_CFGVENDOR_RANDOM_MAC_OUI -DCONFIG_RTW_CFGVEDNOR_RSSIMONITOR -DCONFIG_RTW_CFGVENDOR_WIFI_LOGGER -DCONFIG_RTW_DEBUG -DRTW_LOG_LEVEL=4 -DDM_ODM_SUPPORT_TYPE=0x04 -DCONFIG_LITTLE_ENDIAN -DRTK_139X_PLATFORM -DCONFIG_TRAFFIC_PROTECT -DCONFIG_CONCURRENT_MODE -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT -DCONFIG_QOS_OPTIMIZATION -Wno-error=date-time -DCONFIG_RADIO_WORK -DCONFIG_USE_USB_BUFFER_ALLOC_TX -I/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/phydm -DCONFIG_RTL8822B   -DMODULE  -DKBUILD_BASENAME='"halmac_init_8822b"'  -DKBUILD_MODNAME='"8822bu"' -c -o /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/.tmp_halmac_init_8822b.o /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_init_8822b.c
 
-source_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_init_8822b.o := /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_init_8822b.c
+source_/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_init_8822b.o := /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_init_8822b.c
 
-deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_init_8822b.o := \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_init_8822b.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_api.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_2_platform.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/include/drv_conf.h \
+deps_/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_init_8822b.o := \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_init_8822b.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_api.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_2_platform.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/include/drv_conf.h \
     $(wildcard include/config/rssi/priority.h) \
     $(wildcard include/config/rtw/repeater/son.h) \
     $(wildcard include/config/ap.h) \
@@ -32,9 +32,16 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/usb/vendor/req/buffer/prealloc.h) \
     $(wildcard include/config/usb/vendor/req/mutex.h) \
     $(wildcard include/config/vendor/req/retry.h) \
-    $(wildcard include/config/ap/mode.h) \
+    $(wildcard include/config/dfs/slave/with/radar/detect.h) \
     $(wildcard include/config/dfs/master.h) \
+    $(wildcard include/config/ap/mode.h) \
+    $(wildcard include/config/wifi/monitor.h) \
+    $(wildcard include/config/monitor/mode/xmit.h) \
+    $(wildcard include/config/customer/alibaba/general.h) \
+    $(wildcard include/config/customer01/smart/antenna.h) \
+    $(wildcard include/config/beamforming.h) \
     $(wildcard include/config/rtw/mesh.h) \
+    $(wildcard include/config/rtw/mesh/acnode/prevent.h) \
     $(wildcard include/config/rtw/mesh/offch/cand.h) \
     $(wildcard include/config/rtw/mesh/peer/blacklist.h) \
     $(wildcard include/config/rtw/mesh/cto/mgate/blacklist.h) \
@@ -45,8 +52,6 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/rtw/hiq/filter.h) \
     $(wildcard include/config/rtw/adaptivity/en.h) \
     $(wildcard include/config/rtw/adaptivity/mode.h) \
-    $(wildcard include/config/rtw/adaptivity/dml.h) \
-    $(wildcard include/config/rtw/adaptivity/dc/backoff.h) \
     $(wildcard include/config/rtw/adaptivity/th/l2h/ini.h) \
     $(wildcard include/config/rtw/adaptivity/th/edcca/hl/diff.h) \
     $(wildcard include/config/rtw/excl/chs.h) \
@@ -61,6 +66,11 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/rtw/customize/beedca.h) \
     $(wildcard include/config/rtw/customize/bwmode.h) \
     $(wildcard include/config/rtw/customize/rlsta.h) \
+    $(wildcard include/config/rtl8192e.h) \
+    $(wildcard include/config/rtl8192f.h) \
+    $(wildcard include/config/rtl8822b.h) \
+    $(wildcard include/config/rtw/tx/2path/en.h) \
+    $(wildcard include/config/extend/lowrate/txop.h) \
     $(wildcard include/config/rtw/rx/ampdu/sz/limit/1ss.h) \
     $(wildcard include/config/rtw/rx/ampdu/sz/limit/2ss.h) \
     $(wildcard include/config/rtw/rx/ampdu/sz/limit/3ss.h) \
@@ -82,16 +92,22 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/mi/with/mbssid/cam.h) \
     $(wildcard include/config/mbssid/cam.h) \
     $(wildcard include/config/runtime/port/switch.h) \
+    $(wildcard include/config/support/multi/bcn.h) \
     $(wildcard include/config/swtimer/based/txbcn.h) \
-    $(wildcard include/config/fw/based/bcn.h) \
+    $(wildcard include/config/rtl8821c.h) \
+    $(wildcard include/config/rtl8822c.h) \
+    $(wildcard include/config/fw/handle/txbcn.h) \
+    $(wildcard include/config/limited/ap/num.h) \
+    $(wildcard include/config/client/port/cfg.h) \
+    $(wildcard include/config/new/netdev/hdl.h) \
     $(wildcard include/config/rtl8812a.h) \
     $(wildcard include/config/rtl8821a.h) \
     $(wildcard include/config/rtl8814a.h) \
     $(wildcard include/config/ieee80211/band/5ghz.h) \
     $(wildcard include/config/wowlan.h) \
-    $(wildcard include/config/rtl8822b.h) \
-    $(wildcard include/config/rtl8821c.h) \
     $(wildcard include/config/wow/pattern/hw/cam.h) \
+    $(wildcard include/config/tsf/update/pause/factor.h) \
+    $(wildcard include/config/tsf/update/restore/factor.h) \
     $(wildcard include/config/deauth/before/connect.h) \
     $(wildcard include/config/wext/dont/join/byssid.h) \
     $(wildcard include/config/doscan/in/busytraffic.h) \
@@ -106,14 +122,18 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/rtw/80211k.h) \
     $(wildcard include/config/error/reset.h) \
     $(wildcard include/config/ips.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/include/autoconf.h \
+    $(wildcard include/config/rtw/tpt/mode.h) \
+    $(wildcard include/config/pci/bcn/polling.h) \
+    $(wildcard include/config/bcn/icf.h) \
+    $(wildcard include/config/pci/msi.h) \
+    $(wildcard include/config/rtw/pci/msi/disable.h) \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/include/autoconf.h \
     $(wildcard include/config/single/img.h) \
     $(wildcard include/config/disable/odm.h) \
     $(wildcard include/config/usb/hci.h) \
     $(wildcard include/config/sg.h) \
     $(wildcard include/config/80211n/ht.h) \
     $(wildcard include/config/80211ac/vht.h) \
-    $(wildcard include/config/beamforming.h) \
     $(wildcard include/config/ioctl/cfg80211.h) \
     $(wildcard include/config/cfg80211/force/compatible/2/6/37/under.h) \
     $(wildcard include/config/debug/cfg80211.h) \
@@ -186,36 +206,43 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/mp/iwpriv/support.h) \
     $(wildcard include/config/platform/actions/atm702x.h) \
     $(wildcard include/config/tx/early/mode.h) \
-    $(wildcard include/config/attempt/to/fix/ap/beacon/error.h) \
     $(wildcard include/config/proc/debug.h) \
     $(wildcard include/config/error/detect.h) \
+    $(wildcard include/config/dis/uphy.h) \
     $(wildcard include/config/error/detect/int.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/include/hal_ic_cfg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/include/hal_ic_cfg.h \
     $(wildcard include/config/multidrv.h) \
     $(wildcard include/config/rtl8188e.h) \
     $(wildcard include/config/fw/c2h/pkt.h) \
-    $(wildcard include/config/rtl8192e.h) \
+    $(wildcard include/config/rts/full/bw.h) \
+    $(wildcard include/config/rtw/mac/hidden/rpt.h) \
+    $(wildcard include/config/ampdu/pretx/cd.h) \
+    $(wildcard include/config/p2p/ps/noa/use/macid/sleep.h) \
     $(wildcard include/config/rtl8723b.h) \
     $(wildcard include/config/rtl8723d.h) \
-    $(wildcard include/config/rtw/mac/hidden/rpt.h) \
     $(wildcard include/config/rtw/customer/str.h) \
+    $(wildcard include/config/fw/correct/bcn.h) \
     $(wildcard include/config/rtl8703b.h) \
     $(wildcard include/config/rtl8188f.h) \
+    $(wildcard include/config/rtl8188gtv.h) \
     $(wildcard include/config/dfs.h) \
     $(wildcard include/config/gtk/ol.h) \
     $(wildcard include/config/arp/keep/alive.h) \
     $(wildcard include/config/gpio/wakeup.h) \
     $(wildcard include/config/ap/port/swap.h) \
     $(wildcard include/config/fw/multi/port/support.h) \
+    $(wildcard include/config/tcp/csum/offload/tx.h) \
+    $(wildcard include/config/tcp/csum/offload/rx.h) \
     $(wildcard include/config/advance/ota.h) \
     $(wildcard include/config/mcc/mode/v2.h) \
     $(wildcard include/config/tdls/ch/sw/v2.h) \
-    $(wildcard include/config/dynamic/soml.h) \
+    $(wildcard include/config/support/fifo/dump.h) \
+    $(wildcard include/config/hw/p0/tsf/sync.h) \
+    $(wildcard include/config/bcn/recv/time.h) \
     $(wildcard include/config/no/fw.h) \
     $(wildcard include/config/phy/capability/query.h) \
-    $(wildcard include/config/support/fifo/dump.h) \
-    $(wildcard include/config/ampdu/pretx/cd.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/include/basic_types.h \
+    $(wildcard include/config/rtl8710b.h) \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/include/basic_types.h \
   include/generated/uapi/linux/version.h \
   include/linux/types.h \
     $(wildcard include/config/have/uid16.h) \
@@ -280,7 +307,7 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/mmu.h) \
     $(wildcard include/config/prove/locking.h) \
     $(wildcard include/config/panic/timeout.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/lib/gcc/arm-linux-gnueabi/6.4.1/include/stdarg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/lib/gcc/arm-linux-gnueabi/6.4.1/include/stdarg.h \
   include/linux/linkage.h \
   include/linux/stringify.h \
   include/linux/export.h \
@@ -650,6 +677,7 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/uevent/helper.h) \
     $(wildcard include/config/r8168.h) \
     $(wildcard include/config/r8169soc.h) \
+    $(wildcard include/config/rtd/1295/hwnat.h) \
     $(wildcard include/config/debug/kobject/release.h) \
   include/linux/sysfs.h \
   include/linux/kernfs.h \
@@ -859,16 +887,15 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
   include/linux/nsproxy.h \
   include/linux/ns_common.h \
   include/uapi/linux/utsname.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/include/osdep_service.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/include/osdep_service.h \
     $(wildcard include/config/use/vmalloc.h) \
     $(wildcard include/config/rtw/napi.h) \
     $(wildcard include/config/rtw/gro.h) \
     $(wildcard include/config/ap/wowlan.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/include/osdep_service_linux.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/include/osdep_service_linux.h \
     $(wildcard include/config/net/radio.h) \
     $(wildcard include/config/wireless/ext.h) \
     $(wildcard include/config/ieee80211/ht/addt/info.h) \
-    $(wildcard include/config/tcp/csum/offload/tx.h) \
     $(wildcard include/config/efuse/config/file.h) \
     $(wildcard include/config/bt/coexist/socket/trx.h) \
     $(wildcard include/config/usb/suspend.h) \
@@ -1284,6 +1311,7 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/persistent/keyrings.h) \
   include/uapi/linux/neighbour.h \
   include/linux/netlink.h \
+    $(wildcard include/config/rtl/819x.h) \
   include/net/scm.h \
     $(wildcard include/config/security/network.h) \
   include/linux/security.h \
@@ -1429,9 +1457,9 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/att/wakeup.h) \
     $(wildcard include/config/att/battery.h) \
   include/linux/pm_runtime.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/include/../os_dep/linux/rtw_rhashtable.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_type.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_hw_cfg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/include/../os_dep/linux/rtw_rhashtable.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_type.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_hw_cfg.h \
     $(wildcard include/config/rtl8723a.h) \
     $(wildcard include/config/rtl8881a.h) \
     $(wildcard include/config/rtl8821b.h) \
@@ -1441,49 +1469,49 @@ deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_
     $(wildcard include/config/rtl8196f.h) \
     $(wildcard include/config/rtl8197f.h) \
     $(wildcard include/config/rtl8198f.h) \
+    $(wildcard include/config/rtl8197g.h) \
+    $(wildcard include/config/rtl8812f.h) \
     $(wildcard include/config/rtl8814b.h) \
-    $(wildcard include/config/rtl8822c.h) \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_fw_info.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_intf_phy_cmd.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_state_machine.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_usb_reg.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_sdio_reg.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_pcie_reg.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_bit2.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_reg2.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_reg_8822b.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_bit_8822b.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_tx_desc_nic.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_tx_desc_buffer_nic.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_tx_desc_ie_nic.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_rx_desc_nic.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_tx_bd_nic.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_rx_bd_nic.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_fw_offload_c2h_nic.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_fw_offload_h2c_nic.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_h2c_extra_info_nic.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_original_c2h_nic.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_original_h2c_nic.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_tx_desc_chip.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_rx_desc_chip.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_tx_desc_buffer_chip.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_tx_desc_ie_chip.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_8822b_cfg.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_hw_cfg.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../halmac_88xx_cfg.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_api.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_pcie_8822b.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_sdio_8822b.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_usb_8822b.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_gpio_8822b.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_gpio_cmd.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_common_8822b.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_cfg_wmac_8822b.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../halmac_common_88xx.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_pwr_seq_cmd.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_gpio_cmd.h \
-  /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../halmac_init_88xx.h \
+    $(wildcard include/config/pci/hci.h) \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_fw_info.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_intf_phy_cmd.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_state_machine.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_usb_reg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_sdio_reg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_pcie_reg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_bit2.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_reg2.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_reg_8822b.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_bit_8822b.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_tx_desc_nic.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_tx_desc_buffer_nic.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_tx_desc_ie_nic.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_rx_desc_nic.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_tx_bd_nic.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_rx_bd_nic.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_fw_offload_c2h_nic.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_fw_offload_h2c_nic.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_h2c_extra_info_nic.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_original_c2h_nic.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_original_h2c_nic.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_tx_desc_chip.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_rx_desc_chip.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_tx_desc_buffer_chip.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_tx_desc_ie_chip.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_8822b_cfg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_hw_cfg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../halmac_88xx_cfg.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_api.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_usb_8822b.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_gpio_8822b.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_gpio_cmd.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_common_8822b.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_cfg_wmac_8822b.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../halmac_common_88xx.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_pwr_seq_cmd.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../../halmac_gpio_cmd.h \
+  /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/../halmac_init_88xx.h \
 
-/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_init_8822b.o: $(deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_init_8822b.o)
+/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_init_8822b.o: $(deps_/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_init_8822b.o)
 
-$(deps_/home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_init_8822b.o):
+$(deps_/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/wifi/rtl8822bu/hal/halmac/halmac_88xx/halmac_8822b/halmac_init_8822b.o):

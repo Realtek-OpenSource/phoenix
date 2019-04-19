@@ -23,7 +23,7 @@
  *
  *****************************************************************************/
 
-/*Image2HeaderVersion: R3 1.4.3*/
+/*Image2HeaderVersion: R3 1.4.5*/
 #include "mp_precomp.h"
 #include "../phydm_precomp.h"
 
@@ -311,7 +311,7 @@ odm_read_and_config_mp_8822b_mac_reg(struct dm_struct *dm)
 u32
 odm_get_version_mp_8822b_mac_reg(void)
 {
-		return 107;
+		return 112;
 }
 
 #endif /* end of HWIMG_SUPPORT*/

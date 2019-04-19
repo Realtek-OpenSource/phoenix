@@ -1,0 +1,5 @@
+0xb9ac0503	mali_set_user_setting	/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/gpu/driver/src/devicedrv/mali/mali	EXPORT_SYMBOL
+0x2a7049ed	mali_perf_set_num_pp_cores	/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/gpu/driver/src/devicedrv/mali/mali	EXPORT_SYMBOL
+0x0d8ccbae	mali_dev_resume	/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/gpu/driver/src/devicedrv/mali/mali	EXPORT_SYMBOL
+0x7c2fb465	mali_dev_pause	/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/gpu/driver/src/devicedrv/mali/mali	EXPORT_SYMBOL
+0xf8224b12	mali_get_user_setting	/home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/gpu/driver/src/devicedrv/mali/mali	EXPORT_SYMBOL

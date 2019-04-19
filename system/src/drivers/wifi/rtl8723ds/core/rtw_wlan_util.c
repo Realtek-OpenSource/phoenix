@@ -26,6 +26,10 @@
 	#define IPv6_PROTOCOL_OFFSET	20
 #endif
 
+#if defined(RTK_139X_PLATFORM) && defined(CONFIG_RTK_SDIO_CLK_ADJUST)
+	#include <../drivers/mmc/host/sdhci-rtk.h>
+#endif /*DHCWIFI-42, HW2-381*/
+
 unsigned char ARTHEROS_OUI1[] = {0x00, 0x03, 0x7f};
 unsigned char ARTHEROS_OUI2[] = {0x00, 0x13, 0x74};
 
@@ -594,6 +598,15 @@ void set_channel_bwmode(_adapter *padapter, unsigned char channel, unsigned char
 	if (padapter->bNotifyChannelChange)
 		RTW_INFO("[%s] ch = %d, offset = %d, bwmode = %d\n", __FUNCTION__, channel, channel_offset, bwmode);
 
+#if defined(RTK_139X_PLATFORM) && defined(CONFIG_RTK_SDIO_CLK_ADJUST)
+	if (!check_fwstate(&padapter->mlmepriv, _FW_UNDER_SURVEY)){
+		if (check_fwstate(&padapter->mlmepriv, _FW_LINKED)){
+			RTW_INFO("SDIO bus calibration for channel %u.\n",channel);
+			rtk_adjust_clock_for_wifi(channel, channel_offset, 0);
+		}
+	}
+#endif /*DHCWIFI-42, HW2-381*/
+	
 	center_ch = rtw_get_center_ch(channel, bwmode, channel_offset);
 
 	if (bwmode == CHANNEL_WIDTH_80) {

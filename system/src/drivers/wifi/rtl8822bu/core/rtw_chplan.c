@@ -16,8 +16,8 @@
 
 #include <drv_types.h>
 
-#define RTW_DOMAIN_MAP_VER	"34e"
-#define RTW_COUNTRY_MAP_VER	"17"
+#define RTW_DOMAIN_MAP_VER	"35e"
+#define RTW_COUNTRY_MAP_VER	"18"
 
 #ifdef LEGACY_CHANNEL_PLAN_REF
 /********************************************************
@@ -60,6 +60,7 @@ enum rtw_rd_2g {
 	RTW_RD_2G_FCC2 = 8,		/* US */
 	RTW_RD_2G_IC1 = 9,		/* Canada */
 	RTW_RD_2G_WORLD1 = 10,	/* Worldwide 11 */
+	RTW_RD_2G_KCC1 = 11,	/* Korea */
 
 	RTW_RD_2G_MAX,
 };
@@ -122,6 +123,7 @@ enum rtw_rd_5g {
 	RTW_RD_5G_ACMA1 = 54,	/* Australia, New Zealand (w/o Weather radar) (w/o Ch120~Ch128) */
 	RTW_RD_5G_WORLD1 = 55,	/* 5G Worldwide Band1&2 */
 	RTW_RD_5G_CHILE2 = 56,	/* Chile (Band2,Band3) */
+	RTW_RD_5G_KCC2 = 57,	/* Korea (New standard) */
 
 	/* === Below are driver defined for legacy channel plan compatible, DON'T assign index ==== */
 	RTW_RD_5G_OLD_FCC1,
@@ -167,6 +169,7 @@ static struct ch_list_t RTW_ChannelPlan2G[] = {
 	/* 8, RTW_RD_2G_FCC2 */		CH_LIST_ENT(13, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13),
 	/* 9, RTW_RD_2G_IC1 */		CH_LIST_ENT(13, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13),
 	/* 10, RTW_RD_2G_WORLD1 */	CH_LIST_ENT(11, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11),
+	/* 11, RTW_RD_2G_KCC1 */	CH_LIST_ENT(13, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13),
 };
 
 #ifdef CONFIG_IEEE80211_BAND_5GHZ
@@ -228,6 +231,7 @@ static struct ch_list_t RTW_ChannelPlan5G[] = {
 	/* 54, RTW_RD_5G_ACMA1 */	CH_LIST_ENT(21, 36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 132, 136, 140, 149, 153, 157, 161, 165),
 	/* 55, RTW_RD_5G_WORLD1 */	CH_LIST_ENT(8, 36, 40, 44, 48, 52, 56, 60, 64),
 	/* 56, RTW_RD_5G_CHILE2 */	CH_LIST_ENT(16, 52, 56, 60, 64, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144),
+	/* 57, RTW_RD_5G_KCC2 */	CH_LIST_ENT(24, 36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 149, 153, 157, 161, 165),
 
 	/* === Below are driver defined for legacy channel plan compatible, NO static index assigned ==== */
 	/* RTW_RD_5G_OLD_FCC1 */	CH_LIST_ENT(20, 36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 136, 140, 149, 153, 157, 161, 165),
@@ -302,7 +306,7 @@ static struct chplan_ent_t RTW_ChannelPlanMap[RTW_CHPLAN_MAX] = {
 	CHPLAN_ENT(RTW_RD_2G_ETSI1,		RTW_RD_5G_ACMA1,	TXPWR_LMT_ACMA),	/* 0x3B, RTW_CHPLAN_ETSI1_ACMA1 */
 	CHPLAN_ENT(RTW_RD_2G_ETSI1,		RTW_RD_5G_ETSI6,	TXPWR_LMT_ETSI),	/* 0x3C, RTW_CHPLAN_ETSI1_ETSI6 */
 	CHPLAN_ENT(RTW_RD_2G_ETSI1,		RTW_RD_5G_ETSI12,	TXPWR_LMT_ETSI),	/* 0x3D, RTW_CHPLAN_ETSI1_ETSI12 */
-	CHPLAN_ENT(RTW_RD_2G_NULL,		RTW_RD_5G_NULL,		TXPWR_LMT_WW),		/* 0x3E, */
+	CHPLAN_ENT(RTW_RD_2G_KCC1,		RTW_RD_5G_KCC2,		TXPWR_LMT_KCC),		/* 0x3E, RTW_CHPLAN_KCC1_KCC2 */
 	CHPLAN_ENT(RTW_RD_2G_NULL,		RTW_RD_5G_NULL,		TXPWR_LMT_WW),		/* 0x3F, */
 	CHPLAN_ENT(RTW_RD_2G_FCC1,		RTW_RD_5G_NCC2,		TXPWR_LMT_FCC),		/* 0x40, RTW_CHPLAN_FCC1_NCC2 */
 	CHPLAN_ENT(RTW_RD_2G_GLOBAL,	RTW_RD_5G_NULL,		TXPWR_LMT_WW),		/* 0x41, RTW_CHPLAN_GLOBAL_NULL */
@@ -602,6 +606,7 @@ static const struct country_chplan RTL8821AE_HMC_M2_country_chplan_exc_map[] = {
 	COUNTRY_CHPLAN_ENT("DO", 0x34, 1, 0), /* Dominican Republic */
 	COUNTRY_CHPLAN_ENT("EC", 0x34, 1, 0), /* Ecuador */
 	COUNTRY_CHPLAN_ENT("GT", 0x34, 1, 0), /* Guatemala */
+	COUNTRY_CHPLAN_ENT("KR", 0x28, 1, 0), /* South Korea */
 	COUNTRY_CHPLAN_ENT("MX", 0x34, 1, 0), /* Mexico */
 	COUNTRY_CHPLAN_ENT("MY", 0x47, 1, 0), /* Malaysia */
 	COUNTRY_CHPLAN_ENT("NI", 0x34, 1, 0), /* Nicaragua */
@@ -618,6 +623,7 @@ static const struct country_chplan RTL8821AE_HMC_M2_country_chplan_exc_map[] = {
 #if (RTW_DEF_MODULE_REGULATORY_CERT & RTW_MODULE_RTL8821AU) /* 2014 certify */
 static const struct country_chplan RTL8821AU_country_chplan_exc_map[] = {
 	COUNTRY_CHPLAN_ENT("CA", 0x34, 1, 0), /* Canada */
+	COUNTRY_CHPLAN_ENT("KR", 0x28, 1, 0), /* South Korea */
 	COUNTRY_CHPLAN_ENT("RU", 0x59, 0, 0), /* Russia(fac/gost), Kaliningrad */
 	COUNTRY_CHPLAN_ENT("TW", 0x39, 1, 0), /* Taiwan */
 	COUNTRY_CHPLAN_ENT("UA", 0x36, 0, 0), /* Ukraine */
@@ -635,6 +641,7 @@ static const struct country_chplan RTL8812AENF_NGFF_country_chplan_exc_map[] = {
 #if (RTW_DEF_MODULE_REGULATORY_CERT & RTW_MODULE_RTL8812AEBT_HMC) /* 2013 certify */
 static const struct country_chplan RTL8812AEBT_HMC_country_chplan_exc_map[] = {
 	COUNTRY_CHPLAN_ENT("CA", 0x34, 1, 0), /* Canada */
+	COUNTRY_CHPLAN_ENT("KR", 0x28, 1, 0), /* South Korea */
 	COUNTRY_CHPLAN_ENT("RU", 0x59, 0, 0), /* Russia(fac/gost), Kaliningrad */
 	COUNTRY_CHPLAN_ENT("TW", 0x39, 1, 0), /* Taiwan */
 	COUNTRY_CHPLAN_ENT("UA", 0x36, 0, 0), /* Ukraine */
@@ -653,6 +660,7 @@ static const struct country_chplan RTL8188EE_HMC_M2_country_chplan_exc_map[] = {
 	COUNTRY_CHPLAN_ENT("EC", 0x34, 1, 0), /* Ecuador */
 	COUNTRY_CHPLAN_ENT("GT", 0x34, 1, 0), /* Guatemala */
 	COUNTRY_CHPLAN_ENT("HT", 0x34, 1, 0), /* Haiti */
+	COUNTRY_CHPLAN_ENT("KR", 0x28, 1, 0), /* South Korea */
 	COUNTRY_CHPLAN_ENT("MX", 0x34, 1, 0), /* Mexico */
 	COUNTRY_CHPLAN_ENT("NI", 0x34, 1, 0), /* Nicaragua */
 	COUNTRY_CHPLAN_ENT("PA", 0x34, 1, 0), /* Panama */
@@ -676,6 +684,7 @@ static const struct country_chplan RTL8723BE_HMC_M2_country_chplan_exc_map[] = {
 	COUNTRY_CHPLAN_ENT("DO", 0x34, 1, 0), /* Dominican Republic */
 	COUNTRY_CHPLAN_ENT("EC", 0x34, 1, 0), /* Ecuador */
 	COUNTRY_CHPLAN_ENT("GT", 0x34, 1, 0), /* Guatemala */
+	COUNTRY_CHPLAN_ENT("KR", 0x28, 1, 0), /* South Korea */
 	COUNTRY_CHPLAN_ENT("MX", 0x34, 1, 0), /* Mexico */
 	COUNTRY_CHPLAN_ENT("NI", 0x34, 1, 0), /* Nicaragua */
 	COUNTRY_CHPLAN_ENT("PA", 0x34, 1, 0), /* Panama */
@@ -697,6 +706,7 @@ static const struct country_chplan RTL8723BS_NGFF1216_country_chplan_exc_map[] =
 	COUNTRY_CHPLAN_ENT("EC", 0x34, 1, 0), /* Ecuador */
 	COUNTRY_CHPLAN_ENT("GT", 0x34, 1, 0), /* Guatemala */
 	COUNTRY_CHPLAN_ENT("HT", 0x34, 1, 0), /* Haiti */
+	COUNTRY_CHPLAN_ENT("KR", 0x28, 1, 0), /* South Korea */
 	COUNTRY_CHPLAN_ENT("MX", 0x34, 1, 0), /* Mexico */
 	COUNTRY_CHPLAN_ENT("NI", 0x34, 1, 0), /* Nicaragua */
 	COUNTRY_CHPLAN_ENT("PA", 0x34, 1, 0), /* Panama */
@@ -717,6 +727,7 @@ static const struct country_chplan RTL8192EEBT_HMC_M2_country_chplan_exc_map[] =
 	COUNTRY_CHPLAN_ENT("DO", 0x34, 1, 0), /* Dominican Republic */
 	COUNTRY_CHPLAN_ENT("EC", 0x34, 1, 0), /* Ecuador */
 	COUNTRY_CHPLAN_ENT("GT", 0x34, 1, 0), /* Guatemala */
+	COUNTRY_CHPLAN_ENT("KR", 0x28, 1, 0), /* South Korea */
 	COUNTRY_CHPLAN_ENT("MX", 0x34, 1, 0), /* Mexico */
 	COUNTRY_CHPLAN_ENT("NI", 0x34, 1, 0), /* Nicaragua */
 	COUNTRY_CHPLAN_ENT("PA", 0x34, 1, 0), /* Panama */
@@ -733,17 +744,20 @@ static const struct country_chplan RTL8192EEBT_HMC_M2_country_chplan_exc_map[] =
 #if (RTW_DEF_MODULE_REGULATORY_CERT & RTW_MODULE_RTL8723DE_NGFF1630) /* 2016 certify */
 static const struct country_chplan RTL8723DE_NGFF1630_country_chplan_exc_map[] = {
 	COUNTRY_CHPLAN_ENT("CA", 0x2A, 1, 0), /* Canada */
+	COUNTRY_CHPLAN_ENT("KR", 0x28, 1, 0), /* South Korea */
 	COUNTRY_CHPLAN_ENT("MX", 0x34, 1, 0), /* Mexico */
 };
 #endif
 
 #if (RTW_DEF_MODULE_REGULATORY_CERT & RTW_MODULE_RTL8822BE) /* 2016 certify */
 static const struct country_chplan RTL8822BE_country_chplan_exc_map[] = {
+	COUNTRY_CHPLAN_ENT("KR", 0x28, 1, 0), /* South Korea */
 };
 #endif
 
 #if (RTW_DEF_MODULE_REGULATORY_CERT & RTW_MODULE_RTL8821CE) /* 2016 certify */
 static const struct country_chplan RTL8821CE_country_chplan_exc_map[] = {
+	COUNTRY_CHPLAN_ENT("KR", 0x28, 1, 0), /* South Korea */
 };
 #endif
 
@@ -923,7 +937,7 @@ static const struct country_chplan country_chplan_map[] = {
 	COUNTRY_CHPLAN_ENT("KH", 0x26, 1, 0x7F1), /* Cambodia */
 	COUNTRY_CHPLAN_ENT("KI", 0x26, 1, 0x000), /* Kiribati */
 	COUNTRY_CHPLAN_ENT("KN", 0x76, 1, 0x000), /* Saint Kitts and Nevis */
-	COUNTRY_CHPLAN_ENT("KR", 0x28, 1, 0x7FB), /* South Korea */
+	COUNTRY_CHPLAN_ENT("KR", 0x3E, 1, 0x7FB), /* South Korea */
 	COUNTRY_CHPLAN_ENT("KW", 0x47, 1, 0x7FB), /* Kuwait */
 	COUNTRY_CHPLAN_ENT("KY", 0x76, 1, 0x000), /* Cayman Islands (UK) */
 	COUNTRY_CHPLAN_ENT("KZ", 0x26, 1, 0x700), /* Kazakhstan */

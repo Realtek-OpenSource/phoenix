@@ -674,7 +674,13 @@ int rtw_mp_ant_tx(struct net_device *dev,
 
 	/*RTW_INFO("%s:mppriv.antenna_rx=%d\n", __func__, padapter->mppriv.antenna_tx);*/
 	pHalData->antenna_tx_path = antenna;
-
+	if (IS_HARDWARE_TYPE_8822C(padapter) && padapter->mppriv.antenna_tx == ANTENNA_B) {
+		if (padapter->mppriv.antenna_rx == ANTENNA_A || padapter->mppriv.antenna_rx == ANTENNA_B) {
+			padapter->mppriv.antenna_rx = ANTENNA_AB;
+			pHalData->AntennaRxPath = ANTENNA_AB;
+			RTW_INFO("%s:8822C Tx-B Rx Ant to AB\n", __func__);
+		}
+	}
 	SetAntenna(padapter);
 
 	wrqu->length = strlen(extra);
@@ -837,6 +843,14 @@ int rtw_mp_ctx(struct net_device *dev,
 	} else {
 		bStartTest = 1;
 		odm_write_dig(&pHalData->odmpriv, 0x7f);
+		if (IS_HARDWARE_TYPE_8822C(padapter) && pmp_priv->antenna_tx == ANTENNA_B) {
+			if (pmp_priv->antenna_rx == ANTENNA_A || pmp_priv->antenna_rx == ANTENNA_B) {
+				pmp_priv->antenna_rx = ANTENNA_AB;
+				pHalData->AntennaRxPath = ANTENNA_AB;
+				RTW_INFO("%s:8822C Tx-B Rx Ant to AB\n", __func__);
+				SetAntenna(padapter);
+			}
+		}
 		if (pmp_priv->mode != MP_ON) {
 			if (pmp_priv->tx.stop != 1) {
 				RTW_INFO("%s:Error MP_MODE %d != ON\n", __func__, pmp_priv->mode);
@@ -1316,27 +1330,52 @@ int rtw_mp_phypara(struct net_device *dev,
 	PADAPTER padapter = rtw_netdev_priv(dev);
 	HAL_DATA_TYPE	*pHalData	= GET_HAL_DATA(padapter);
 	char	input[wrqu->length];
-	u32		valxcap, ret;
+	u32		invalxcap = 0, ret = 0, bwrite_xcap = 0, hwxtaladdr = 0;
+	u16		pgval;
+
 
 	if (copy_from_user(input, wrqu->pointer, wrqu->length))
 		return -EFAULT;
 
-	RTW_INFO("%s:iwpriv in=%s\n", __func__, input);
+	RTW_INFO("%s:priv in=%s\n", __func__, input);
+	bwrite_xcap = (strncmp(input, "write_xcap=", 11) == 0) ? 1 : 0;
 
-	ret = sscanf(input, "xcap=%d", &valxcap);
+	if (bwrite_xcap == 1) {
+		ret = sscanf(input, "write_xcap=%d", &invalxcap);
+		invalxcap = invalxcap & 0x7f; /* xtal bit 0 ~6 */
+		RTW_INFO("get crystal_cap %d\n", invalxcap);
 
-	pHalData->crystal_cap = (u8)valxcap;
+		if (IS_HARDWARE_TYPE_8822C(padapter) && ret == 1) {
+			hwxtaladdr = 0x110;
+			pgval = invalxcap | 0x80; /* reserved default bit7 on */
+			pgval = pgval | pgval << 8; /* xtal xi/xo efuse 0x110 0x111 */
 
-	if (rtw_phydm_set_crystal_cap(padapter, pHalData->crystal_cap) == _FALSE) {
-		RTW_ERR("set crystal_cap failed\n");
-		rtw_warn_on(1);
+			RTW_INFO("Get crystal_cap 0x%x\n", pgval);
+			if (rtw_efuse_map_write(padapter, hwxtaladdr, 2, (u8*)&pgval) == _FAIL) {
+					RTW_INFO("%s: rtw_efuse_map_write xcap error!!\n", __func__);
+					sprintf(extra, "write xcap pgdata fail");
+					ret = -EFAULT;
+			} else
+					sprintf(extra, "write xcap pgdata ok");
+
+		}
+	} else {
+		ret = sscanf(input, "xcap=%d", &invalxcap);
+
+		if (ret == 1) {
+			pHalData->crystal_cap = (u8)invalxcap;
+			RTW_INFO("%s:crystal_cap=%d\n", __func__, pHalData->crystal_cap);
+
+			if (rtw_phydm_set_crystal_cap(padapter, pHalData->crystal_cap) == _FALSE) {
+				RTW_ERR("set crystal_cap failed\n");
+				rtw_warn_on(1);
+			}
+			sprintf(extra, "Set xcap=%d", invalxcap);
+		}
 	}
 
-	sprintf(extra, "Set xcap=%d", valxcap);
 	wrqu->length = strlen(extra) + 1;
-
-	return 0;
-
+	return ret;
 }
 
 
@@ -2178,14 +2217,13 @@ int rtw_mp_hwtx(struct net_device *dev,
 	PMPT_CONTEXT		pMptCtx = &(padapter->mppriv.mpt_ctx);
 
 #if defined(CONFIG_RTL8814A) || defined(CONFIG_RTL8821B) || defined(CONFIG_RTL8822B) || defined(CONFIG_RTL8821C) || defined(CONFIG_RTL8822C)
-	u8		input[wrqu->data.length];
-
-	if (copy_from_user(input, wrqu->data.pointer, wrqu->data.length))
+	if (copy_from_user(extra, wrqu->data.pointer, wrqu->data.length))
 		return -EFAULT;
+	*(extra + wrqu->data.length) = '\0';
 
 	_rtw_memset(&pMptCtx->PMacTxInfo, 0, sizeof(RT_PMAC_TX_INFO));
-	_rtw_memcpy((void *)&pMptCtx->PMacTxInfo, (void *)input, sizeof(RT_PMAC_TX_INFO));
-	_rtw_memset(wrqu->data.pointer, 0, wrqu->data.length);
+	_rtw_memcpy((void *)&pMptCtx->PMacTxInfo, (void *)extra, sizeof(RT_PMAC_TX_INFO));
+	_rtw_memset(extra, 0, wrqu->data.length);
 
 	if (pMptCtx->PMacTxInfo.bEnPMacTx == 1 && pmp_priv->mode != MP_ON) {
 		sprintf(extra, "MP Tx Running, Please Set PMac Tx Mode Stop\n");
@@ -2213,7 +2251,7 @@ int rtw_mp_pwrlmt(struct net_device *dev,
 		return -EFAULT;
 
 	*(extra + wrqu->data.length) = '\0';
-#ifdef CONFIG_TXPWR_LIMIT
+#if CONFIG_TXPWR_LIMIT
 	pwrlimtstat = registry_par->RegEnableTxPowerLimit;
 	if (strncmp(extra, "off", 3) == 0 && strlen(extra) < 4) {
 		padapter->registrypriv.RegEnableTxPowerLimit = 0;

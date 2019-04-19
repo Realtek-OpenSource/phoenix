@@ -1315,75 +1315,6 @@ static void hw_var_set_opmode(PADAPTER adapter, u8 mode)
 #endif
 }
 
-static void hw_var_set_basic_rate(PADAPTER adapter, u8 *ratetbl)
-{
-#define RATE_1M		BIT(0)
-#define RATE_2M		BIT(1)
-#define RATE_5_5M	BIT(2)
-#define RATE_11M	BIT(3)
-#define RATE_6M		BIT(4)
-#define RATE_9M		BIT(5)
-#define RATE_12M	BIT(6)
-#define RATE_18M	BIT(7)
-#define RATE_24M	BIT(8)
-#define RATE_36M	BIT(9)
-#define RATE_48M	BIT(10)
-#define RATE_54M	BIT(11)
-#define RATE_MCS0	BIT(12)
-#define RATE_MCS1	BIT(13)
-#define RATE_MCS2	BIT(14)
-#define RATE_MCS3	BIT(15)
-#define RATE_MCS4	BIT(16)
-#define RATE_MCS5	BIT(17)
-#define RATE_MCS6	BIT(18)
-#define RATE_MCS7	BIT(19)
-
-#define RATES_CCK	(RATE_11M | RATE_5_5M | RATE_2M | RATE_1M)
-#define RATES_OFDM	(RATE_54M | RATE_48M | RATE_36M | RATE_24M | RATE_18M | RATE_12M | RATE_9M | RATE_6M)
-
-	struct mlme_ext_info *mlmext_info = &adapter->mlmeextpriv.mlmext_info;
-	PHAL_DATA_TYPE hal = GET_HAL_DATA(adapter);
-	u16 input_b = 0, masked = 0, ioted = 0, BrateCfg = 0;
-	u16 rrsr_2g_force_mask = RATES_CCK;
-	u16 rrsr_2g_allow_mask = RATE_24M | RATE_12M | RATE_6M | RATES_CCK;
-	u16 rrsr_5g_force_mask = RATE_6M;
-	u16 rrsr_5g_allow_mask = RATES_OFDM;
-	u32 val32;
-
-	HalSetBrateCfg(adapter, ratetbl, &BrateCfg);
-	input_b = BrateCfg;
-
-	/* apply force and allow mask */
-	if (hal->current_band_type == BAND_ON_2_4G) {
-		BrateCfg |= rrsr_2g_force_mask;
-		BrateCfg &= rrsr_2g_allow_mask;
-	} else {
-		BrateCfg |= rrsr_5g_force_mask;
-		BrateCfg &= rrsr_5g_allow_mask;
-	}
-
-	masked = BrateCfg;
-
-	/* IOT consideration */
-	if (mlmext_info->assoc_AP_vendor == HT_IOT_PEER_CISCO) {
-		/* if peer is cisco and didn't use ofdm rate, we enable 6M ack */
-		if ((BrateCfg & (RATE_24M | RATE_12M | RATE_6M)) == 0)
-			BrateCfg |= RATE_6M;
-	}
-
-	ioted = BrateCfg;
-
-	hal->BasicRateSet = BrateCfg;
-
-	RTW_INFO("[HW_VAR_BASIC_RATE] %#x->%#x->%#x\n", input_b, masked, ioted);
-
-	/* Set RRSR rate table. */
-	val32 = rtw_read32(adapter, REG_RRSR_8822C);
-	val32 &= ~(BIT_MASK_RRSC_BITMAP << BIT_SHIFT_RRSC_BITMAP);
-	val32 |= BIT_RRSC_BITMAP(BrateCfg);
-	val32 = rtw_write32(adapter, REG_RRSR_8822C, val32);
-}
-
 static void hw_var_hw_port_cfg(_adapter *adapter, u8 enable)
 {
 	if (enable)
@@ -1550,9 +1481,6 @@ static void hw_var_set_mlme_sitesurvey(PADAPTER adapter, u8 enable)
 
 		rtw_hal_rcr_set_chk_bssid(adapter, MLME_SCAN_ENTER);
 
-		/* Save orignal RRSR setting. */
-		hal->RegRRSR = rtw_read16(adapter, REG_RRSR_8822C);
-
 		if (rtw_mi_get_ap_num(adapter) || rtw_mi_get_mesh_num(adapter))
 			StopTxBeacon(adapter);
 	} else {
@@ -1566,9 +1494,6 @@ static void hw_var_set_mlme_sitesurvey(PADAPTER adapter, u8 enable)
 			rtw_write16(adapter, REG_RXFLTMAP2_8822C, 0xFFFF);
 
 		rtw_hal_rcr_set_chk_bssid(adapter, MLME_SCAN_DONE);
-
-		/* Restore orignal RRSR setting. */
-		rtw_write16(adapter, REG_RRSR_8822C, hal->RegRRSR);
 
 		if (rtw_mi_get_ap_num(adapter) || rtw_mi_get_mesh_num(adapter)) {
 			ResumeTxBeacon(adapter);
@@ -2033,7 +1958,7 @@ u8 rtl8822c_sethwreg(PADAPTER adapter, u8 variable, u8 *val)
 		break;
 */
 	case HW_VAR_BASIC_RATE:
-		hw_var_set_basic_rate(adapter, val);
+		rtw_var_set_basic_rate(adapter, val);
 		break;
 
 	case HW_VAR_TXPAUSE:
@@ -3653,7 +3578,7 @@ static void fill_default_txdesc(struct xmit_frame *pxmitframe, u8 *pbuf)
 		SET_TX_DESC_OFFSET_8822C(pbuf, offset);
 #ifdef CONFIG_TX_CSUM_OFFLOAD
 	if (pattrib->hw_csum == 1) {
-		int offset = 48 + pkt_offset*8 + 8;
+		int offset = 48 + pkt_offset*8 + 24;
 
 		SET_TX_DESC_OFFSET_8822C(pbuf, offset);
 		SET_TX_DESC_CHK_EN_8822C(pbuf, 1);
@@ -3883,6 +3808,12 @@ void rtl8822c_rxdesc2attribute(struct rx_pkt_attrib *a, u8 *desc)
 		a->data_rate = (u8)GET_RX_DESC_RX_RATE_8822C(desc);
 		a->ppdu_cnt = (u8)GET_RX_DESC_PPDU_CNT_8822C(desc);
 		a->free_cnt = (u32)GET_RX_DESC_TSFL_8822C(desc);
+
+#ifdef CONFIG_TCP_CSUM_OFFLOAD_RX
+		/* RX TCP checksum offload related variables */
+		a->csum_valid = (u8)GET_RX_DESC_CHK_VLD_8822C(desc);
+		a->csum_err = (u8)GET_RX_DESC_CHKERR_8822C(desc);
+#endif /* CONFIG_TCP_CSUM_OFFLOAD_RX */
 	}
 }
 

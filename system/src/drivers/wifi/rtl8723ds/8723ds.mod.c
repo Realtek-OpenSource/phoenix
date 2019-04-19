@@ -194,6 +194,7 @@ __attribute__((section("__versions"))) = {
 	{ 0x597492c5, __VMLINUX_SYMBOL_STR(netif_wake_subqueue) },
 	{ 0xb1ad28e0, __VMLINUX_SYMBOL_STR(__gnu_mcount_nc) },
 	{ 0xa85d7913, __VMLINUX_SYMBOL_STR(param_ops_int) },
+	{ 0xcf19b2e4, __VMLINUX_SYMBOL_STR(rtk_adjust_clock_for_wifi) },
 	{ 0x8fdf772a, __VMLINUX_SYMBOL_STR(init_timer_key) },
 	{ 0x12da5bb2, __VMLINUX_SYMBOL_STR(__kmalloc) },
 	{ 0xb8f43d9c, __VMLINUX_SYMBOL_STR(single_open) },
@@ -242,4 +243,4 @@ __attribute__((section(".modinfo"))) =
 MODULE_ALIAS("sdio:c*v024CdD723*");
 MODULE_ALIAS("sdio:c*v024CdD724*");
 
-MODULE_INFO(srcversion, "F3F287CFF817B2E791C538A");
+MODULE_INFO(srcversion, "820C9B5DB272F798D1FA1FC");

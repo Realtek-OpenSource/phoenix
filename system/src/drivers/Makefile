@@ -2,7 +2,9 @@ TOP ?= ..
 
 DIRS :=
 DIRS += gpu
+ifneq ($(ENABLE_VMX_HARDENING), YES)
 DIRS += gator
+endif
 DIRS += wifi
 DIRS += bluetooth
 

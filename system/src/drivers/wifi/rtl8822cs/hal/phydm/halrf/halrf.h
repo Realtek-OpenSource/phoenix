@@ -96,10 +96,10 @@
 #define IQK_VER_8710B "0x01"
 #define IQK_VER_8723D "0x02"
 #define IQK_VER_8822B "0x30"
-#define IQK_VER_8822C "0x07"
+#define IQK_VER_8822C "0x0b"
 #define IQK_VER_8821C "0x23"
 #define IQK_VER_8198F "0x09"
-#define IQK_VER_8814B "0x07"
+#define IQK_VER_8814B "0x0b"
 #define IQK_VER_8812F "0x07"
 
 /*LCK version*/
@@ -152,7 +152,7 @@
 #define DPK_VER_8710B "NONE"
 #define DPK_VER_8723D "NONE"
 #define DPK_VER_8822B "NONE"
-#define DPK_VER_8822C "0x13"
+#define DPK_VER_8822C "0x15"
 #define DPK_VER_8821C "NONE"
 #define DPK_VER_8192F "0x0d"
 #define DPK_VER_8198F "0x0a"
@@ -162,7 +162,7 @@
 
 /*RFK_INIT version*/
 #define RFK_INIT_VER_8822B "0x8"
-#define RFK_INIT_VER_8822C "0x4"
+#define RFK_INIT_VER_8822C "0x6"
 #define RFK_INIT_VER_8195B "0x1"
 #define RFK_INIT_VER_8198F "0x5"
 #define RFK_INIT_VER_8814B "0x5"
@@ -436,7 +436,8 @@ enum halrf_cmninfo_init {
 	HALRF_CMNINFO_MP_PSD_POINT,
 	HALRF_CMNINFO_MP_PSD_START_POINT,
 	HALRF_CMNINFO_MP_PSD_STOP_POINT,
-	HALRF_CMNINFO_MP_PSD_AVERAGE
+	HALRF_CMNINFO_MP_PSD_AVERAGE,
+	HALRF_CMNINFO_IQK_TIMES
 };
 
 enum halrf_cmninfo_hook {
@@ -638,6 +639,8 @@ void halrf_do_thermal(void *dm_void);
 
 u32 halrf_set_tssi_value(void *dm_void, u32 tssi_value);
 
+void halrf_tssi_set_de_for_tx_verify(void *dm_void, u32 tssi_de, u8 path);
+
 void halrf_set_tssi_power(void *dm_void, s8 power);
 
 u32 halrf_query_tssi_value(void *dm_void);
@@ -647,6 +650,16 @@ void halrf_tssi_cck(void *dm_void);
 void halrf_thermal_cck(void *dm_void);
 
 void halrf_tssi_set_de(void *dm_void);
+
+void halrf_tssi_dck(void *dm_void, u8 direct_do);
+
+void halrf_calculate_tssi_codeword(void *dm_void);
+
+void halrf_set_tssi_codeword(void *dm_void);
+
+u8 halrf_get_tssi_codeword_for_txindex(void *dm_void);
+
+u32 halrf_tssi_get_de(void *dm_void, u8 path);
 
 void halrf_set_dpk_track(void *dm_void, u8 enable);
 

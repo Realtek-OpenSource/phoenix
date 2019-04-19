@@ -179,10 +179,22 @@ config_phydm_direct_write_rf_reg_8822c(struct dm_struct *dm, enum rf_path path,
 	/* @RF register only has 20bits */
 	bit_mask &= RFREG_MASK;
 
+	/* direct write only*/
+	if (reg_addr == RF_0x18) {
+		odm_set_mac_reg(dm, R_0x1c, BIT(31) | BIT(30), 0x3);
+		odm_set_mac_reg(dm, R_0xec, BIT(31) | BIT(30), 0x3);
+	}
+
 	/* @write RF register directly*/
 	odm_set_bb_reg(dm, direct_addr, bit_mask, data);
 
 	ODM_delay_us(1);
+
+	/* default setting: RF-0x0 is PI, others are direct*/
+	if (reg_addr == RF_0x18) {
+		odm_set_mac_reg(dm, R_0x1c, BIT(31) | BIT(30), 0x2);
+		odm_set_mac_reg(dm, R_0xec, BIT(31) | BIT(30), 0x2);
+	}
 
 	PHYDM_DBG(dm, ODM_PHY_CONFIG, "RF-%d 0x%x = 0x%x , bit mask = 0x%x\n",
 		  path, reg_addr, data, bit_mask);
@@ -513,7 +525,7 @@ boolean config_phydm_write_txagc_8822c(struct dm_struct *dm, u32 pw_idx,
 {
 #if (defined(CONFIG_RUN_IN_DRV))
 	u8 ref_rate = ODM_RATEMCS15;
-	u8 tmp_rate;
+	u8 rate;
 	u8 fill_valid_cnt = 0;
 	u8 i = 0;
 
@@ -546,11 +558,11 @@ boolean config_phydm_write_txagc_8822c(struct dm_struct *dm, u32 pw_idx,
 		fill_valid_cnt = 4;
 
 	for (i = 0; i < fill_valid_cnt; i++) {
-		tmp_rate = hw_rate + i;
-		if (tmp_rate > (PHY_NUM_RATE_IDX - 1)) /*Just for protection*/
+		rate = hw_rate + i;
+		if (rate > (PHY_NUM_RATE_IDX - 1)) /*Just for protection*/
 			break;
 
-		dm->txagc_buff[path][tmp_rate] = (pw_idx >> (8 * i)) & 0xff;
+		dm->txagc_buff[path][rate] = (u8)((pw_idx >> (8 * i)) & 0xff);
 	}
 #endif
 	return true;
@@ -905,10 +917,10 @@ phydm_config_ofdm_tx_path_8822c(struct dm_struct *dm, enum bb_path tx_path_en,
 {
 	/* @Set TX logic map and TX path_en*/
 	if (tx_path_en == BB_PATH_A) { /* @1T, 1ss */
-		odm_set_bb_reg(dm, R_0x820, 0xff, 0x1);
+		odm_set_bb_reg(dm, R_0x820, 0xff, 0x11);
 		odm_set_bb_reg(dm, R_0x1e2c, 0xffff, 0x0);
 	} else if (tx_path_en == BB_PATH_B) {
-		odm_set_bb_reg(dm, R_0x820, 0xff, 0x2);
+		odm_set_bb_reg(dm, R_0x820, 0xff, 0x12);
 		odm_set_bb_reg(dm, R_0x1e2c, 0xffff, 0x0);
 	} else { /*BB_PATH_AB*/
 		if (tx_path_sel_1ss == BB_PATH_A) {
@@ -947,26 +959,43 @@ boolean
 phydm_config_ofdm_rx_path_8822c(struct dm_struct *dm, enum bb_path rx_path)
 {
 	boolean set_result = PHYDM_SET_SUCCESS;
+	u32 ofdm_rx = 0x0;
 
-	/* @Set RX Nss Limit*/
-	if (rx_path == BB_PATH_A || rx_path == BB_PATH_B) {
-		odm_set_bb_reg(dm, R_0x1d30, 0x300, 0x0);/*@ ht_mcs_limit*/
-		odm_set_bb_reg(dm, R_0x1d30, 0x600000, 0x0);/*@ vht_nss_limit*/
+	ofdm_rx = (u32)rx_path;
+	if (!(*dm->mp_mode)) {
+		if (ofdm_rx == BB_PATH_B) {
+			ofdm_rx = BB_PATH_AB;
+			odm_set_bb_reg(dm, R_0xcc0, 0x7ff, 0x0);
+			odm_set_bb_reg(dm, R_0xcc0, BIT(22), 0x1);
+			odm_set_bb_reg(dm, R_0xcc8, 0x7ff, 0x0);
+			odm_set_bb_reg(dm, R_0xcc8, BIT(22), 0x1);
+		} else { /* ofdm_rx == BB_PATH_A || ofdm_rx == BB_PATH_AB*/
+			odm_set_bb_reg(dm, R_0xcc0, 0x7ff, 0x400);
+			odm_set_bb_reg(dm, R_0xcc0, BIT(22), 0x0);
+			odm_set_bb_reg(dm, R_0xcc8, 0x7ff, 0x400);
+			odm_set_bb_reg(dm, R_0xcc8, BIT(22), 0x0);
+		}
+	}
+
+	if (ofdm_rx == BB_PATH_A || ofdm_rx == BB_PATH_B) {
+		/*@ ht_mcs_limit*/
+		odm_set_bb_reg(dm, R_0x1d30, 0x300, 0x0);
+		/*@ vht_nss_limit*/
+		odm_set_bb_reg(dm, R_0x1d30, 0x600000, 0x0);
 		/* @Disable Antenna weighting */
 		odm_set_bb_reg(dm, R_0xc44, BIT(17), 0x0);
 		/* @htstf ant-wgt enable = 0*/
 		odm_set_bb_reg(dm, R_0xc54, BIT(20), 0x0);
 		/* @MRC_mode = 'original ZF eqz'*/
 		odm_set_bb_reg(dm, R_0xc38, BIT(24), 0x0);
+		/* @Rx_ant */
+		odm_set_bb_reg(dm, R_0x824, 0x000f0000, rx_path);
 		/* @Rx_CCA*/
 		odm_set_bb_reg(dm, R_0x824, 0x0f000000, rx_path);
-		/* @Rx_ant */
-		if (rx_path == BB_PATH_A)
-			odm_set_bb_reg(dm, R_0x824, 0x000f0000, BB_PATH_A);
-		else/*@ RX-B*/
-			odm_set_bb_reg(dm, R_0x824, 0x000f0000, BB_PATH_AB);
-	} else if (rx_path == BB_PATH_AB) {
+	} else if (ofdm_rx == BB_PATH_AB) {
+		/*@ ht_mcs_limit*/
 		odm_set_bb_reg(dm, R_0x1d30, 0x300, 0x1);
+		/*@ vht_nss_limit*/
 		odm_set_bb_reg(dm, R_0x1d30, 0x600000, 0x1);
 		/* @Enable Antenna weighting */
 		odm_set_bb_reg(dm, R_0xc44, BIT(17), 0x1);
@@ -974,10 +1003,10 @@ phydm_config_ofdm_rx_path_8822c(struct dm_struct *dm, enum bb_path rx_path)
 		odm_set_bb_reg(dm, R_0xc54, BIT(20), 0x1);
 		/* @MRC_mode = 'modified ZF eqz'*/
 		odm_set_bb_reg(dm, R_0xc38, BIT(24), 0x1);
-		/* @Rx_CCA*/
-		odm_set_bb_reg(dm, R_0x824, 0x0f000000, BB_PATH_AB);
 		/* @Rx_ant */
 		odm_set_bb_reg(dm, R_0x824, 0x000f0000, BB_PATH_AB);
+		/* @Rx_CCA*/
+		odm_set_bb_reg(dm, R_0x824, 0x0f000000, BB_PATH_AB);
 	}
 
 #ifdef CONFIG_PATH_DIVERSITY
@@ -1098,6 +1127,10 @@ config_phydm_trx_mode_8822c(struct dm_struct *dm, enum bb_path tx_path_en,
 
 	/* @==== [TX Antenna] ===========================================*/
 #ifdef CONFIG_PATH_DIVERSITY
+	if (p_div->default_tx_path != BB_PATH_A &&
+	    p_div->default_tx_path != BB_PATH_B)
+		p_div->default_tx_path = BB_PATH_A;
+
 	if (tx_path_en == BB_PATH_A || tx_path_en == BB_PATH_B) {
 		p_div->stop_path_div = true;
 		tx_path_sel_1ss = tx_path_en;
@@ -1152,6 +1185,12 @@ void phydm_dis_cck_trx_8822c(struct dm_struct *dm, u8 set_type)
 		/* @ CCK RxIQ weighting = [1,1] */
 		odm_set_bb_reg(dm, R_0x1a14, 0x300, 0x0);
 
+		if (dm->tx_1ss_status != BB_PATH_A &&
+		    dm->tx_1ss_status != BB_PATH_B) {
+			dm->tx_1ss_status = BB_PATH_A;
+			pr_debug("[%s]tx_1ss is not A or B !\n", __func__);
+		}
+
 		phydm_config_cck_tx_path_8822c(dm, dm->tx_1ss_status);
 	}
 	phydm_bb_reset_8822c(dm);
@@ -1197,6 +1236,7 @@ config_phydm_switch_band_8822c(struct dm_struct *dm, u8 central_ch)
 
 		/* @RF 2.4G default ch-1 */
 		rf_reg18 |= 0x1;
+
 	} else if (central_ch > 35) {
 		/* 5G */
 
@@ -1417,6 +1457,8 @@ config_phydm_switch_channel_8822c(struct dm_struct *dm, u8 central_ch)
 		odm_set_bb_reg(dm, R_0x1a80, BIT(18), 0x0);
 		/* @CCA Mask, default = 0xf */
 		odm_set_bb_reg(dm, R_0x1c80, 0x3F000000, 0xF);
+		/* dynamic HT-STF gain control adjust */
+		odm_set_bb_reg(dm, R_0x8a0, 0x0000000c, 0x0);
 	} else {
 		/* @Enable BB CCK check */
 		odm_set_bb_reg(dm, R_0x1a80, BIT(18), 0x1);
@@ -1426,6 +1468,9 @@ config_phydm_switch_channel_8822c(struct dm_struct *dm, u8 central_ch)
 		phydm_dis_cck_trx_8822c(dm, PHYDM_SET);
 		/* @CCA Mask */
 		odm_set_bb_reg(dm, R_0x1c80, 0x3F000000, 0x22);
+		/* dynamic HT-STF gain control adjust */
+		odm_set_bb_reg(dm, R_0x8a0, BIT(2), 0x1);
+		odm_set_bb_reg(dm, R_0x8a0, BIT(3), 0x1);
 	}
 
 	/* ==== [Set RF Reg 0x18] ===========================================*/
@@ -1556,6 +1601,13 @@ config_phydm_switch_bandwidth_8822c(struct dm_struct *dm, u8 pri_ch,
 		/* @CCK source 4 */
 		odm_set_bb_reg(dm, R_0x1abc, BIT(30), 0x0);
 
+		/* dynamic CCK PD th*/
+		odm_set_bb_reg(dm, R_0x1ae8, BIT(31), 0x1);
+		odm_set_bb_reg(dm, R_0x1aec, 0xf, 0x6);
+
+		/* subtune*/
+		odm_set_bb_reg(dm, R_0x88c, 0xf000, 0x1);
+
 		if (*dm->band_type == ODM_BAND_2_4G) {
 			/* @CCK*/
 			odm_set_bb_reg(dm, R_0x18ac, 0xf000, 0x5);
@@ -1603,6 +1655,13 @@ config_phydm_switch_bandwidth_8822c(struct dm_struct *dm, u8 pri_ch,
 		/* @CCK source 5 */
 		odm_set_bb_reg(dm, R_0x1abc, BIT(30), 0x1);
 
+		/* dynamic CCK PD th*/
+		odm_set_bb_reg(dm, R_0x1ae8, BIT(31), 0x0);
+		odm_set_bb_reg(dm, R_0x1aec, 0xf, 0x8);
+
+		/* subtune*/
+		odm_set_bb_reg(dm, R_0x88c, 0xf000, 0x1);
+
 		if (*dm->band_type == ODM_BAND_2_4G) {
 			/* @CCK*/
 			odm_set_bb_reg(dm, R_0x18ac, 0xf000, 0x4);
@@ -1641,19 +1700,8 @@ config_phydm_switch_bandwidth_8822c(struct dm_struct *dm, u8 pri_ch,
 		/* @pilot smoothing off */
 		odm_set_bb_reg(dm, R_0xcbc, BIT(21), 0x1);
 
-		/* @CCK source 5 */
-		odm_set_bb_reg(dm, R_0x1abc, BIT(30), 0x1);
-
-		if (*dm->band_type == ODM_BAND_2_4G) {
-			/* @CCK*/
-			odm_set_bb_reg(dm, R_0x18ac, 0xf000, 0x4);
-			odm_set_bb_reg(dm, R_0x41ac, 0xf000, 0x4);
-
-			/* @OFDM*/
-			odm_set_bb_reg(dm, R_0x18ac, 0x1f0, 0x0);
-			odm_set_bb_reg(dm, R_0x41ac, 0x1f0, 0x0);
-			dig_tab->agc_table_idx = 0x0;
-		}
+		/* subtune*/
+		odm_set_bb_reg(dm, R_0x88c, 0xf000, 0x6);
 		break;
 	default:
 		PHYDM_DBG(dm, ODM_PHY_CONFIG,
@@ -1810,6 +1858,34 @@ void phydm_ch_smooth_setting_8822c(struct dm_struct *dm, boolean en_ch_smooth)
 }
 
 __odm_func__
+u16 phydm_get_dis_dpd_by_rate_8822c(struct dm_struct *dm)
+{
+	u16 dis_dpd_rate = 0;
+
+	dis_dpd_rate = dm->dis_dpd_rate;
+
+	return dis_dpd_rate;
+}
+
+__odm_func__
+void phydm_set_dis_dpd_by_rate_8822c(struct dm_struct *dm, u16 bitmask)
+{
+	/* bit(0) : ofdm 6m*/
+	/* bit(1) : ofdm 9m*/
+	/* bit(2) : ht mcs0*/
+	/* bit(3) : ht mcs1*/
+	/* bit(4) : ht mcs8*/
+	/* bit(5) : ht mcs9*/
+	/* bit(6) : vht 1ss mcs0*/
+	/* bit(7) : vht 1ss mcs1*/
+	/* bit(8) : vht 2ss mcs0*/
+	/* bit(9) : vht 2ss mcs1*/
+
+	odm_set_bb_reg(dm, R_0xa70, 0x3ff, bitmask);
+	dm->dis_dpd_rate = bitmask;
+}
+
+__odm_func__
 boolean
 config_phydm_parameter_init_8822c(struct dm_struct *dm,
 				  enum odm_parameter_init type)
@@ -1817,6 +1893,12 @@ config_phydm_parameter_init_8822c(struct dm_struct *dm,
 	PHYDM_DBG(dm, ODM_PHY_CONFIG, "%s ======>\n", __func__);
 
 	phydm_cck_gi_bound_8822c(dm);
+
+	/* Disable low rate DPD*/
+	if (dm->en_dis_dpd)
+		phydm_set_dis_dpd_by_rate_8822c(dm, 0x3ff);
+	else
+		phydm_set_dis_dpd_by_rate_8822c(dm, 0x0);
 
 	/* @Do not use PHYDM API to read/write because FW can not access */
 	/* @Turn on 3-wire*/

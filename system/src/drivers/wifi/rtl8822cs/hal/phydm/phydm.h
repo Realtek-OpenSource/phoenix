@@ -407,6 +407,7 @@ enum odm_cmninfo {
 	ODM_CMNINFO_X_CAP_SETTING,
 	ODM_CMNINFO_ADVANCE_OTA,
 	ODM_CMNINFO_HP_HWID,
+	ODM_CMNINFO_DIS_DPD,
 	/*@-----------HOOK BEFORE REG INIT-----------*/
 
 	/*@Dynamic value:*/
@@ -473,6 +474,7 @@ enum odm_cmninfo {
 	ODM_CMNINFO_BT_CONTINUOUS_TURN,
 	ODM_CMNINFO_IS_DOWNLOAD_FW,
 	ODM_CMNINFO_PHYDM_PATCH_ID,
+	ODM_CMNINFO_RRSR_VAL,
 	/*@------------CALL BY VALUE-------------*/
 
 	/*@Dynamic ptr array hook itms.*/
@@ -796,6 +798,8 @@ struct dm_struct {
 	u8			is_rx_blocking_en;
 	u16			fw_offload_ability;
 	boolean			is_download_fw;
+	boolean			en_dis_dpd;
+	u16			dis_dpd_rate;
 	#if (RTL8822C_SUPPORT)
 	u8			txagc_buff[2][NUM_RATE_AC_2SS];
 	u32			bp_0x9b0;
@@ -1121,6 +1125,10 @@ struct dm_struct {
 	struct _DFS_STATISTICS		dfs;
 	struct odm_noise_monitor	noise_level;
 	struct odm_phy_dbg_info		phy_dbg_info;
+
+#ifdef PHYDM_IC_JGR3_SERIES_SUPPORT
+	struct phydm_bf_rate_info_jgr3 bf_rate_info_jgr3;
+#endif
 
 #ifdef CONFIG_ADAPTIVE_SOML
 	struct adaptive_soml		dm_soml_table;

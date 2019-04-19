@@ -239,6 +239,10 @@ struct hal_spec_t {
 	u8 proto_cap;	/* value of PROTO_CAP_XXX */
 	u8 wl_func;		/* value of WL_FUNC_XXX */
 
+#if CONFIG_TX_AC_LIFETIME
+	u8 tx_aclt_unit_factor; /* how many 32us */
+#endif
+
 	u8 rx_tsf_filter:1;
 
 	u8 pg_txpwr_saddr; /* starting address of PG tx power info */
@@ -313,7 +317,7 @@ typedef struct hal_p2p_ps_para {
 #define TXPWR_LMT_RS_NUM_2G	4 /* CCK, OFDM, HT, VHT */
 #define TXPWR_LMT_RS_NUM_5G	3 /* OFDM, HT, VHT */
 
-#ifdef CONFIG_TXPWR_LIMIT
+#if CONFIG_TXPWR_LIMIT
 extern const char *const _txpwr_lmt_rs_str[];
 #define txpwr_lmt_rs_str(rs) (((rs) >= TXPWR_LMT_RS_NUM) ? _txpwr_lmt_rs_str[TXPWR_LMT_RS_NUM] : _txpwr_lmt_rs_str[(rs)])
 
@@ -526,7 +530,10 @@ typedef struct hal_com_data {
 	/* RDG enable */
 	BOOLEAN	 bRDGEnable;
 
-	u16 RegRRSR;
+	#if defined (CONFIG_RTL8812A) || defined(CONFIG_RTL8821A)
+	u32 RegRRSR;
+	#endif
+
 	/****** antenna diversity ******/
 	u8	AntDivCfg;
 	u8	with_extenal_ant_switch;

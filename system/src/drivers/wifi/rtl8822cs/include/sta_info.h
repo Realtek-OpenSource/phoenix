@@ -475,6 +475,8 @@ struct sta_info {
 	u8 nonpeer_mps;
 
 	struct rtw_atlm_param metrics;
+	/* The reference for nexthop_lookup */
+	BOOLEAN alive;
 #endif
 
 #ifdef CONFIG_IOCTL_CFG80211

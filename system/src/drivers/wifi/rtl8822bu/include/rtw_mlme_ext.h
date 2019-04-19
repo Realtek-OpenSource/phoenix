@@ -127,6 +127,24 @@ typedef enum _HT_IOT_PEER {
 	HT_IOT_PEER_MAX				= 18
 } HT_IOT_PEER_E, *PHTIOT_PEER_E;
 
+
+typedef enum _RT_HT_INF0_CAP {
+	RT_HT_CAP_USE_TURBO_AGGR = 0x01,
+	RT_HT_CAP_USE_LONG_PREAMBLE = 0x02,
+	RT_HT_CAP_USE_AMPDU = 0x04,
+	RT_HT_CAP_USE_WOW = 0x8,
+	RT_HT_CAP_USE_SOFTAP = 0x10,
+	RT_HT_CAP_USE_92SE = 0x20,
+	RT_HT_CAP_USE_88C_92C = 0x40,
+	RT_HT_CAP_USE_AP_CLIENT_MODE = 0x80,	/* AP team request to reserve this bit, by Emily */
+} RT_HT_INF0_CAPBILITY, *PRT_HT_INF0_CAPBILITY;
+
+typedef enum _RT_HT_INF1_CAP {
+	RT_HT_CAP_USE_VIDEO_CLIENT = 0x01,
+	RT_HT_CAP_USE_JAGUAR_BCUT = 0x02,
+	RT_HT_CAP_USE_JAGUAR_CCUT = 0x04,
+} RT_HT_INF1_CAPBILITY, *PRT_HT_INF1_CAPBILITY;
+
 struct mlme_handler {
 	unsigned int   num;
 	char *str;
@@ -337,6 +355,11 @@ struct mlme_ext_info {
 	struct HT_caps_element	HT_caps;
 	struct HT_info_element		HT_info;
 	WLAN_BSSID_EX			network;/* join network or bss_network, if in ap mode, it is the same to cur_network.network */
+#ifdef ROKU_PRIVATE
+	/*infra mode, store supported rates from AssocRsp*/
+	NDIS_802_11_RATES_EX	SupportedRates_infra_ap;
+	u8 ht_vht_received;/*ht_vht_received used to show debug msg BIT(0):HT BIT(1):VHT */
+#endif /* ROKU_PRIVATE */
 };
 
 /* The channel information about this channel including joining, scanning, and power constraints. */
@@ -355,15 +378,8 @@ typedef struct _RT_CHANNEL_INFO {
 	#endif
 	u8 hidden_bss_cnt; /* per scan count */
 #endif
-
-#ifdef CONFIG_RTW_MESH
-	#if CONFIG_RTW_MESH_OFFCH_CAND
-	u8 mesh_candidate_cnt; /* update at scan done for specific mesh iface */
-	#endif
-#endif /* CONFIG_RTW_MESH */
 } RT_CHANNEL_INFO, *PRT_CHANNEL_INFO;
 
-#define DFS_MASTER_TIMER_MS 100
 #define CAC_TIME_MS (60*1000)
 #define CAC_TIME_CE_MS (10*60*1000)
 #define NON_OCP_TIME_MS (30*60*1000)
@@ -377,19 +393,21 @@ void rtw_rfctl_deinit(_adapter *adapter);
 #ifdef CONFIG_DFS_MASTER
 struct rf_ctl_t;
 #define CH_IS_NON_OCP(rt_ch_info) (rtw_time_after((rt_ch_info)->non_ocp_end_time, rtw_get_current_time()))
-bool rtw_is_cac_reset_needed(_adapter *adapter, u8 ch, u8 bw, u8 offset);
+bool rtw_is_cac_reset_needed(struct rf_ctl_t *rfctl, u8 ch, u8 bw, u8 offset);
 bool _rtw_rfctl_overlap_radar_detect_ch(struct rf_ctl_t *rfctl, u8 ch, u8 bw, u8 offset);
 bool rtw_rfctl_overlap_radar_detect_ch(struct rf_ctl_t *rfctl);
 bool rtw_rfctl_is_tx_blocked_by_ch_waiting(struct rf_ctl_t *rfctl);
-bool rtw_chset_is_ch_non_ocp(RT_CHANNEL_INFO *ch_set, u8 ch, u8 bw, u8 offset);
+bool rtw_chset_is_chbw_non_ocp(RT_CHANNEL_INFO *ch_set, u8 ch, u8 bw, u8 offset);
+bool rtw_chset_is_ch_non_ocp(RT_CHANNEL_INFO *ch_set, u8 ch);
 void rtw_chset_update_non_ocp(RT_CHANNEL_INFO *ch_set, u8 ch, u8 bw, u8 offset);
 void rtw_chset_update_non_ocp_ms(RT_CHANNEL_INFO *ch_set, u8 ch, u8 bw, u8 offset, int ms);
-u32 rtw_get_ch_waiting_ms(_adapter *adapter, u8 ch, u8 bw, u8 offset, u32 *r_non_ocp_ms, u32 *r_cac_ms);
-void rtw_reset_cac(_adapter *adapter, u8 ch, u8 bw, u8 offset);
-u32 rtw_force_stop_cac(_adapter *adapter, u32 timeout_ms);
+u32 rtw_get_ch_waiting_ms(struct rf_ctl_t *rfctl, u8 ch, u8 bw, u8 offset, u32 *r_non_ocp_ms, u32 *r_cac_ms);
+void rtw_reset_cac(struct rf_ctl_t *rfctl, u8 ch, u8 bw, u8 offset);
+u32 rtw_force_stop_cac(struct rf_ctl_t *rfctl, u32 timeout_ms);
 #else
 #define CH_IS_NON_OCP(rt_ch_info) 0
-#define rtw_chset_is_ch_non_ocp(ch_set, ch, bw, offset) _FALSE
+#define rtw_chset_is_chbw_non_ocp(ch_set, ch, bw, offset) _FALSE
+#define rtw_chset_is_ch_non_ocp(ch_set, ch) _FALSE
 #define rtw_rfctl_is_tx_blocked_by_ch_waiting(rfctl) _FALSE
 #endif
 
@@ -403,12 +421,12 @@ enum {
 	RTW_CHF_NON_OCP = BIT6,
 };
 
-bool rtw_choose_shortest_waiting_ch(_adapter *adapter, u8 sel_ch, u8 max_bw
+bool rtw_choose_shortest_waiting_ch(struct rf_ctl_t *rfctl, u8 sel_ch, u8 max_bw
 	, u8 *dec_ch, u8 *dec_bw, u8 *dec_offset
-	, u8 d_flags, u8 cur_ch, u8 same_band_prefer);
+	, u8 d_flags, u8 cur_ch, u8 same_band_prefer, u8 mesh_only);
 
 void dump_chset(void *sel, RT_CHANNEL_INFO *ch_set);
-void dump_cur_chset(void *sel, _adapter *adapter);
+void dump_cur_chset(void *sel, struct rf_ctl_t *rfctl);
 
 int rtw_chset_search_ch(RT_CHANNEL_INFO *ch_set, const u32 ch);
 u8 rtw_chset_is_chbw_valid(RT_CHANNEL_INFO *ch_set, u8 ch, u8 bw, u8 offset);
@@ -504,15 +522,16 @@ struct mlme_ext_priv {
 	u32	retry; /* retry for issue probereq */
 
 	u64 TSFValue;
-
-	/* for LPS-32K to adaptive bcn early and timeout */
-	u8 adaptive_tsf_done;
-	u32 bcn_delay_cnt[9];
-	u32 bcn_delay_ratio[9];
 	u32 bcn_cnt;
-	u8 DrvBcnEarly;
-	u8 DrvBcnTimeOut;
-
+	u32 last_bcn_cnt;
+	u8 cur_bcn_cnt;/*2s*/
+	u8 dtim;/*DTIM Period*/
+#ifdef DBG_RX_BCN
+	u8 tim[4];
+#endif
+#ifdef CONFIG_BCN_RECV_TIME
+	u16 bcn_rx_time;
+#endif
 #ifdef CONFIG_AP_MODE
 	unsigned char bstart_bss;
 #endif
@@ -530,8 +549,34 @@ struct mlme_ext_priv {
 #ifdef DBG_FIXED_CHAN
 	u8 fixed_chan;
 #endif
-	/* set hw sync bcn tsf register or not */
-	u8 en_hw_update_tsf;
+
+	u8 tsf_update_required:1;
+	u8 en_hw_update_tsf:1; /* set hw sync bcn tsf register or not */
+	systime tsf_update_pause_stime;
+	u8 tsf_update_pause_factor; /* num of bcn intervals to stay TSF update pause status */
+	u8 tsf_update_restore_factor; /* num of bcn interval to stay TSF update restore status */
+#ifdef CONFIG_SUPPORT_STATIC_SMPS
+	u8 ssmps_en;
+	u16 ssmps_tx_tp_th;/*Mbps*/
+	u16 ssmps_rx_tp_th;/*Mbps*/
+	#ifdef DBG_STATIC_SMPS
+	u8 ssmps_test;
+	u8 ssmps_test_en;
+	#endif
+#endif
+#ifdef CONFIG_CTRL_TXSS_BY_TP
+	u8 txss_ctrl_en;
+	u16 txss_tp_th;/*Mbps*/
+	u8 txss_tp_chk_cnt;/*unit 2s*/
+	u8 txss_1ss;
+	u8 txss_momi_type_bk;
+#endif
+};
+
+struct support_rate_handler {
+	u8 rate;
+	bool basic;
+	bool existence;
 };
 
 static inline u8 check_mlmeinfo_state(struct mlme_ext_priv *plmeext, sint state)
@@ -683,6 +728,10 @@ int is_client_associated_to_ibss(_adapter *padapter);
 int is_IBSS_empty(_adapter *padapter);
 
 unsigned char check_assoc_AP(u8 *pframe, uint len);
+void get_assoc_AP_Vendor(char *vendor, u8 assoc_AP_vendor);
+#ifdef CONFIG_RTS_FULL_BW
+void rtw_parse_sta_vendor_ie_8812(_adapter *adapter, struct sta_info *sta, u8 *tlv_ies, u16 tlv_ies_len);
+#endif/*CONFIG_RTS_FULL_BW*/
 #ifdef CONFIG_80211AC_VHT
 unsigned char get_vht_mu_bfer_cap(u8 *pframe, uint len);
 #endif
@@ -695,13 +744,24 @@ void rtw_process_wfd_ies(_adapter *adapter, u8 *ies, u8 ies_len, const char *tag
 void WMMOnAssocRsp(_adapter *padapter);
 
 void HT_caps_handler(_adapter *padapter, PNDIS_802_11_VARIABLE_IEs pIE);
+#ifdef ROKU_PRIVATE
+void HT_caps_handler_infra_ap(_adapter *padapter, PNDIS_802_11_VARIABLE_IEs pIE);
+#endif
 void HT_info_handler(_adapter *padapter, PNDIS_802_11_VARIABLE_IEs pIE);
 void HTOnAssocRsp(_adapter *padapter);
+
+#ifdef ROKU_PRIVATE
+void Supported_rate_infra_ap(_adapter *padapter, PNDIS_802_11_VARIABLE_IEs pIE);
+void Extended_Supported_rate_infra_ap(_adapter *padapter, PNDIS_802_11_VARIABLE_IEs pIE);
+#endif
 
 void ERP_IE_handler(_adapter *padapter, PNDIS_802_11_VARIABLE_IEs pIE);
 void VCS_update(_adapter *padapter, struct sta_info *psta);
 void	update_ldpc_stbc_cap(struct sta_info *psta);
 
+bool rtw_validate_value(u16 EID, u8 *p, u16 len);
+bool hidden_ssid_ap(WLAN_BSSID_EX *snetwork);
+void rtw_absorb_ssid_ifneed(_adapter *padapter, WLAN_BSSID_EX *bssid, u8 *pframe);
 int rtw_get_bcn_keys(ADAPTER *Adapter, u8 *pframe, u32 packet_len,
 		struct beacon_keys *recv_beacon);
 int validate_beacon_len(u8 *pframe, uint len);
@@ -734,6 +794,8 @@ int support_short_GI(_adapter *padapter, struct HT_caps_element *pHT_caps, u8 bw
 unsigned int is_ap_in_tkip(_adapter *padapter);
 unsigned int is_ap_in_wep(_adapter *padapter);
 unsigned int should_forbid_n_rate(_adapter *padapter);
+
+void parsing_eapol_packet(_adapter *padapter, u8 *key_payload, struct sta_info *psta, u8 trx_type);
 
 bool _rtw_camctl_chk_cap(_adapter *adapter, u8 cap);
 void _rtw_camctl_set_flags(_adapter *adapter, u32 flags);
@@ -945,6 +1007,10 @@ void mlmeext_sta_add_event_callback(_adapter *padapter, struct sta_info *psta);
 
 void linked_status_chk(_adapter *padapter, u8 from_timer);
 
+#define rtw_get_bcn_cnt(adapter)	(adapter->mlmeextpriv.cur_bcn_cnt)
+#define rtw_get_bcn_dtim_period(adapter)	(adapter->mlmeextpriv.dtim)
+void rtw_collect_bcn_info(_adapter *adapter);
+
 void _linked_info_dump(_adapter *padapter);
 
 void survey_timer_hdl(void *ctx);
@@ -983,8 +1049,10 @@ extern int cckratesonly_included(unsigned char *rate, int ratelen);
 extern void process_addba_req(_adapter *padapter, u8 *paddba_req, u8 *addr);
 
 extern void update_TSF(struct mlme_ext_priv *pmlmeext, u8 *pframe, uint len);
-extern void correct_TSF(_adapter *padapter, struct mlme_ext_priv *pmlmeext);
-extern void adaptive_early_32k(struct mlme_ext_priv *pmlmeext, u8 *pframe, uint len);
+extern void correct_TSF(_adapter *padapter, u8 mlme_state);
+#ifdef CONFIG_BCN_RECV_TIME
+void rtw_rx_bcn_time_update(_adapter *adapter, uint bcn_len, u8 data_rate);
+#endif
 extern u8 traffic_status_watchdog(_adapter *padapter, u8 from_timer);
 
 void rtw_process_bar_frame(_adapter *padapter, union recv_frame *precv_frame);
@@ -1112,7 +1180,7 @@ struct cmd_hdl wlancmds[] = {
 	GEN_MLME_EXT_HANDLER(sizeof(struct SetChannelPlan_param), set_chplan_hdl) /*59*/
 	GEN_MLME_EXT_HANDLER(sizeof(struct LedBlink_param), led_blink_hdl) /*60*/
 
-	GEN_MLME_EXT_HANDLER(sizeof(struct SetChannelSwitch_param), set_csa_hdl) /*61*/
+	GEN_MLME_EXT_HANDLER(0, set_csa_hdl) /*61*/
 	GEN_MLME_EXT_HANDLER(sizeof(struct TDLSoption_param), tdls_hdl) /*62*/
 	GEN_MLME_EXT_HANDLER(0, chk_bmc_sleepq_hdl) /*63*/
 	GEN_MLME_EXT_HANDLER(sizeof(struct RunInThread_param), run_in_thread_hdl) /*64*/

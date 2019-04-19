@@ -408,7 +408,8 @@ void phydm_cfo_tracking(void *dm_void)
 				cfo_abs = cfo_track->CFO_tail[i];
 
 			cfo_rpt_sum = (u32)CFO_HW_RPT_2_KHZ(cfo_abs);
-			cfo_khz_avg[i] = cfo_rpt_sum / cfo_track->CFO_cnt[i];
+			cfo_khz_avg[i] = PHYDM_DIV(cfo_rpt_sum,
+						   cfo_track->CFO_cnt[i]);
 
 			PHYDM_DBG(dm, DBG_CFO_TRK,
 				  "[Path-%d] CFO_sum=((%d)), cnt=((%d)), CFO_avg=((%s%d))kHz\n",

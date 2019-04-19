@@ -1,5 +1,5 @@
 gator_main.o: \
- /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/gator/driver/gator_main.c \
+ /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/gator/driver/gator_main.c \
  include/linux/kconfig.h include/generated/autoconf.h \
  include/generated/uapi/linux/version.h include/linux/slab.h \
  include/linux/gfp.h include/linux/mmdebug.h include/linux/bug.h \
@@ -17,7 +17,7 @@ gator_main.o: \
  include/linux/swab.h include/uapi/linux/swab.h \
  arch/arm/include/asm/swab.h arch/arm/include/uapi/asm/swab.h \
  include/asm-generic/bug.h include/linux/kernel.h \
- /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/lib/gcc/arm-linux-gnueabi/6.4.1/include/stdarg.h \
+ /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/toolchain/asdk-6.4.1-a53-EL-4.9-g2.26-a32nut-180831/lib/gcc/arm-linux-gnueabi/6.4.1/include/stdarg.h \
  include/linux/bitops.h arch/arm/include/asm/bitops.h \
  include/linux/irqflags.h include/linux/typecheck.h \
  arch/arm/include/asm/irqflags.h arch/arm/include/asm/ptrace.h \
@@ -211,24 +211,24 @@ gator_main.o: \
  arch/arm/include/generated/asm/local.h include/asm-generic/local.h \
  include/linux/utsname.h include/uapi/linux/utsname.h \
  include/linux/kthread.h \
- /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/gator/driver/gator.h \
- /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/gator/driver/generated_gator_src_md5.h \
- /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/gator/driver/gator_fs.c \
- /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/gator/driver/gator_pmu.c \
- /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/gator/driver/gator_buffer_write.c \
- /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/gator/driver/gator_buffer.c \
- /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/gator/driver/gator_marshaling.c \
- /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/gator/driver/gator_hrtimer_gator.c \
- /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/gator/driver/gator_cookies.c \
+ /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/gator/driver/gator.h \
+ /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/gator/driver/generated_gator_src_md5.h \
+ /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/gator/driver/gator_fs.c \
+ /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/gator/driver/gator_pmu.c \
+ /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/gator/driver/gator_buffer_write.c \
+ /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/gator/driver/gator_buffer.c \
+ /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/gator/driver/gator_marshaling.c \
+ /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/gator/driver/gator_hrtimer_gator.c \
+ /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/gator/driver/gator_cookies.c \
  include/linux/mount.h \
- /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/gator/driver/gator_annotate.c \
- /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/gator/driver/gator_annotate_kernel.c \
- /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/gator/driver/gator_trace_sched.c \
+ /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/gator/driver/gator_annotate.c \
+ /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/gator/driver/gator_annotate_kernel.c \
+ /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/gator/driver/gator_trace_sched.c \
  include/trace/events/sched.h include/linux/tracepoint.h \
  include/linux/binfmts.h arch/arm/include/generated/asm/exec.h \
  include/asm-generic/exec.h include/uapi/linux/binfmts.h \
  include/trace/define_trace.h include/trace/events/task.h \
- /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/gator/driver/gator_trace_power.c \
+ /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/gator/driver/gator_trace_power.c \
  include/trace/events/power.h include/linux/pm_qos.h \
  include/linux/miscdevice.h include/uapi/linux/major.h \
  include/linux/trace_events.h include/linux/ring_buffer.h \
@@ -236,8 +236,8 @@ gator_main.o: \
  arch/arm/include/generated/asm/poll.h include/uapi/asm-generic/poll.h \
  include/linux/trace_seq.h include/linux/seq_buf.h \
  arch/arm/include/asm/mach-types.h include/generated/mach-types.h \
- /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/gator/driver/gator_trace_gpu.c \
- /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/gator/driver/gator_backtrace.c \
+ /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/gator/driver/gator_trace_gpu.c \
+ /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/gator/driver/gator_backtrace.c \
  arch/arm/include/asm/stacktrace.h \
- /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/gator/driver/gator_events_perf_pmu.c \
- /home2/Kay2/SDK_backup/1395/Android_P_AOSP/190116/trunk-9.0/1395_ANDROID_P_AOSP_190116_SDK/phoenix/system/src/drivers/gator/driver/gator_iks.c
+ /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/gator/driver/gator_events_perf_pmu.c \
+ /home3/Kay3/ext_git/1395_ANDROID_P_AOSP/190409/build_scripts/phoenix/system/src/drivers/gator/driver/gator_iks.c

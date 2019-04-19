@@ -2367,7 +2367,8 @@ struct halmac_api {
 			  enum halmac_intf_phy_platform pltfm);
 	enum halmac_ret_status
 	(*halmac_cfg_csi_rate)(struct halmac_adapter *adapter, u8 rssi,
-			       u8 cur_rate, u8 fixrate_en, u8 *new_rate);
+			       u8 cur_rate, u8 fixrate_en, u8 *new_rate,
+			       u8 *bmp_ofdm54);
 #if HALMAC_SDIO_SUPPORT
 	enum halmac_ret_status
 	(*halmac_sdio_cmd53_4byte)(struct halmac_adapter *adapter,
